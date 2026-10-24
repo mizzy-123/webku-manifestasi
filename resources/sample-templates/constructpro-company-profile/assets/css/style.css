@@ -1,0 +1,151 @@
+:root {
+    --color-primary: #2563eb;
+    --color-secondary: #0f172a;
+    --color-accent: #f59e0b;
+    --color-bg: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: var(--color-secondary);
+    background: var(--color-bg);
+    line-height: 1.6;
+}
+img {
+    max-width: 100%;
+    display: block;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
+.container {
+    width: min(1120px, 92%);
+    margin-inline: auto;
+}
+
+.nav {
+    background: var(--color-secondary);
+    color: #fff;
+}
+.nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+.nav__links {
+    display: flex;
+    gap: 24px;
+    font-weight: 500;
+}
+.nav__links a:hover {
+    color: var(--color-accent);
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 12px 26px;
+    border-radius: 8px;
+    font-weight: 600;
+    background: var(--color-accent);
+    color: var(--color-secondary);
+}
+
+.hero {
+    padding: 72px 0;
+    background: color-mix(in srgb, var(--color-primary) 10%, var(--color-bg));
+}
+.hero__inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 48px;
+}
+.hero h1 {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+}
+.hero p {
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+.hero img {
+    border-radius: 16px;
+}
+
+.page-title {
+    padding: 56px 0;
+    background: var(--color-primary);
+    color: #fff;
+}
+.page-title h1 {
+    font-size: 2.4rem;
+}
+.page-title p {
+    opacity: 0.9;
+    margin-top: 8px;
+}
+
+.section {
+    padding: 72px 0;
+}
+.section h2 {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 32px;
+}
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+.grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+.card {
+    padding: 28px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.card h3,
+.card strong {
+    color: var(--color-primary);
+    font-size: 1.6rem;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.footer {
+    padding: 28px 0;
+    background: var(--color-secondary);
+    color: #fff;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 800px) {
+    .hero__inner,
+    .grid,
+    .grid--2 {
+        grid-template-columns: 1fr;
+    }
+    .nav__links {
+        gap: 14px;
+        font-size: 0.9rem;
+    }
+}

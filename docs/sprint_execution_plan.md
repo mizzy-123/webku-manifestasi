@@ -101,15 +101,15 @@
 - `app/Http/Controllers/Admin/DashboardController.php`
 - `app/Http/Controllers/Admin/TemplateController.php`
 - `app/Http/Controllers/Admin/SettingController.php`
-- `resources/js/layouts/admin-layout.tsx`
+- `resources/js/components/app-sidebar.tsx` (modifikasi: menu admin)
 - `resources/js/pages/admin/dashboard.tsx`
 - `resources/js/pages/admin/templates/index.tsx`
 - `resources/js/pages/admin/settings/edit.tsx`
 
 ### 2. Rincian Tugas (Task List)
 
-1. **Admin Layout (`admin-layout.tsx`):** _(layout sidebar bawaan `layouts/app-layout.tsx` + `components/app-sidebar.tsx` sudah ada dari Sprint 1; extend, jangan buat dari nol)_
-    - Buat sidebar responsif dengan Tailwind CSS berisi menu: _Dashboard_, _Kelola Template_, _Preview Klien_, _Pengaturan_, dan tombol _Lihat Katalog Publik_.
+1. **Admin Layout (sidebar `app-sidebar.tsx`):** _(layout sidebar bawaan `layouts/app-layout.tsx` + `components/app-sidebar.tsx` sudah ada dari Sprint 1; extend, jangan buat dari nol)_
+    - Buat sidebar responsif dengan Tailwind CSS berisi menu: _Dashboard_, _Kelola Template_, _Pengaturan_, dan tombol _Lihat Katalog Publik_. Menu _Preview Klien_ ditambahkan di Sprint 5 saat halamannya tersedia.
 2. **Service Upload & Validasi ZIP (`TemplateArchiveService.php`):**
     - Terima file `.zip`, buka dengan `ZipArchive`.
     - **Keamanan Wajib:** Loop seluruh entry di dalam ZIP. Tolak dan batalkan jika ada nama file yang mengandung `../` atau berekstensi terlarang (`.php`, `.phtml`, `.phar`, `.sh`, `.exe`, `.bat`, `.env`, `.htaccess`).
@@ -131,9 +131,9 @@
 
 ### 4. Definition of Done (DoD)
 
-- [ ] Admin dapat klik "Generate 2 Sample Templates" dan 2 template (1 Single-Page, 1 Multi-Page) langsung muncul di daftar template beserta thumbnail-nya.
-- [ ] Admin dapat mengunggah file `.zip` template baru, menonaktifkan/mengaktifkan template, dan menghapus template beserta file fisiknya.
-- [ ] Admin dapat mengubah nomor WhatsApp di menu Pengaturan.
+- [x] Admin dapat klik "Generate 2 Sample Templates" dan 2 template (1 Single-Page, 1 Multi-Page) langsung muncul di daftar template beserta thumbnail-nya.
+- [x] Admin dapat mengunggah file `.zip` template baru, menonaktifkan/mengaktifkan template, dan menghapus template beserta file fisiknya.
+- [x] Admin dapat mengubah nomor WhatsApp di menu Pengaturan.
 
 ### 💬 Prompt untuk AI Agent (Copy-Paste untuk Mulai Sprint 2):
 

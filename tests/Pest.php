@@ -48,3 +48,44 @@ function something()
 {
     // ..
 }
+
+/**
+ * Build a temporary template ZIP file from a map of path => contents and return its path.
+ *
+ * @param  array<string, string>  $files
+ */
+function makeTemplateZip(array $files): string
+{
+    $path = tempnam(sys_get_temp_dir(), 'tpl-test-');
+    $zip = new ZipArchive;
+    $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    foreach ($files as $name => $contents) {
+        $zip->addFromString($name, $contents);
+    }
+
+    $zip->close();
+
+    return $path;
+}
+
+/**
+ * The files of a minimal valid single-page template, optionally overridden.
+ *
+ * @param  array<string, string>  $overrides
+ * @return array<string, string>
+ */
+function validTemplateFiles(array $overrides = []): array
+{
+    return array_merge([
+        'manifest.json' => json_encode([
+            'name' => 'Demo Template',
+            'type' => 'single-page',
+            'pages' => [['slug' => 'home', 'title' => 'Beranda', 'file' => 'index.html']],
+            'colors' => [['variable' => '--color-primary', 'label' => 'Warna Utama', 'default' => '#9275f7']],
+        ]),
+        'index.html' => '<html><head></head><body>Halo</body></html>',
+        'thumbnail.jpg' => 'jpeg-bytes',
+        'assets/css/style.css' => ':root { --color-primary: #9275f7; }',
+    ], $overrides);
+}

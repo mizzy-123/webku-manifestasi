@@ -1,0 +1,33 @@
+{
+    "name": "ConstructPro - Company Profile Konstruksi",
+    "type": "multi-page",
+    "description": "Company profile multi-halaman untuk kontraktor, developer properti, dan perusahaan jasa konstruksi.",
+    "pages": [
+        { "slug": "home", "title": "Beranda", "file": "index.html" },
+        { "slug": "about", "title": "Tentang Kami", "file": "about.html" },
+        { "slug": "services", "title": "Layanan", "file": "services.html" },
+        { "slug": "contact", "title": "Kontak", "file": "contact.html" }
+    ],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Utama",
+            "default": "#2563eb"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Sekunder",
+            "default": "#0f172a"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Aksen",
+            "default": "#f59e0b"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Background",
+            "default": "#ffffff"
+        }
+    ]
+}

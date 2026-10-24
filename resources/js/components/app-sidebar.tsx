@@ -1,5 +1,7 @@
 import { Link } from '@inertiajs/react';
-import { Globe, LayoutGrid } from 'lucide-react';
+import { Globe, LayoutGrid, LayoutTemplate, Settings } from 'lucide-react';
+import { index as templatesIndex } from '@/actions/App/Http/Controllers/Admin/TemplateController';
+import { edit as settingsEdit } from '@/actions/App/Http/Controllers/Admin/SettingController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -21,6 +23,16 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Kelola Template',
+        href: templatesIndex(),
+        icon: LayoutTemplate,
+    },
+    {
+        title: 'Pengaturan',
+        href: settingsEdit(),
+        icon: Settings,
     },
 ];
 

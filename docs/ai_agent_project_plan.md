@@ -50,7 +50,7 @@ Aplikasi ini adalah platform **Katalog Website (Landing Page & Company Profile)*
 
 - **Frontend Framework:** React 19 (via Inertia.js v3) + TypeScript (TSX)
 
-- **Styling (Main App, Admin Panel & Editor UI):** **Tailwind CSS v4** + shadcn/ui (Radix) + Lucide Icons, mengikuti tema brand (lihat bagian *Brand & Design System*)
+- **Styling (Main App, Admin Panel & Editor UI):** **Tailwind CSS v4** + shadcn/ui (Radix) + Lucide Icons, mengikuti tema brand (lihat bagian _Brand & Design System_)
 
 - **State Management (Editor):** Zustand (mengelola state `custom_data` lintas halaman dan status `isDirty`)
 
