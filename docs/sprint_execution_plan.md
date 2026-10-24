@@ -178,8 +178,8 @@
 
 ### 4. Definition of Done (DoD)
 
-- [ ] Halaman utama `/` menampilkan katalog template dengan filter kategori, filter tipe halaman, dan pencarian yang berfungsi mulus.
-- [ ] Membuka `/render-template/{slug}/index.html` dan `/render-template/{slug}/about.html` di browser menampilkan halaman template dengan seluruh CSS dan gambar yang termuat sempurna.
+- [x] Halaman utama `/` menampilkan katalog template dengan filter kategori, filter tipe halaman, dan pencarian yang berfungsi mulus.
+- [x] Membuka `/render-template/{slug}/index.html` dan `/render-template/{slug}/about.html` di browser menampilkan halaman template dengan seluruh CSS dan gambar yang termuat sempurna.
 
 ### 💬 Prompt untuk AI Agent (Copy-Paste untuk Mulai Sprint 3):
 
