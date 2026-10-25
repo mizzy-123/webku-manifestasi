@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreTemplateRequest;
 use App\Http\Requests\Admin\UpdateTemplateRequest;
+use App\Http\Requests\Admin\UpdateTemplateThumbnailRequest;
 use App\Models\Category;
 use App\Models\Template;
 use App\Services\SampleTemplateGeneratorService;
@@ -72,6 +73,18 @@ class TemplateController extends Controller
             'type' => 'success',
             'message' => $template->is_active ? 'Template diaktifkan.' : 'Template dinonaktifkan.',
         ]);
+
+        return back();
+    }
+
+    /**
+     * Replace the image shown on the public catalog card.
+     */
+    public function updateThumbnail(UpdateTemplateThumbnailRequest $request, Template $template, TemplateArchiveService $archiveService): RedirectResponse
+    {
+        $archiveService->replaceCatalogThumbnail($template, $request->file('thumbnail'));
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Gambar katalog berhasil diperbarui.']);
 
         return back();
     }

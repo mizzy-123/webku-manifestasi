@@ -8,6 +8,9 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\Format;
+use Intervention\Image\ImageManager;
 use Throwable;
 use ZipArchive;
 
@@ -106,6 +109,23 @@ class TemplateArchiveService
         }
 
         $template->delete();
+    }
+
+    /**
+     * Replace the catalog cover with a compressed WebP image.
+     */
+    public function replaceCatalogThumbnail(Template $template, UploadedFile $file): void
+    {
+        $contents = (string) (new ImageManager(new Driver))
+            ->decodePath($file->getRealPath())
+            ->scaleDown(width: 1600)
+            ->encodeUsingFormat(Format::WEBP, quality: 82);
+
+        $path = "{$template->storage_path}/catalog-cover.webp";
+
+        Storage::disk('public')->put($path, $contents);
+
+        $template->update(['thumbnail_path' => $path]);
     }
 
     /**

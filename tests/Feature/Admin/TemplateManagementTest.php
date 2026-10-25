@@ -78,6 +78,41 @@ test('upload requires a zip file and an existing category', function () {
     ])->assertSessionHasErrors(['file', 'category_id']);
 });
 
+test('admin can replace the catalog cover image', function () {
+    $template = Template::factory()->create();
+
+    $this->post(route('admin.templates.thumbnail', $template), [
+        'thumbnail' => UploadedFile::fake()->image('cover.png', 2000, 1250),
+    ])->assertRedirect();
+
+    $template->refresh();
+
+    expect($template->thumbnail_path)->toBe("{$template->storage_path}/catalog-cover.webp");
+    Storage::disk('public')->assertExists($template->thumbnail_path);
+
+    [$width] = getimagesizefromstring(Storage::disk('public')->get($template->thumbnail_path));
+    expect($width)->toBe(1600);
+});
+
+test('catalog cover upload rejects files that are not images', function () {
+    $template = Template::factory()->create();
+
+    $this->post(route('admin.templates.thumbnail', $template), [
+        'thumbnail' => UploadedFile::fake()->create('notes.txt', 10, 'text/plain'),
+    ])->assertSessionHasErrors('thumbnail');
+
+    expect($template->refresh()->thumbnail_path)->not->toEndWith('catalog-cover.webp');
+});
+
+test('guests cannot replace a catalog cover', function () {
+    auth()->logout();
+    $template = Template::factory()->create();
+
+    $this->post(route('admin.templates.thumbnail', $template), [
+        'thumbnail' => UploadedFile::fake()->image('cover.png'),
+    ])->assertRedirect(route('login'));
+});
+
 test('admin can toggle a template active state', function () {
     $template = Template::factory()->create();
 

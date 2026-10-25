@@ -6,6 +6,7 @@ import {
     Search,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import AppLogoIcon from '@/components/app-logo-icon';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -114,8 +115,9 @@ export default function CatalogIndex({
                     <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
                         <Link
                             href={home()}
-                            className="font-heading text-lg font-semibold text-primary"
+                            className="flex items-center gap-2 font-heading text-lg font-semibold"
                         >
+                            <AppLogoIcon className="size-9 rounded-md" />
                             {name}
                         </Link>
                         <Link
@@ -234,12 +236,14 @@ export default function CatalogIndex({
                                     key={template.id}
                                     className="group flex flex-col overflow-hidden rounded-xl border bg-card transition hover:shadow-lg"
                                 >
-                                    <img
-                                        src={template.thumbnail_url}
-                                        alt={`Thumbnail ${template.name}`}
-                                        loading="lazy"
-                                        className="aspect-[16/10] w-full border-b object-cover"
-                                    />
+                                    <div className="aspect-[16/10] overflow-hidden border-b bg-muted">
+                                        <img
+                                            src={template.thumbnail_url}
+                                            alt={`Tampilan ${template.name}`}
+                                            loading="lazy"
+                                            className="size-full object-cover transition duration-300 group-hover:scale-105"
+                                        />
+                                    </div>
                                     <div className="flex flex-1 flex-col gap-3 p-5">
                                         <div className="flex flex-wrap gap-2">
                                             <Badge variant="secondary">

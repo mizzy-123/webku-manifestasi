@@ -35,6 +35,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
     Route::name('admin.')->group(function () {
         Route::post('templates/samples', [TemplateController::class, 'generateSamples'])->name('templates.samples');
+        Route::post('templates/{template}/thumbnail', [TemplateController::class, 'updateThumbnail'])->name('templates.thumbnail');
         Route::resource('templates', TemplateController::class)->only(['index', 'store', 'update', 'destroy']);
 
         Route::get('previews', [CustomizedPreviewController::class, 'index'])->name('previews.index');

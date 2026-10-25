@@ -1,14 +1,16 @@
 import { Form, Head } from '@inertiajs/react';
-import { Download, Sparkles, Trash2, Upload } from 'lucide-react';
+import { Download, ImageUp, Sparkles, Trash2, Upload } from 'lucide-react';
 import {
     destroy,
     generateSamples,
     index,
     store,
     update,
+    updateThumbnail,
 } from '@/actions/App/Http/Controllers/Admin/TemplateController';
 import { template as exportTemplate } from '@/actions/App/Http/Controllers/Admin/WordPressExportController';
 import InputError from '@/components/input-error';
+import RupiahInput from '@/components/rupiah-input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -95,7 +97,7 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                             resetOnSuccess
                             className="grid gap-4 md:grid-cols-2"
                         >
-                            {({ processing, errors }) => (
+                            {({ processing, errors, recentlySuccessful }) => (
                                 <>
                                     <div className="grid gap-2">
                                         <Label htmlFor="file">File ZIP</Label>
@@ -139,13 +141,11 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                                         <Label htmlFor="price">
                                             Harga referensi (opsional)
                                         </Label>
-                                        <Input
+                                        <RupiahInput
                                             id="price"
-                                            type="number"
-                                            name="price"
-                                            min={0}
-                                            step="1000"
-                                            placeholder="1500000"
+                                            recentlySuccessful={
+                                                recentlySuccessful
+                                            }
                                         />
                                         <InputError message={errors.price} />
                                     </div>
@@ -229,11 +229,50 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex flex-col gap-3">
+                                    <Form
+                                        {...updateThumbnail.form(template.id)}
+                                        options={{ preserveScroll: true }}
+                                        className="grid gap-2"
+                                    >
+                                        {({ processing, errors }) => (
+                                            <>
+                                                <Label
+                                                    htmlFor={`thumbnail-${template.id}`}
+                                                >
+                                                    Gambar katalog
+                                                </Label>
+                                                <Input
+                                                    id={`thumbnail-${template.id}`}
+                                                    type="file"
+                                                    name="thumbnail"
+                                                    accept="image/jpeg,image/png,image/webp"
+                                                    required
+                                                />
+                                                <InputError
+                                                    message={errors.thumbnail}
+                                                />
+                                                <Button
+                                                    type="submit"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={processing}
+                                                    className="w-fit"
+                                                >
+                                                    {processing ? (
+                                                        <Spinner />
+                                                    ) : (
+                                                        <ImageUp />
+                                                    )}
+                                                    Ganti Gambar Katalog
+                                                </Button>
+                                            </>
+                                        )}
+                                    </Form>
                                     <p className="text-xs text-muted-foreground">
                                         {template.colors_count} warna dapat
                                         dikustomisasi
                                         {template.price !== null &&
-                                            ` Â· ${currencyFormatter.format(Number(template.price))}`}
+                                            ` · ${currencyFormatter.format(Number(template.price))}`}
                                     </p>
                                     <div className="flex gap-2">
                                         <Form
