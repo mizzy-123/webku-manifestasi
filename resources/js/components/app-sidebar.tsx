@@ -1,6 +1,13 @@
 import { Link } from '@inertiajs/react';
-import { Globe, LayoutGrid, LayoutTemplate, Settings } from 'lucide-react';
+import {
+    Globe,
+    LayoutGrid,
+    LayoutTemplate,
+    Settings,
+    Users,
+} from 'lucide-react';
 import { index as templatesIndex } from '@/actions/App/Http/Controllers/Admin/TemplateController';
+import { index as previewsIndex } from '@/actions/App/Http/Controllers/Admin/CustomizedPreviewController';
 import { edit as settingsEdit } from '@/actions/App/Http/Controllers/Admin/SettingController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -28,6 +35,11 @@ const mainNavItems: NavItem[] = [
         title: 'Kelola Template',
         href: templatesIndex(),
         icon: LayoutTemplate,
+    },
+    {
+        title: 'Preview Klien',
+        href: previewsIndex(),
+        icon: Users,
     },
     {
         title: 'Pengaturan',

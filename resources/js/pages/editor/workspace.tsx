@@ -3,13 +3,25 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import ImageEditModal from '@/components/editor/image-edit-modal';
 import LinkEditModal from '@/components/editor/link-edit-modal';
 import Topbar from '@/components/editor/topbar';
+import SaveSuccessModal from '@/components/editor/save-success-modal';
+import { usePreviewActions } from '@/hooks/use-preview-actions';
 import { cn } from '@/lib/utils';
 import { render } from '@/routes/templates';
 import { useEditorStore } from '@/stores/use-editor-store';
-import type { BridgeMessage, EditorTemplate, Viewport } from '@/types/editor';
+import type {
+    BridgeMessage,
+    CustomData,
+    EditorTemplate,
+    Viewport,
+} from '@/types/editor';
 
 type Props = {
     template: EditorTemplate;
+    preview: {
+        unique_code: string;
+        custom_data: Partial<CustomData>;
+        expires_at: string;
+    } | null;
 };
 
 const viewportWidth: Record<Viewport, string> = {
@@ -18,7 +30,15 @@ const viewportWidth: Record<Viewport, string> = {
     mobile: 'w-[390px] max-w-full',
 };
 
-export default function Workspace({ template }: Props) {
+export default function Workspace({ template, preview }: Props) {
+    const {
+        isSaving,
+        isOrdering,
+        savedPreview,
+        closeSavedPreview,
+        save,
+        order,
+    } = usePreviewActions(template.slug);
     const iframeRef = useRef<HTMLIFrameElement>(null);
 
     const init = useEditorStore((state) => state.init);
@@ -36,8 +56,12 @@ export default function Workspace({ template }: Props) {
     );
 
     useEffect(() => {
-        init(null, template.pages[0]?.slug ?? 'home');
-    }, [init, template.pages]);
+        init(
+            preview?.custom_data ?? null,
+            template.pages[0]?.slug ?? 'home',
+            preview,
+        );
+    }, [init, template.pages, preview]);
 
     const postToIframe = useCallback((message: Record<string, unknown>) => {
         iframeRef.current?.contentWindow?.postMessage(
@@ -131,7 +155,13 @@ export default function Workspace({ template }: Props) {
             <Head title={`Edit ${template.name}`} />
 
             <div className="flex h-dvh flex-col bg-muted/40">
-                <Topbar template={template} />
+                <Topbar
+                    template={template}
+                    isSaving={isSaving}
+                    isOrdering={isOrdering}
+                    onSave={save}
+                    onOrder={order}
+                />
 
                 <main className="flex min-h-0 flex-1 justify-center overflow-auto">
                     <iframe
@@ -147,6 +177,12 @@ export default function Workspace({ template }: Props) {
                 </main>
             </div>
 
+            <SaveSuccessModal
+                preview={savedPreview}
+                isOrdering={isOrdering}
+                onClose={closeSavedPreview}
+                onOrder={order}
+            />
             <ImageEditModal />
             <LinkEditModal pages={template.pages} />
         </>

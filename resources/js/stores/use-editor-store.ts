@@ -24,8 +24,19 @@ type EditorState = {
     syncVersion: number;
     /** Bumped to force the iframe to reload from scratch (used by reset). */
     reloadNonce: number;
+    /** Code of the saved link (or one reserved by an image upload). */
+    uniqueCode: string | null;
+    /** True once the preview record exists on the server, so saves must overwrite it. */
+    isSaved: boolean;
+    expiresAt: string | null;
 
-    init: (initial: Partial<CustomData> | null, firstPageSlug: string) => void;
+    init: (
+        initial: Partial<CustomData> | null,
+        firstPageSlug: string,
+        preview?: { unique_code: string; expires_at: string } | null,
+    ) => void;
+    reserveCode: (code: string) => void;
+    setSavedPreview: (code: string, expiresAt: string) => void;
     setText: (scope: EditScope, id: string, value: string) => void;
     setImage: (scope: EditScope, id: string, src: string) => void;
     setLink: (scope: EditScope, id: string, link: EditLink) => void;
@@ -83,12 +94,24 @@ export const useEditorStore = create<EditorState>()((set, get) => ({
     activeElement: null,
     syncVersion: 0,
     reloadNonce: 0,
+    uniqueCode: null,
+    isSaved: false,
+    expiresAt: null,
 
-    init: (initial, firstPageSlug) => {
+    reserveCode: (code) =>
+        set((state) => ({ uniqueCode: state.uniqueCode ?? code })),
+
+    setSavedPreview: (code, expiresAt) =>
+        set({ uniqueCode: code, isSaved: true, expiresAt, isDirty: false }),
+
+    init: (initial, firstPageSlug, preview) => {
         initialData = sanitizeCustomData(initial);
         firstPage = firstPageSlug;
 
         set({
+            uniqueCode: preview?.unique_code ?? null,
+            isSaved: preview != null,
+            expiresAt: preview?.expires_at ?? null,
             customData: initialData,
             currentPageSlug: firstPageSlug,
             isEditMode: true,

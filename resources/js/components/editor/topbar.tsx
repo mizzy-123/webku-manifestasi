@@ -2,14 +2,17 @@ import { Link } from '@inertiajs/react';
 import {
     ArrowLeft,
     Eye,
+    MessageCircle,
     Monitor,
     Pencil,
     RotateCcw,
+    Save,
     Smartphone,
     Tablet,
 } from 'lucide-react';
 import ColorPalettePopover from '@/components/editor/color-palette-popover';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import { home } from '@/routes';
 import { useEditorStore } from '@/stores/use-editor-store';
@@ -17,6 +20,10 @@ import type { EditorTemplate, Viewport } from '@/types/editor';
 
 type Props = {
     template: EditorTemplate;
+    isSaving: boolean;
+    isOrdering: boolean;
+    onSave: () => void;
+    onOrder: () => void;
 };
 
 const viewports: { value: Viewport; label: string; icon: typeof Monitor }[] = [
@@ -25,7 +32,13 @@ const viewports: { value: Viewport; label: string; icon: typeof Monitor }[] = [
     { value: 'mobile', label: 'Mobile', icon: Smartphone },
 ];
 
-export default function Topbar({ template }: Props) {
+export default function Topbar({
+    template,
+    isSaving,
+    isOrdering,
+    onSave,
+    onOrder,
+}: Props) {
     const viewport = useEditorStore((state) => state.viewport);
     const setViewport = useEditorStore((state) => state.setViewport);
     const isEditMode = useEditorStore((state) => state.isEditMode);
@@ -129,6 +142,27 @@ export default function Topbar({ template }: Props) {
                 onClick={handleReset}
             >
                 <RotateCcw />
+            </Button>
+
+            <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isSaving}
+                onClick={onSave}
+            >
+                {isSaving ? <Spinner /> : <Save />}
+                <span className="hidden lg:inline">Simpan</span>
+            </Button>
+
+            <Button
+                type="button"
+                size="sm"
+                disabled={isOrdering}
+                onClick={onOrder}
+            >
+                {isOrdering ? <Spinner /> : <MessageCircle />}
+                <span className="hidden sm:inline">Pesan Sekarang</span>
             </Button>
         </header>
     );

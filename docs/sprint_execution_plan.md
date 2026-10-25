@@ -299,10 +299,10 @@
 
 ### 4. Definition of Done (DoD)
 
-- [ ] Pengunjung dapat mengunggah logo/foto sendiri dari komputer dan gambar langsung berubah di dalam template.
-- [ ] Klik Save pertama kali menghasilkan URL `/p/{unique_code}` dan memunculkan Popup Link.
-- [ ] Membuka `/p/{unique_code}`, mengedit tulisan/gambar lagi, lalu klik Save **memperbarui link yang sama** (tidak membuat link baru).
-- [ ] Klik "Pesan Sekarang" otomatis menyimpan perubahan terakhir dan membuka WhatsApp Admin dengan link `/p/{unique_code}`.
+- [x] Pengunjung dapat mengunggah logo/foto sendiri dari komputer dan gambar langsung berubah di dalam template.
+- [x] Klik Save pertama kali menghasilkan URL `/p/{unique_code}` dan memunculkan Popup Link.
+- [x] Membuka `/p/{unique_code}`, mengedit tulisan/gambar lagi, lalu klik Save **memperbarui link yang sama** (tidak membuat link baru).
+- [x] Klik "Pesan Sekarang" otomatis menyimpan perubahan terakhir dan membuka WhatsApp Admin dengan link `/p/{unique_code}`.
 
 ### 💬 Prompt untuk AI Agent (Copy-Paste untuk Mulai Sprint 5):
 

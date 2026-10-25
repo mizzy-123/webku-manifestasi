@@ -12,10 +12,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { sanitizeUrl } from '@/lib/editor-sanitize';
+import { uploadPreviewImage } from '@/lib/preview-api';
 import { useEditorStore } from '@/stores/use-editor-store';
 
-const MAX_FILE_BYTES = 1024 * 1024;
-const ACCEPTED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+const MAX_FILE_BYTES = 2 * 1024 * 1024;
+const ACCEPTED_TYPES = [
+    'image/png',
+    'image/jpeg',
+    'image/webp',
+    'image/svg+xml',
+];
 
 export default function ImageEditModal() {
     const activeElement = useEditorStore((state) => state.activeElement);
@@ -25,6 +31,9 @@ export default function ImageEditModal() {
     const element = activeElement?.type === 'image' ? activeElement : null;
     const [src, setSrc] = useState('');
     const [error, setError] = useState<string | null>(null);
+    const [uploading, setUploading] = useState(false);
+    const uniqueCode = useEditorStore((state) => state.uniqueCode);
+    const reserveCode = useEditorStore((state) => state.reserveCode);
 
     useEffect(() => {
         setSrc(element?.src ?? '');
@@ -33,31 +42,40 @@ export default function ImageEditModal() {
 
     const close = () => setActiveElement(null);
 
-    const handleFile = (file: File | undefined) => {
+    const handleFile = async (file: File | undefined) => {
         if (!file) {
             return;
         }
 
         if (!ACCEPTED_TYPES.includes(file.type)) {
-            setError('Format gambar harus PNG, JPG, WebP, atau GIF.');
+            setError('Format gambar harus JPG, PNG, WebP, atau SVG.');
 
             return;
         }
 
         if (file.size > MAX_FILE_BYTES) {
-            setError('Ukuran gambar maksimal 1 MB.');
+            setError('Ukuran gambar maksimal 2 MB.');
 
             return;
         }
 
-        const reader = new FileReader();
-        reader.onload = () => {
-            if (typeof reader.result === 'string') {
-                setSrc(reader.result);
-                setError(null);
-            }
-        };
-        reader.readAsDataURL(file);
+        setUploading(true);
+        setError(null);
+
+        try {
+            const result = await uploadPreviewImage(file, uniqueCode);
+
+            reserveCode(result.unique_code);
+            setSrc(result.url);
+        } catch (uploadError) {
+            setError(
+                uploadError instanceof Error
+                    ? uploadError.message
+                    : 'Gagal mengunggah gambar.',
+            );
+        } finally {
+            setUploading(false);
+        }
     };
 
     const submit = (event: React.FormEvent) => {
@@ -67,7 +85,7 @@ export default function ImageEditModal() {
             return;
         }
 
-        const clean = sanitizeUrl(src, true);
+        const clean = sanitizeUrl(src);
 
         if (clean === '') {
             setError('URL gambar tidak valid.');
@@ -107,7 +125,7 @@ export default function ImageEditModal() {
 
                     <div className="grid gap-2">
                         <Label htmlFor="image-file">
-                            Unggah dari komputer (maks 1 MB)
+                            Unggah dari komputer (maks 2 MB)
                         </Label>
                         <Input
                             id="image-file"
@@ -123,7 +141,7 @@ export default function ImageEditModal() {
                         <Label htmlFor="image-url">Atau URL gambar</Label>
                         <Input
                             id="image-url"
-                            value={src.startsWith('data:') ? '' : src}
+                            value={src}
                             onChange={(event) => {
                                 setSrc(event.target.value);
                                 setError(null);
@@ -140,7 +158,7 @@ export default function ImageEditModal() {
                         <Button type="button" variant="outline" onClick={close}>
                             Batal
                         </Button>
-                        <Button type="submit">
+                        <Button type="submit" disabled={uploading}>
                             <ImageUp />
                             Terapkan
                         </Button>
