@@ -42,7 +42,8 @@ a {
     top: 0;
     z-index: 10;
     background: color-mix(in srgb, var(--color-bg) 92%, white);
-    border-bottom: 1px solid color-mix(in srgb, var(--color-secondary) 12%, transparent);
+    border-bottom: 1px solid
+        color-mix(in srgb, var(--color-secondary) 12%, transparent);
     backdrop-filter: blur(8px);
 }
 
@@ -93,7 +94,8 @@ a {
 .btn--ghost {
     background: transparent;
     color: var(--color-secondary);
-    border: 1.5px solid color-mix(in srgb, var(--color-secondary) 25%, transparent);
+    border: 1.5px solid
+        color-mix(in srgb, var(--color-secondary) 25%, transparent);
 }
 
 .hero {

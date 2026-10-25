@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TemplateController;
 use App\Http\Controllers\CatalogController;
+use App\Http\Controllers\EditorController;
 use App\Http\Controllers\TemplateRenderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [CatalogController::class, 'index'])->name('home');
 
+Route::get('editor/{template:slug}', [EditorController::class, 'show'])->name('editor.show');
 Route::get('render-template/{template:slug}/{pageFile?}', [TemplateRenderController::class, 'show'])
     ->where('pageFile', '[A-Za-z0-9._-]+')
     ->name('templates.render');

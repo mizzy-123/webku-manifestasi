@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { dashboard, home, login } from '@/routes';
+import editor from '@/routes/editor';
 
 type TemplateItem = {
     id: number;
@@ -257,13 +258,13 @@ export default function CatalogIndex({
                                             {template.description ??
                                                 'Template siap pakai dan bisa dikustomisasi.'}
                                         </p>
-                                        <a
-                                            href={`/editor/${template.slug}`}
+                                        <Link
+                                            href={editor.show(template.slug)}
                                             className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
                                         >
                                             Live Preview & Edit Sekarang
                                             <ArrowRight className="size-4" />
-                                        </a>
+                                        </Link>
                                     </div>
                                 </article>
                             ))}

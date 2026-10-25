@@ -240,10 +240,10 @@
 
 ### 4. Definition of Done (DoD)
 
-- [ ] Membuka `/editor/{slug}` menampilkan halaman template di dalam kanvas editor.
-- [ ] Klik langsung pada judul/paragraf memungkinkan edit teks secara _real-time_ tanpa kursor melompat.
-- [ ] Mengubah warna di Color Picker langsung mengubah warna tombol/background di dalam template detik itu juga.
-- [ ] Pada template Multi-Page, berpindah dari halaman _Beranda_ ke _Tentang Kami_ lewat dropdown maupun klik menu di dalam template berjalan mulus tanpa menghilangkan editan sebelumnya.
+- [x] Membuka `/editor/{slug}` menampilkan halaman template di dalam kanvas editor.
+- [x] Klik langsung pada judul/paragraf memungkinkan edit teks secara _real-time_ tanpa kursor melompat.
+- [x] Mengubah warna di Color Picker langsung mengubah warna tombol/background di dalam template detik itu juga.
+- [x] Pada template Multi-Page, berpindah dari halaman _Beranda_ ke _Tentang Kami_ lewat dropdown maupun klik menu di dalam template berjalan mulus tanpa menghilangkan editan sebelumnya.
 
 ### 💬 Prompt untuk AI Agent (Copy-Paste untuk Mulai Sprint 4):
 
