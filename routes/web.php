@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CustomizedPreviewController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TemplateController;
+use App\Http\Controllers\Admin\WordPressExportController;
 use App\Http\Controllers\Api\PreviewApiController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\EditorController;
@@ -38,6 +39,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
 
         Route::get('previews', [CustomizedPreviewController::class, 'index'])->name('previews.index');
         Route::patch('previews/{preview}/lock', [CustomizedPreviewController::class, 'toggleLock'])->name('previews.lock');
+
+        Route::get('wordpress/export', [WordPressExportController::class, 'quick'])->name('wordpress.quick');
+        Route::get('wordpress/previews/{preview:unique_code}', [WordPressExportController::class, 'preview'])->name('wordpress.preview');
+        Route::get('wordpress/templates/{template}', [WordPressExportController::class, 'template'])->name('wordpress.template');
 
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');

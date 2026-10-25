@@ -1,6 +1,7 @@
 import { Head, router } from '@inertiajs/react';
-import { Lock, LockOpen } from 'lucide-react';
+import { Download, Lock, LockOpen } from 'lucide-react';
 import { toggleLock } from '@/actions/App/Http/Controllers/Admin/CustomizedPreviewController';
+import { preview as exportPreview } from '@/actions/App/Http/Controllers/Admin/WordPressExportController';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -129,7 +130,21 @@ export default function PreviewsIndex({ previews }: Props) {
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="p-3 text-right">
+                                        <td className="flex justify-end gap-2 p-3">
+                                            <Button
+                                                asChild
+                                                size="sm"
+                                                variant="outline"
+                                            >
+                                                <a
+                                                    href={exportPreview.url(
+                                                        preview.unique_code,
+                                                    )}
+                                                >
+                                                    <Download />
+                                                    Export WP (.zip)
+                                                </a>
+                                            </Button>
                                             <Button
                                                 type="button"
                                                 size="sm"

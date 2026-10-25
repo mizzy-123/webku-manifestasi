@@ -1,5 +1,5 @@
 import { Form, Head } from '@inertiajs/react';
-import { Sparkles, Trash2, Upload } from 'lucide-react';
+import { Download, Sparkles, Trash2, Upload } from 'lucide-react';
 import {
     destroy,
     generateSamples,
@@ -7,6 +7,7 @@ import {
     store,
     update,
 } from '@/actions/App/Http/Controllers/Admin/TemplateController';
+import { template as exportTemplate } from '@/actions/App/Http/Controllers/Admin/WordPressExportController';
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -232,7 +233,7 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                                         {template.colors_count} warna dapat
                                         dikustomisasi
                                         {template.price !== null &&
-                                            ` · ${currencyFormatter.format(Number(template.price))}`}
+                                            ` Â· ${currencyFormatter.format(Number(template.price))}`}
                                     </p>
                                     <div className="flex gap-2">
                                         <Form
@@ -263,6 +264,20 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                                                 </>
                                             )}
                                         </Form>
+                                        <Button
+                                            asChild
+                                            variant="outline"
+                                            size="sm"
+                                        >
+                                            <a
+                                                href={exportTemplate.url(
+                                                    template.id,
+                                                )}
+                                            >
+                                                <Download />
+                                                Export WP (.zip)
+                                            </a>
+                                        </Button>
                                         <Form
                                             {...destroy.form(template.id)}
                                             options={{ preserveScroll: true }}

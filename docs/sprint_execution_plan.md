@@ -374,10 +374,10 @@
 
 ### 4. Definition of Done (DoD)
 
-- [ ] Admin dapat mem-_paste_ URL `/p/{unique_code}` di Dashboard dan langsung mengunduh file `.zip` Tema WordPress.
-- [ ] File `.zip` hasil export memiliki `style.css`, `functions.php`, `index.php`, `front-page.php`, `page-{slug}.php`, `screenshot.png`, dan folder `assets/custom-uploads/` berisi gambar yang diunggah klien.
-- [ ] Kode PHP di dalam file hasil export bersih, tidak ada `&lt;?php` yang ter-escape secara salah, dan siap langsung diaktifkan di WordPress.
-- [ ] Perintah `php artisan previews:cleanup` berjalan lancar menghapus preview yang sudah melewati `expires_at` dan tidak dikunci Admin.
+- [x] Admin dapat mem-_paste_ URL `/p/{unique_code}` di Dashboard dan langsung mengunduh file `.zip` Tema WordPress.
+- [x] File `.zip` hasil export memiliki `style.css`, `functions.php`, `index.php`, `front-page.php`, `page-{slug}.php`, `screenshot.png`, dan folder `assets/custom-uploads/` berisi gambar yang diunggah klien.
+- [x] Kode PHP di dalam file hasil export bersih, tidak ada `&lt;?php` yang ter-escape secara salah, dan siap langsung diaktifkan di WordPress.
+- [x] Perintah `php artisan previews:cleanup` berjalan lancar menghapus preview yang sudah melewati `expires_at` dan tidak dikunci Admin.
 
 ### 💬 Prompt untuk AI Agent (Copy-Paste untuk Mulai Sprint 6):
 

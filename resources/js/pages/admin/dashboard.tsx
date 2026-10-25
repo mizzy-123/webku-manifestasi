@@ -1,11 +1,14 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import {
+    Download,
     FolderOpen,
     LayoutTemplate,
     Link2,
     MessageCircle,
     type LucideIcon,
 } from 'lucide-react';
+import { quick as quickExport } from '@/actions/App/Http/Controllers/Admin/WordPressExportController';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -13,6 +16,8 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { dashboard } from '@/routes';
 
 type Stats = {
@@ -46,6 +51,7 @@ const dateFormatter = new Intl.DateTimeFormat('id-ID', {
 });
 
 export default function AdminDashboard({ stats, recentOrders }: Props) {
+    const { errors } = usePage<{ errors: Record<string, string> }>().props;
     const cards: StatCard[] = [
         {
             title: 'Total Template',
@@ -87,6 +93,54 @@ export default function AdminDashboard({ stats, recentOrders }: Props) {
                     ))}
                 </div>
 
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Quick Export to WordPress Theme</CardTitle>
+                        <CardDescription>
+                            Paste URL preview klien (atau kodenya) untuk
+                            mengunduh tema WordPress siap pasang.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        {/* Plain GET form on purpose: the response is a file download, not an Inertia page. */}
+                        <form
+                            method="get"
+                            action={quickExport.url()}
+                            className="grid gap-4 md:grid-cols-[2fr_1fr_auto] md:items-end"
+                        >
+                            <div className="grid gap-2">
+                                <Label htmlFor="export-source">
+                                    URL atau kode preview
+                                </Label>
+                                <Input
+                                    id="export-source"
+                                    name="source"
+                                    required
+                                    placeholder="https://domain.com/p/k9Xm2pL8qR"
+                                />
+                                {errors.source && (
+                                    <p className="text-sm text-destructive">
+                                        {errors.source}
+                                    </p>
+                                )}
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="export-theme-name">
+                                    Nama tema (opsional)
+                                </Label>
+                                <Input
+                                    id="export-theme-name"
+                                    name="theme_name"
+                                    maxLength={100}
+                                />
+                            </div>
+                            <Button type="submit">
+                                <Download />
+                                Download WordPress Theme (.zip)
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
                 <Card>
                     <CardHeader>
                         <CardTitle>

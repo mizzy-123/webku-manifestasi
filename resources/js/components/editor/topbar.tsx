@@ -1,6 +1,7 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     ArrowLeft,
+    Download,
     Eye,
     MessageCircle,
     Monitor,
@@ -10,6 +11,7 @@ import {
     Smartphone,
     Tablet,
 } from 'lucide-react';
+import { preview as exportPreview } from '@/actions/App/Http/Controllers/Admin/WordPressExportController';
 import ColorPalettePopover from '@/components/editor/color-palette-popover';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
@@ -47,6 +49,9 @@ export default function Topbar({
     const setCurrentPage = useEditorStore((state) => state.setCurrentPage);
     const isDirty = useEditorStore((state) => state.isDirty);
     const reset = useEditorStore((state) => state.reset);
+    const uniqueCode = useEditorStore((state) => state.uniqueCode);
+    const isSaved = useEditorStore((state) => state.isSaved);
+    const { auth } = usePage<{ auth: { user: object | null } }>().props;
 
     const handleReset = () => {
         if (
@@ -143,6 +148,20 @@ export default function Topbar({
             >
                 <RotateCcw />
             </Button>
+
+            {auth.user && isSaved && uniqueCode && (
+                <Button asChild variant="outline" size="sm">
+                    <a
+                        href={exportPreview.url(uniqueCode)}
+                        title="Export versi yang terakhir disimpan"
+                    >
+                        <Download />
+                        <span className="hidden xl:inline">
+                            Export WP (.zip)
+                        </span>
+                    </a>
+                </Button>
+            )}
 
             <Button
                 type="button"
