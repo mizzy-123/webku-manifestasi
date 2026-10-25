@@ -1,0 +1,28 @@
+{
+    "name": "Warung Kopi Senja - Landing Page Percobaan",
+    "type": "single-page",
+    "description": "Template percobaan satu halaman untuk kafe atau warung kopi. Siap di-zip lalu diunggah lewat dashboard admin.",
+    "pages": [{ "slug": "home", "title": "Beranda", "file": "index.html" }],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Utama",
+            "default": "#6f4e37"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Sekunder",
+            "default": "#2c1810"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Aksen",
+            "default": "#e8a87c"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Background",
+            "default": "#fbf7f2"
+        }
+    ]
+}
