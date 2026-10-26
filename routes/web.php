@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomizedPreviewController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\SettingController;
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
 
     Route::name('admin.')->group(function () {
+        Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+
         Route::post('templates/samples', [TemplateController::class, 'generateSamples'])->name('templates.samples');
         Route::post('templates/{template}/thumbnail', [TemplateController::class, 'updateThumbnail'])->name('templates.thumbnail');
         Route::resource('templates', TemplateController::class)->only(['index', 'store', 'update', 'destroy']);

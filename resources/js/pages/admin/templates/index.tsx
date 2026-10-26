@@ -196,7 +196,7 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                                 <img
                                     src={template.thumbnail_url}
                                     alt={`Thumbnail ${template.name}`}
-                                    className="aspect-[16/10] w-full border-b object-cover"
+                                    className="aspect-[16/9] w-full border-b bg-muted object-contain"
                                 />
                                 <CardHeader>
                                     <div className="flex flex-wrap items-center gap-2">

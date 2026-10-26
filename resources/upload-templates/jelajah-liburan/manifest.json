@@ -1,0 +1,28 @@
+{
+    "name": "Jelajah - Landing Page Liburan",
+    "type": "single-page",
+    "description": "Landing page perjalanan ke luar negeri: hero foto, destinasi, tur populer, dan langkah pemesanan tiket.",
+    "pages": [{ "slug": "home", "title": "Beranda", "file": "index.html" }],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Utama",
+            "default": "#1c3a28"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Teks",
+            "default": "#1a1c19"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Aksen",
+            "default": "#3d6b4f"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Background",
+            "default": "#f4f3f0"
+        }
+    ]
+}

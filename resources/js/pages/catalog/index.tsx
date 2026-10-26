@@ -236,12 +236,12 @@ export default function CatalogIndex({
                                     key={template.id}
                                     className="group flex flex-col overflow-hidden rounded-xl border bg-card transition hover:shadow-lg"
                                 >
-                                    <div className="aspect-[16/10] overflow-hidden border-b bg-muted">
+                                    <div className="flex aspect-[16/9] items-center justify-center overflow-hidden border-b bg-muted">
                                         <img
                                             src={template.thumbnail_url}
                                             alt={`Tampilan ${template.name}`}
                                             loading="lazy"
-                                            className="size-full object-cover transition duration-300 group-hover:scale-105"
+                                            className="max-h-full max-w-full object-contain"
                                         />
                                     </div>
                                     <div className="flex flex-1 flex-col gap-3 p-5">

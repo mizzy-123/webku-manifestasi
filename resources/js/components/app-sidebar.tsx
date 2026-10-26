@@ -1,11 +1,13 @@
 import { Link } from '@inertiajs/react';
 import {
+    FolderOpen,
     Globe,
     LayoutGrid,
     LayoutTemplate,
     Settings,
     Users,
 } from 'lucide-react';
+import { index as categoriesIndex } from '@/actions/App/Http/Controllers/Admin/CategoryController';
 import { index as templatesIndex } from '@/actions/App/Http/Controllers/Admin/TemplateController';
 import { index as previewsIndex } from '@/actions/App/Http/Controllers/Admin/CustomizedPreviewController';
 import { edit as settingsEdit } from '@/actions/App/Http/Controllers/Admin/SettingController';
@@ -35,6 +37,11 @@ const mainNavItems: NavItem[] = [
         title: 'Kelola Template',
         href: templatesIndex(),
         icon: LayoutTemplate,
+    },
+    {
+        title: 'Kategori',
+        href: categoriesIndex(),
+        icon: FolderOpen,
     },
     {
         title: 'Preview Klien',

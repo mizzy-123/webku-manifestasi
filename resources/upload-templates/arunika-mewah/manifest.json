@@ -1,0 +1,28 @@
+{
+    "name": "Arunika - Landing Page Perjalanan Mewah",
+    "type": "single-page",
+    "description": "Landing page perjalanan mewah: hero layar penuh, pilihan pengalaman, alasan memilih, dan destinasi unggulan.",
+    "pages": [{ "slug": "home", "title": "Beranda", "file": "index.html" }],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Utama",
+            "default": "#1b1b1b"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Teks",
+            "default": "#1a1a1a"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Aksen",
+            "default": "#2f4f43"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Background",
+            "default": "#f3f2ef"
+        }
+    ]
+}
