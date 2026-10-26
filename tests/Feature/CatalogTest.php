@@ -4,7 +4,7 @@ use App\Models\Category;
 use App\Models\Template;
 
 test('catalog only lists active templates', function () {
-    $active = Template::factory()->create();
+    $active = Template::factory()->create(['price' => 1500000]);
     Template::factory()->inactive()->create();
 
     $this->get(route('home'))
@@ -14,6 +14,7 @@ test('catalog only lists active templates', function () {
             ->has('templates', 1)
             ->where('templates.0.id', $active->id)
             ->where('templates.0.thumbnail_url', '/storage/'.$active->thumbnail_path)
+            ->where('templates.0.price', '1500000.00')
             ->where('filters', ['category' => '', 'type' => '', 'search' => '']));
 });
 

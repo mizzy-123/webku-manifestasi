@@ -50,6 +50,7 @@ class CatalogController extends Controller
                 'category' => $template->category->name,
                 'thumbnail_url' => '/storage/'.$template->thumbnail_path,
                 'pages_count' => count($template->manifest_data['pages'] ?? []),
+                'price' => $template->price,
             ]);
 
         return Inertia::render('catalog/index', [

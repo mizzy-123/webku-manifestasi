@@ -10,7 +10,7 @@ import AppLogoIcon from '@/components/app-logo-icon';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-import { dashboard, home, login } from '@/routes';
+import { dashboard, home } from '@/routes';
 import editor from '@/routes/editor';
 
 type TemplateItem = {
@@ -22,6 +22,7 @@ type TemplateItem = {
     category: string;
     thumbnail_url: string;
     pages_count: number;
+    price: string | null;
 };
 
 type Category = {
@@ -65,6 +66,12 @@ const typeOptions = [
     { value: 'single-page', label: 'Single-Page' },
     { value: 'multi-page', label: 'Multi-Page' },
 ];
+
+const currencyFormatter = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0,
+});
 
 export default function CatalogIndex({
     templates,
@@ -120,12 +127,14 @@ export default function CatalogIndex({
                             <AppLogoIcon className="size-9 rounded-md" />
                             {name}
                         </Link>
-                        <Link
-                            href={auth.user ? dashboard() : login()}
-                            className="rounded-lg border px-4 py-2 text-sm font-medium transition hover:bg-accent"
-                        >
-                            {auth.user ? 'Dashboard' : 'Login Admin'}
-                        </Link>
+                        {auth.user && (
+                            <Link
+                                href={dashboard()}
+                                className="rounded-lg border px-4 py-2 text-sm font-medium transition hover:bg-accent"
+                            >
+                                Dashboard
+                            </Link>
+                        )}
                     </div>
                 </header>
 
@@ -262,6 +271,13 @@ export default function CatalogIndex({
                                             {template.description ??
                                                 'Template siap pakai dan bisa dikustomisasi.'}
                                         </p>
+                                        {template.price !== null && (
+                                            <p className="text-lg font-semibold">
+                                                {currencyFormatter.format(
+                                                    Number(template.price),
+                                                )}
+                                            </p>
+                                        )}
                                         <Link
                                             href={editor.show(template.slug)}
                                             className="mt-auto inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition hover:opacity-90"
