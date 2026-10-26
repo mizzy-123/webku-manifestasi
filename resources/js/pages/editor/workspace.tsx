@@ -1,9 +1,12 @@
 import { Head } from '@inertiajs/react';
+import { MessageCircle } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import ImageEditModal from '@/components/editor/image-edit-modal';
 import LinkEditModal from '@/components/editor/link-edit-modal';
-import Topbar from '@/components/editor/topbar';
 import SaveSuccessModal from '@/components/editor/save-success-modal';
+import Topbar from '@/components/editor/topbar';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { usePreviewActions } from '@/hooks/use-preview-actions';
 import { cn } from '@/lib/utils';
 import { render } from '@/routes/templates';
@@ -176,6 +179,17 @@ export default function Workspace({ template, preview }: Props) {
                     />
                 </main>
             </div>
+
+            <Button
+                type="button"
+                size="lg"
+                disabled={isOrdering}
+                onClick={order}
+                className="fixed right-5 bottom-5 z-40 h-12 rounded-full px-5 shadow-lg"
+            >
+                {isOrdering ? <Spinner /> : <MessageCircle />}
+                Pesan Sekarang
+            </Button>
 
             <SaveSuccessModal
                 preview={savedPreview}

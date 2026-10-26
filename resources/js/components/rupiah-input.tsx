@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 type Props = {
     id: string;
     name?: string;
+    value?: string | number | null;
     recentlySuccessful?: boolean;
 };
 
@@ -24,9 +25,10 @@ export function formatRupiah(digits: string): string {
 export default function RupiahInput({
     id,
     name = 'price',
+    value = null,
     recentlySuccessful = false,
 }: Props) {
-    const [digits, setDigits] = useState('');
+    const [digits, setDigits] = useState(digitsFrom(value));
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -100,4 +102,16 @@ function caretAfterDigits(formatted: string, digitCount: number): number {
     }
 
     return formatted.length;
+}
+
+function digitsFrom(value: string | number | null): string {
+    if (value === null || value === '') {
+        return '';
+    }
+
+    return String(value)
+        .split('.')[0]
+        .replace(/\D/g, '')
+        .replace(/^0+(?=\d)/, '')
+        .slice(0, MAX_DIGITS);
 }

@@ -1,62 +1,66 @@
-const buttons = document.querySelectorAll("[data-filter]");
-const cards = document.querySelectorAll("[data-kind]");
-const searchable = document.querySelectorAll("[data-search]");
-const openSearch = document.querySelector("#open-search");
-const closeSearch = document.querySelector("#close-search");
-const panel = document.querySelector("#search-panel");
-const input = document.querySelector("#search-input");
-const list = document.querySelector(".search__list");
-const hint = document.querySelector(".search__hint");
-const empty = document.querySelector(".search__empty");
-const form = document.querySelector(".search__form");
-const openMenu = document.querySelector("#open-menu");
-const drawer = document.querySelector("#site-drawer");
+const buttons = document.querySelectorAll('[data-filter]');
+const cards = document.querySelectorAll('[data-kind]');
+const searchable = document.querySelectorAll('[data-search]');
+const openSearch = document.querySelector('#open-search');
+const closeSearch = document.querySelector('#close-search');
+const panel = document.querySelector('#search-panel');
+const input = document.querySelector('#search-input');
+const list = document.querySelector('.search__list');
+const hint = document.querySelector('.search__hint');
+const empty = document.querySelector('.search__empty');
+const form = document.querySelector('.search__form');
+const openMenu = document.querySelector('#open-menu');
+const drawer = document.querySelector('#site-drawer');
 
 buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-        applyFilter(button.getAttribute("data-filter"));
+    button.addEventListener('click', () => {
+        applyFilter(button.getAttribute('data-filter'));
     });
 });
 
 function applyFilter(value) {
     buttons.forEach((item) => {
-        item.classList.toggle("is-active", item.getAttribute("data-filter") === value);
+        item.classList.toggle(
+            'is-active',
+            item.getAttribute('data-filter') === value,
+        );
     });
 
     cards.forEach((card) => {
-        const match = value === "semua" || card.getAttribute("data-kind") === value;
+        const match =
+            value === 'semua' || card.getAttribute('data-kind') === value;
         card.hidden = !match;
     });
 }
 
 function closeMenu() {
     drawer.hidden = true;
-    openMenu.setAttribute("aria-expanded", "false");
+    openMenu.setAttribute('aria-expanded', 'false');
 }
 
 function openMenuPanel() {
     closePanel();
     drawer.hidden = false;
-    openMenu.setAttribute("aria-expanded", "true");
+    openMenu.setAttribute('aria-expanded', 'true');
 }
 
 function openPanel() {
     closeMenu();
     panel.hidden = false;
-    openSearch.setAttribute("aria-expanded", "true");
+    openSearch.setAttribute('aria-expanded', 'true');
     input.focus();
     renderResults(input.value);
 }
 
 function closePanel() {
     panel.hidden = true;
-    openSearch.setAttribute("aria-expanded", "false");
+    openSearch.setAttribute('aria-expanded', 'false');
 }
 
 function labelOf(element) {
-    const heading = element.querySelector("h2, h3");
+    const heading = element.querySelector('h2, h3');
 
-    return heading ? heading.textContent.trim() : "";
+    return heading ? heading.textContent.trim() : '';
 }
 
 function matches(element, query) {
@@ -67,7 +71,7 @@ function renderResults(rawQuery) {
     const query = rawQuery.trim().toLowerCase();
     list.replaceChildren();
 
-    if (query === "") {
+    if (query === '') {
         hint.hidden = false;
         empty.hidden = true;
 
@@ -79,11 +83,11 @@ function renderResults(rawQuery) {
     empty.hidden = found.length > 0;
 
     found.forEach((element) => {
-        const item = document.createElement("li");
-        const choice = document.createElement("button");
-        choice.type = "button";
+        const item = document.createElement('li');
+        const choice = document.createElement('button');
+        choice.type = 'button';
         choice.textContent = labelOf(element);
-        choice.addEventListener("click", () => {
+        choice.addEventListener('click', () => {
             goTo(element);
         });
         item.append(choice);
@@ -92,12 +96,12 @@ function renderResults(rawQuery) {
 }
 
 function goTo(element) {
-    applyFilter("semua");
+    applyFilter('semua');
     closePanel();
-    element.scrollIntoView({ behavior: "smooth", block: "center" });
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-openSearch.addEventListener("click", () => {
+openSearch.addEventListener('click', () => {
     if (panel.hidden) {
         openPanel();
     } else {
@@ -105,23 +109,25 @@ openSearch.addEventListener("click", () => {
     }
 });
 
-closeSearch.addEventListener("click", closePanel);
+closeSearch.addEventListener('click', closePanel);
 
-input.addEventListener("input", () => {
+input.addEventListener('input', () => {
     renderResults(input.value);
 });
 
-form.addEventListener("submit", (event) => {
+form.addEventListener('submit', (event) => {
     event.preventDefault();
     const query = input.value.trim().toLowerCase();
-    const first = [...searchable].find((element) => query !== "" && matches(element, query));
+    const first = [...searchable].find(
+        (element) => query !== '' && matches(element, query),
+    );
 
     if (first) {
         goTo(first);
     }
 });
 
-openMenu.addEventListener("click", () => {
+openMenu.addEventListener('click', () => {
     if (drawer.hidden) {
         openMenuPanel();
     } else {
@@ -129,20 +135,20 @@ openMenu.addEventListener("click", () => {
     }
 });
 
-drawer.addEventListener("click", (event) => {
+drawer.addEventListener('click', (event) => {
     const target = event.target;
 
     if (!(target instanceof Element)) {
         return;
     }
 
-    if (target.closest("[data-close-menu], a")) {
+    if (target.closest('[data-close-menu], a')) {
         closeMenu();
     }
 });
 
-document.addEventListener("keydown", (event) => {
-    if (event.key !== "Escape") {
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') {
         return;
     }
 
@@ -155,14 +161,18 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-document.addEventListener("click", (event) => {
+document.addEventListener('click', (event) => {
     if (panel.hidden) {
         return;
     }
 
     const target = event.target;
 
-    if (target instanceof Node && !panel.contains(target) && !openSearch.contains(target)) {
+    if (
+        target instanceof Node &&
+        !panel.contains(target) &&
+        !openSearch.contains(target)
+    ) {
         closePanel();
     }
 });

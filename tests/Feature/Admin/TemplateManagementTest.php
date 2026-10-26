@@ -13,9 +13,14 @@ beforeEach(function () {
 
 test('guests cannot access template management', function () {
     auth()->logout();
+    $template = Template::factory()->create();
 
     $this->get(route('admin.templates.index'))->assertRedirect(route('login'));
     $this->post(route('admin.templates.samples'))->assertRedirect(route('login'));
+    $this->put(route('admin.templates.details', $template), [
+        'category_id' => $template->category_id,
+        'price' => 1000,
+    ])->assertRedirect(route('login'));
 });
 
 test('template index lists templates with categories', function () {
@@ -30,7 +35,47 @@ test('template index lists templates with categories', function () {
             ->where('templates.0.id', $template->id)
             ->where('templates.0.pages_count', 2)
             ->where('templates.0.thumbnail_url', '/storage/'.$template->thumbnail_path)
-            ->has('categories', 2));
+            ->has('categories', 2)
+            ->where('filters', ['category' => '', 'type' => '', 'status' => '', 'search' => '']));
+});
+
+test('admin template list can be searched and filtered', function () {
+    $landing = Category::factory()->create(['name' => 'Landing']);
+    $profile = Category::factory()->create(['name' => 'Profile']);
+    $byName = Template::factory()->for($landing)->create(['name' => 'Kopi Senja', 'description' => 'Cafe']);
+    $byDescription = Template::factory()->for($profile)->inactive()->create(['name' => 'Alpha', 'description' => 'Untuk restoran kopi']);
+    Template::factory()->for($profile)->multiPage()->create(['name' => 'Beta', 'description' => 'Konstruksi']);
+
+    $this->get(route('admin.templates.index', ['search' => 'kopi']))
+        ->assertInertia(fn ($page) => $page
+            ->has('templates', 2)
+            ->where('templates.0.id', $byDescription->id)
+            ->where('templates.1.id', $byName->id)
+            ->where('filters.search', 'kopi'));
+
+    $this->get(route('admin.templates.index', ['search' => '%']))
+        ->assertInertia(fn ($page) => $page->has('templates', 0));
+
+    $this->get(route('admin.templates.index', ['category' => $landing->id]))
+        ->assertInertia(fn ($page) => $page
+            ->has('templates', 1)
+            ->where('templates.0.id', $byName->id)
+            ->where('filters.category', (string) $landing->id));
+
+    $this->get(route('admin.templates.index', ['type' => 'multi-page']))
+        ->assertInertia(fn ($page) => $page->has('templates', 1)->where('filters.type', 'multi-page'));
+
+    $this->get(route('admin.templates.index', ['status' => 'inactive']))
+        ->assertInertia(fn ($page) => $page
+            ->has('templates', 1)
+            ->where('templates.0.id', $byDescription->id));
+
+    $this->get(route('admin.templates.index', ['type' => 'bogus', 'status' => 'nope', 'category' => 999999]))
+        ->assertInertia(fn ($page) => $page
+            ->has('templates', 3)
+            ->where('filters.type', '')
+            ->where('filters.status', '')
+            ->where('filters.category', ''));
 });
 
 test('admin can upload a template zip', function () {
@@ -111,6 +156,39 @@ test('guests cannot replace a catalog cover', function () {
     $this->post(route('admin.templates.thumbnail', $template), [
         'thumbnail' => UploadedFile::fake()->image('cover.png'),
     ])->assertRedirect(route('login'));
+});
+
+test('admin can change a template category and price', function () {
+    $template = Template::factory()->create(['price' => 500000]);
+    $category = Category::factory()->create();
+
+    $this->put(route('admin.templates.details', $template), [
+        'category_id' => $category->id,
+        'price' => 2500000,
+    ])->assertRedirect();
+
+    expect($template->refresh()->category_id)->toBe($category->id)
+        ->and($template->price)->toBe('2500000.00');
+});
+
+test('clearing the price removes it', function () {
+    $template = Template::factory()->create(['price' => 500000]);
+
+    $this->put(route('admin.templates.details', $template), [
+        'category_id' => $template->category_id,
+        'price' => '',
+    ])->assertRedirect();
+
+    expect($template->refresh()->price)->toBeNull();
+});
+
+test('template details reject an unknown category', function () {
+    $template = Template::factory()->create();
+
+    $this->put(route('admin.templates.details', $template), [
+        'category_id' => 999999,
+        'price' => 1000,
+    ])->assertSessionHasErrors('category_id');
 });
 
 test('admin can toggle a template active state', function () {

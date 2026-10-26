@@ -1,11 +1,20 @@
-import { Form, Head } from '@inertiajs/react';
-import { Download, ImageUp, Sparkles, Trash2, Upload } from 'lucide-react';
+import { Form, Head, router } from '@inertiajs/react';
+import {
+    Download,
+    ImageUp,
+    Search,
+    Sparkles,
+    Trash2,
+    Upload,
+} from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import {
     destroy,
     generateSamples,
     index,
     store,
     update,
+    updateDetails,
     updateThumbnail,
 } from '@/actions/App/Http/Controllers/Admin/TemplateController';
 import { template as exportTemplate } from '@/actions/App/Http/Controllers/Admin/WordPressExportController';
@@ -31,6 +40,7 @@ type TemplateItem = {
     type: 'single-page' | 'multi-page';
     description: string | null;
     category: string;
+    category_id: number;
     thumbnail_url: string;
     pages_count: number;
     colors_count: number;
@@ -43,9 +53,17 @@ type Category = {
     name: string;
 };
 
+type Filters = {
+    category: string;
+    type: string;
+    status: string;
+    search: string;
+};
+
 type Props = {
     templates: TemplateItem[];
     categories: Category[];
+    filters: Filters;
 };
 
 const currencyFormatter = new Intl.NumberFormat('id-ID', {
@@ -54,7 +72,52 @@ const currencyFormatter = new Intl.NumberFormat('id-ID', {
     maximumFractionDigits: 0,
 });
 
-export default function TemplatesIndex({ templates, categories }: Props) {
+const selectClassName =
+    'h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
+
+export default function TemplatesIndex({
+    templates,
+    categories,
+    filters,
+}: Props) {
+    const [search, setSearch] = useState(filters.search);
+    const latestFilters = useRef(filters);
+
+    latestFilters.current = filters;
+
+    const applyFilters = (next: Partial<Filters>) => {
+        const merged = { ...latestFilters.current, ...next };
+
+        router.get(
+            index.url(),
+            Object.fromEntries(
+                Object.entries(merged).filter(([, value]) => value !== ''),
+            ),
+            {
+                preserveState: true,
+                preserveScroll: true,
+                replace: true,
+                only: ['templates', 'filters'],
+            },
+        );
+    };
+
+    useEffect(() => {
+        if (search === latestFilters.current.search) {
+            return;
+        }
+
+        const timeout = setTimeout(() => applyFilters({ search }), 300);
+
+        return () => clearTimeout(timeout);
+    }, [search]);
+
+    const hasFilters =
+        filters.category !== '' ||
+        filters.type !== '' ||
+        filters.status !== '' ||
+        filters.search !== '';
+
     return (
         <>
             <Head title="Kelola Template" />
@@ -182,11 +245,65 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                     </CardContent>
                 </Card>
 
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1.4fr)_repeat(3,minmax(0,1fr))]">
+                    <div className="relative">
+                        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            value={search}
+                            onChange={(event) => setSearch(event.target.value)}
+                            placeholder="Cari nama atau deskripsi..."
+                            aria-label="Cari template"
+                            className="pl-9"
+                        />
+                    </div>
+                    <select
+                        aria-label="Filter kategori"
+                        value={filters.category}
+                        onChange={(event) =>
+                            applyFilters({ category: event.target.value })
+                        }
+                        className={selectClassName}
+                    >
+                        <option value="">Semua kategori</option>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>
+                        ))}
+                    </select>
+                    <select
+                        aria-label="Filter tipe"
+                        value={filters.type}
+                        onChange={(event) =>
+                            applyFilters({ type: event.target.value })
+                        }
+                        className={selectClassName}
+                    >
+                        <option value="">Semua tipe</option>
+                        <option value="single-page">Single-Page</option>
+                        <option value="multi-page">Multi-Page</option>
+                    </select>
+                    <select
+                        aria-label="Filter status"
+                        value={filters.status}
+                        onChange={(event) =>
+                            applyFilters({ status: event.target.value })
+                        }
+                        className={selectClassName}
+                    >
+                        <option value="">Semua status</option>
+                        <option value="active">Aktif</option>
+                        <option value="inactive">Nonaktif</option>
+                    </select>
+                </div>
+
                 {templates.length === 0 ? (
                     <Card>
                         <CardContent className="py-10 text-center text-sm text-muted-foreground">
-                            Belum ada template. Klik "Generate 2 Sample
-                            Templates" atau unggah file ZIP.
+                            {hasFilters
+                                ? 'Tidak ada template yang cocok dengan pencarian atau filter.'
+                                : 'Belum ada template. Klik "Generate 2 Sample Templates" atau unggah file ZIP.'}
                         </CardContent>
                     </Card>
                 ) : (
@@ -264,6 +381,78 @@ export default function TemplatesIndex({ templates, categories }: Props) {
                                                         <ImageUp />
                                                     )}
                                                     Ganti Gambar Katalog
+                                                </Button>
+                                            </>
+                                        )}
+                                    </Form>
+                                    <Form
+                                        key={`${template.id}-${template.category_id}-${template.price ?? ''}`}
+                                        {...updateDetails.form(template.id)}
+                                        options={{ preserveScroll: true }}
+                                        className="grid gap-2"
+                                    >
+                                        {({ processing, errors }) => (
+                                            <>
+                                                <div className="grid gap-2">
+                                                    <Label
+                                                        htmlFor={`category-${template.id}`}
+                                                    >
+                                                        Kategori
+                                                    </Label>
+                                                    <select
+                                                        id={`category-${template.id}`}
+                                                        name="category_id"
+                                                        defaultValue={
+                                                            template.category_id
+                                                        }
+                                                        className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm shadow-xs outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                                                    >
+                                                        {categories.map(
+                                                            (category) => (
+                                                                <option
+                                                                    key={
+                                                                        category.id
+                                                                    }
+                                                                    value={
+                                                                        category.id
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        category.name
+                                                                    }
+                                                                </option>
+                                                            ),
+                                                        )}
+                                                    </select>
+                                                    <InputError
+                                                        message={
+                                                            errors.category_id
+                                                        }
+                                                    />
+                                                </div>
+                                                <div className="grid gap-2">
+                                                    <Label
+                                                        htmlFor={`price-${template.id}`}
+                                                    >
+                                                        Harga referensi
+                                                    </Label>
+                                                    <RupiahInput
+                                                        id={`price-${template.id}`}
+                                                        value={template.price}
+                                                    />
+                                                    <InputError
+                                                        message={errors.price}
+                                                    />
+                                                </div>
+                                                <Button
+                                                    type="submit"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    disabled={processing}
+                                                    className="w-fit"
+                                                >
+                                                    {processing && <Spinner />}
+                                                    Simpan Kategori & Harga
                                                 </Button>
                                             </>
                                         )}

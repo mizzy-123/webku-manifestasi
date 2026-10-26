@@ -99,13 +99,13 @@ php -d extension=pdo_sqlite -d extension=sqlite3 vendor/bin/pest
 
 Registrasi publik dimatikan. Hanya akun yang sudah ada yang bisa masuk lewat `/login`.
 
-| Menu | Fungsi |
-| --- | --- |
-| Dashboard | Ringkasan dan ekspor cepat tema WordPress dari URL `/p/{kode}` |
+| Menu            | Fungsi                                                         |
+| --------------- | -------------------------------------------------------------- |
+| Dashboard       | Ringkasan dan ekspor cepat tema WordPress dari URL `/p/{kode}` |
 | Kelola Template | Unggah ZIP, ganti gambar katalog, aktifkan atau hapus template |
-| Kategori | Tambah, ubah, dan hapus kategori |
-| Preview Klien | Daftar desain tersimpan, kunci preview, ekspor WordPress |
-| Pengaturan | Nomor WhatsApp, teks pesan, dan nama author tema |
+| Kategori        | Tambah, ubah, dan hapus kategori                               |
+| Preview Klien   | Daftar desain tersimpan, kunci preview, ekspor WordPress       |
+| Pengaturan      | Nomor WhatsApp, teks pesan, dan nama author tema               |
 
 Kategori yang masih punya template tidak bisa dihapus. Kategori baru langsung muncul di form unggah. Di katalog publik, kategori hanya tampil setelah ada template aktif di dalamnya.
 
@@ -142,14 +142,28 @@ File wajib di root (atau satu folder di dalam ZIP):
     "name": "Jelajah - Landing Page Liburan",
     "type": "single-page",
     "description": "Landing page perjalanan ke luar negeri.",
-    "pages": [
-        { "slug": "home", "title": "Beranda", "file": "index.html" }
-    ],
+    "pages": [{ "slug": "home", "title": "Beranda", "file": "index.html" }],
     "colors": [
-        { "variable": "--color-primary", "label": "Warna Utama", "default": "#9275f7" },
-        { "variable": "--color-secondary", "label": "Warna Sekunder", "default": "#1c1e1e" },
-        { "variable": "--color-accent", "label": "Warna Aksen", "default": "#f59e0b" },
-        { "variable": "--color-bg", "label": "Warna Background", "default": "#ffffff" }
+        {
+            "variable": "--color-primary",
+            "label": "Warna Utama",
+            "default": "#9275f7"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Sekunder",
+            "default": "#1c1e1e"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Aksen",
+            "default": "#f59e0b"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Background",
+            "default": "#ffffff"
+        }
     ]
 }
 ```
@@ -191,7 +205,9 @@ Tambahkan atribut pada elemen yang boleh diubah pengunjung. `data-edit-id` harus
     alt="Pemandangan"
 />
 
-<a data-edit-id="hero-cta" data-edit-type="link" href="contact.html">Pesan Sekarang</a>
+<a data-edit-id="hero-cta" data-edit-type="link" href="contact.html"
+    >Pesan Sekarang</a
+>
 ```
 
 Elemen yang sama di setiap halaman (logo, nama merek, footer) diberi `data-edit-scope="global"`:
