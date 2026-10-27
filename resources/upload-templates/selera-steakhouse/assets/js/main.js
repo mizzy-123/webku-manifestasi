@@ -75,6 +75,40 @@
         }
     }
 
+    /*
+     * Circular badge: the visible letters live on an SVG path, which the editor cannot type into.
+     * The editable source is .spin-label; this copies it onto the ring whenever it changes.
+     */
+    document.querySelectorAll('.spin-badge').forEach(function (badge) {
+        var label = badge.querySelector('.spin-label');
+        var path = badge.querySelector('textPath');
+
+        if (!label || !path) {
+            return;
+        }
+
+        var paint = function () {
+            var text = label.textContent.replace(/\s+/g, ' ').trim();
+
+            path.textContent = text;
+            path.setAttribute('textLength', '286');
+
+            if (text) {
+                badge.setAttribute('aria-label', text);
+            }
+        };
+
+        paint();
+
+        if ('MutationObserver' in window) {
+            new MutationObserver(paint).observe(label, {
+                childList: true,
+                characterData: true,
+                subtree: true,
+            });
+        }
+    });
+
     /* Menu rows: highlight the row under the pointer, keep the last one active. */
     var rows = document.querySelectorAll('.menu-row');
 

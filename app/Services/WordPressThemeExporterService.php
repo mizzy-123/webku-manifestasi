@@ -316,7 +316,7 @@ JS);
      */
     private function convertPage(string $html, array $page): string
     {
-        $html = $this->protectSvg($html);
+        $html = $this->protectSvg($html, $page);
 
         $document = new DOMDocument;
         $previous = libxml_use_internal_errors(true);
@@ -769,10 +769,9 @@ JS);
         }
 
         if ($type === 'text') {
-            $default = $group['texts'][$editId] ?? $this->innerHtml($element);
-            $this->settings[$settingId] = ['id' => $settingId, 'label' => $label, 'type' => 'html', 'section' => $section, 'default' => $this->phpString(trim($default))];
-            $this->replaceChildrenWithToken($element, "wp_kses_post( get_theme_mod( '{$settingId}', ".$this->phpString(trim($default)).' ) )');
-            $element->setAttribute('data-webku-setting', $settingId);
+            $setting = $this->rememberTextSetting($editId, $isGlobal, $page, $this->innerHtml($element));
+            $this->replaceChildrenWithToken($element, $setting['expression']);
+            $element->setAttribute('data-webku-setting', $setting['id']);
 
             return;
         }
@@ -885,15 +884,62 @@ JS);
 
     /**
      * The libxml HTML parser lowercases SVG attributes such as viewBox, so inline SVG is kept out of the DOM.
+     * Text marked with data-edit-id inside the SVG still becomes a Customizer setting.
+     *
+     * @param  array{slug: string, title: string, file: string}  $page
      */
-    private function protectSvg(string $html): string
+    private function protectSvg(string $html, array $page): string
     {
-        return (string) preg_replace_callback('/<svg\b.*?<\/svg>/is', function (array $match): string {
+        return (string) preg_replace_callback('/<svg\b.*?<\/svg>/is', function (array $match) use ($page): string {
             $token = '__WPSVG_'.count($this->svgBlocks).'__';
-            $this->svgBlocks[$token] = $match[0];
+            $this->svgBlocks[$token] = $this->convertSvgText($match[0], $page);
 
             return $token;
         }, $html);
+    }
+
+    /**
+     * @param  array{slug: string, title: string, file: string}  $page
+     */
+    private function convertSvgText(string $svg, array $page): string
+    {
+        return (string) preg_replace_callback(
+            '/<(textPath|tspan|text)\b([^>]*\bdata-edit-id="([^"]+)"[^>]*)>(.*?)<\/\1>/is',
+            function (array $match) use ($page): string {
+                $isGlobal = preg_match('/\bdata-edit-scope="global"/', $match[2]) === 1;
+                $setting = $this->rememberTextSetting($match[3], $isGlobal, $page, $match[4]);
+                $attributes = (string) preg_replace('/\sdata-edit-(?:id|type|scope)="[^"]*"/', '', $match[2]);
+
+                return '<'.$match[1].$attributes.' data-webku-setting="'.$setting['id'].'">'.$this->token($setting['expression']).'</'.$match[1].'>';
+            },
+            $svg,
+        );
+    }
+
+    /**
+     * @param  array{slug: string, title: string, file: string}  $page
+     * @return array{id: string, expression: string}
+     */
+    private function rememberTextSetting(string $editId, bool $isGlobal, array $page, string $fallback): array
+    {
+        $group = $isGlobal ? ($this->customData['global'] ?? []) : ($this->customData['pages'][$page['slug']] ?? []);
+        $texts = is_array($group['texts'] ?? null) ? $group['texts'] : [];
+        $default = trim((string) ($texts[$editId] ?? $fallback));
+        $scope = $isGlobal ? 'global' : $page['slug'];
+        $settingId = $this->settingId($scope, $editId);
+        $section = $isGlobal ? 'webku_global' : 'webku_page_'.$this->slugKey($page['slug']);
+        $this->sections[$section] = $isGlobal ? 'Elemen Global' : 'Halaman: '.$page['title'];
+
+        if (! $isGlobal) {
+            $this->sectionPages[$section] = $page['slug'] === $this->homePage()['slug'] ? '' : $page['slug'];
+        }
+
+        $this->settings[$settingId] = ['id' => $settingId, 'label' => Str::headline($editId), 'type' => 'html', 'section' => $section, 'default' => $this->phpString($default)];
+
+        return [
+            'id' => $settingId,
+            'expression' => "wp_kses_post( get_theme_mod( '{$settingId}', ".$this->phpString($default).' ) )',
+        ];
     }
 
     private function injectWordPress(string $html): string
@@ -916,7 +962,7 @@ JS);
         $html = (string) preg_replace('/<\/head>/i', $this->colorStyleBlock()."\n<?php wp_head(); ?>\n</head>", $html, 1);
         $html = (string) preg_replace('/<\/body>/i', "<?php wp_footer(); ?>\n</body>", $html, 1);
 
-        return strtr(strtr($html, $this->tokens), $this->svgBlocks);
+        return strtr(strtr($html, $this->svgBlocks), $this->tokens);
     }
 
     private function colorStyleBlock(): string

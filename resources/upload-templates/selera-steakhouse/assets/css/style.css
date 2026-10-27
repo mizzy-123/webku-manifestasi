@@ -582,6 +582,33 @@ footer[id] {
     height: 22px;
 }
 
+.spin-label {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: 50%;
+    overflow: hidden;
+    color: transparent;
+    font-size: 1px;
+    line-height: 1;
+}
+
+html.__ed-edit .spin-label {
+    inset: 16px;
+    display: grid;
+    place-items: center;
+    overflow: auto;
+    padding: 6px;
+    border-radius: 50%;
+    background: #fff;
+    color: #1c140c;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    text-transform: uppercase;
+}
+
 .rating-card {
     position: absolute;
     left: 150px;

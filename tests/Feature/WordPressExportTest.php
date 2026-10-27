@@ -156,6 +156,46 @@ test('content can be edited from wordpress by clicking elements in the customize
     unlink($zipPath);
 });
 
+test('text on a circular svg badge stays editable', function () {
+    $template = app(TemplateArchiveService::class)->storeFromPath(makeTemplateZip(validTemplateFiles([
+        'manifest.json' => json_encode([
+            'name' => 'Badge Template',
+            'type' => 'single-page',
+            'pages' => [['slug' => 'home', 'title' => 'Beranda', 'file' => 'index.html']],
+            'colors' => [['variable' => '--color-primary', 'label' => 'Warna Utama', 'default' => '#9275f7']],
+        ]),
+        'index.html' => <<<'HTML'
+<!DOCTYPE html>
+<html><head></head><body>
+<a class="spin-badge" href="#kontak">
+<svg class="spin-ring" viewBox="0 0 120 120"><text><textPath href="#badge-ring" textLength="286" data-edit-id="spin-badge-text">Reservasi Meja • Selera •</textPath></text></svg>
+<span class="spin-label" data-edit-id="spin-badge-text" data-edit-type="text">Reservasi Meja • Selera •</span>
+</a>
+<svg viewBox="0 0 10 10"><path d="M0 0"/></svg>
+</body></html>
+HTML,
+    ])), Category::factory()->create());
+
+    $preview = CustomizedPreview::factory()->for($template)->create([
+        'custom_data' => ['pages' => ['home' => ['texts' => ['spin-badge-text' => 'Meja Baru • Toko •'], 'images' => [], 'links' => []]]],
+    ]);
+
+    $zipPath = app(WordPressThemeExporterService::class)->export($template, $preview);
+    $zip = ($this->open)($zipPath);
+    $front = $zip->getFromName('badge-template/front-page.php');
+
+    expect(substr_count($front, "get_theme_mod( 'webku_home_spin_badge_text', 'Meja Baru • Toko •' )"))->toBe(2)
+        ->and(substr_count($front, 'data-webku-setting="webku_home_spin_badge_text"'))->toBe(2)
+        ->and($front)->toContain('viewBox="0 0 120 120"')
+        ->toContain('viewBox="0 0 10 10"')
+        ->not->toContain('data-edit-id')
+        ->not->toContain('__WPMOD_')
+        ->not->toContain('Reservasi Meja');
+
+    $zip->close();
+    unlink($zipPath);
+});
+
 test('unmarked footer copies of the logo and site name follow the header settings', function () {
     $template = app(TemplateArchiveService::class)->storeFromPath(makeTemplateZip(validTemplateFiles([
         'manifest.json' => json_encode([
