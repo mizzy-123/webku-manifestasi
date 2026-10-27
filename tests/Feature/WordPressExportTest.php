@@ -51,7 +51,7 @@ test('the exported zip has one theme folder with all wordpress files', function 
     $names = collect(range(0, $zip->numFiles - 1))->map(fn ($i) => $zip->getNameIndex($i));
 
     expect($names->every(fn ($name) => str_starts_with($name, 'toko-maju/')))->toBeTrue()
-        ->and($names)->toContain('toko-maju/style.css', 'toko-maju/functions.php', 'toko-maju/index.php', 'toko-maju/front-page.php', 'toko-maju/page-about.php', 'toko-maju/screenshot.png', 'toko-maju/assets/custom-uploads/logo.webp', 'toko-maju/assets/css/style.css');
+        ->and($names)->toContain('toko-maju/style.css', 'toko-maju/functions.php', 'toko-maju/index.php', 'toko-maju/front-page.php', 'toko-maju/page-about.php', 'toko-maju/screenshot.png', 'toko-maju/assets/custom-uploads/logo.webp', 'toko-maju/assets/css/style.css', 'toko-maju/assets/js/webku-customizer-preview.js', 'toko-maju/assets/js/webku-customizer-controls.js');
 
     expect($zip->getFromName('toko-maju/style.css'))->toContain('Theme Name: Toko Maju')->toContain('Text Domain: toko-maju');
 
@@ -121,6 +121,71 @@ test('client edits and colors are baked into the defaults', function () {
         ->toContain("'webku_global_logo'")
         ->toContain("'webku_about_logo_note'")
         ->toContain('WP_Customize_Color_Control');
+
+    $zip->close();
+    unlink($zipPath);
+});
+
+test('content can be edited from wordpress by clicking elements in the customizer preview', function () {
+    $zipPath = app(WordPressThemeExporterService::class)->export($this->template);
+    $zip = ($this->open)($zipPath);
+    $front = $zip->getFromName('demo-template/front-page.php');
+    $functions = $zip->getFromName('demo-template/functions.php');
+
+    expect($front)
+        ->toContain('data-webku-setting="webku_home_hero"')
+        ->toContain('data-webku-setting="webku_global_logo"')
+        ->toContain('data-webku-setting="webku_home_cta_text webku_home_cta_url"');
+
+    expect($functions)
+        ->toContain("'transport'         => 'postMessage'")
+        ->not->toContain("'transport'         => 'refresh'")
+        ->toContain("'variable' => '--color-primary'")
+        ->toContain("'webku_page_home' => ''")
+        ->toContain("'webku_page_about' => 'about'")
+        ->toContain('webku-customizer-preview.js')
+        ->toContain('webku-customizer-controls.js')
+        ->toContain('admin_notices')
+        ->toContain('page_row_actions')
+        ->toContain('enqueue_block_editor_assets');
+
+    expect($zip->getFromName('demo-template/assets/js/webku-customizer-preview.js'))->toContain('focus-control-for-setting')
+        ->and($zip->getFromName('demo-template/assets/js/webku-customizer-controls.js'))->toContain('previewUrl.set');
+
+    $zip->close();
+    unlink($zipPath);
+});
+
+test('unmarked footer copies of the logo and site name follow the header settings', function () {
+    $template = app(TemplateArchiveService::class)->storeFromPath(makeTemplateZip(validTemplateFiles([
+        'manifest.json' => json_encode([
+            'name' => 'Brand Template',
+            'type' => 'single-page',
+            'pages' => [['slug' => 'home', 'title' => 'Beranda', 'file' => 'index.html']],
+            'colors' => [['variable' => '--color-primary', 'label' => 'Warna Utama', 'default' => '#9275f7']],
+        ]),
+        'index.html' => <<<'HTML'
+<!DOCTYPE html>
+<html><head></head><body>
+<header><img data-edit-id="site-logo" data-edit-type="image" data-edit-scope="global" src="assets/img/logo.svg"><span data-edit-id="brand-name" data-edit-type="text" data-edit-scope="global">Arunika</span></header>
+<footer><img src="assets/img/logo.svg" alt=""><span>Arunika</span><h3>Menu</h3></footer>
+</body></html>
+HTML,
+        'assets/img/logo.svg' => '<svg xmlns="http://www.w3.org/2000/svg"/>',
+    ])), Category::factory()->create());
+
+    $preview = CustomizedPreview::factory()->for($template)->create([
+        'custom_data' => ['global' => ['texts' => ['brand-name' => 'Toko Baru'], 'images' => [], 'links' => []]],
+    ]);
+
+    $zipPath = app(WordPressThemeExporterService::class)->export($template, $preview);
+    $zip = ($this->open)($zipPath);
+    $front = $zip->getFromName('brand-template/front-page.php');
+
+    expect(substr_count($front, "get_theme_mod( 'webku_global_site_logo'"))->toBe(2)
+        ->and(substr_count($front, "get_theme_mod( 'webku_global_brand_name', 'Toko Baru' )"))->toBe(2)
+        ->and($front)->toContain('<h3>Menu</h3>')
+        ->not->toContain('>Arunika<');
 
     $zip->close();
     unlink($zipPath);

@@ -39,6 +39,9 @@ class WordPressThemeExporterService
     /** @var array<string, string> section id => label */
     private array $sections = [];
 
+    /** @var array<string, string> section id => page slug shown in the Customizer preview ('' is the front page) */
+    private array $sectionPages = [];
+
     /** @var array<int, array{slug: string, title: string, file: string}> */
     private array $pages = [];
 
@@ -89,6 +92,7 @@ class WordPressThemeExporterService
             $this->writePages($template, $themeDir);
             File::put($themeDir.'/style.css', $this->styleCss($template, $themeName, $themeSlug));
             File::put($themeDir.'/functions.php', $this->functionsPhp($themeName));
+            $this->writeCustomizerScripts($themeDir);
             $this->zip($workRoot, $themeSlug, $zipPath);
         } finally {
             File::deleteDirectory($workRoot);
@@ -103,6 +107,7 @@ class WordPressThemeExporterService
         $this->svgBlocks = [];
         $this->settings = [];
         $this->sections = [];
+        $this->sectionPages = [];
         $this->customData = $preview?->custom_data ?? [];
         $this->templateColors = array_values(array_filter(
             $template->manifest_data['colors'] ?? [],
@@ -160,6 +165,82 @@ class WordPressThemeExporterService
         } catch (\Throwable) {
             File::copy($thumbnail, $themeDir.'/screenshot.png');
         }
+    }
+
+    private function writeCustomizerScripts(string $themeDir): void
+    {
+        File::ensureDirectoryExists($themeDir.'/assets/js');
+
+        File::put($themeDir.'/assets/js/webku-customizer-preview.js', <<<'JS'
+( function ( api ) {
+    var settings = ( window.webkuCustomizer && window.webkuCustomizer.settings ) || {};
+
+    function elementsFor( id ) {
+        return document.querySelectorAll( '[data-webku-setting~="' + id + '"]' );
+    }
+
+    Object.keys( settings ).forEach( function ( id ) {
+        var type = settings[ id ].type;
+
+        api( id, function ( setting ) {
+            setting.bind( function ( value ) {
+                if ( 'color' === type ) {
+                    document.documentElement.style.setProperty( settings[ id ].variable, value );
+
+                    return;
+                }
+
+                elementsFor( id ).forEach( function ( element ) {
+                    if ( 'image' === type ) {
+                        element.removeAttribute( 'srcset' );
+                        element.setAttribute( 'src', value );
+                    } else if ( 'url' === type ) {
+                        element.setAttribute( 'href', value );
+                    } else {
+                        element.innerHTML = value;
+                    }
+                } );
+            } );
+        } );
+    } );
+
+    var style = document.createElement( 'style' );
+    style.textContent = '[data-webku-setting]{cursor:pointer}[data-webku-setting]:hover{outline:2px dashed #2271b1;outline-offset:3px}';
+    document.head.appendChild( style );
+
+    document.addEventListener( 'click', function ( event ) {
+        var element = event.target.closest ? event.target.closest( '[data-webku-setting]' ) : null;
+
+        if ( ! element || ! api.preview ) {
+            return;
+        }
+
+        event.preventDefault();
+        event.stopPropagation();
+        api.preview.send( 'focus-control-for-setting', element.getAttribute( 'data-webku-setting' ).split( ' ' )[0] );
+    }, true );
+} )( wp.customize );
+
+JS);
+
+        File::put($themeDir.'/assets/js/webku-customizer-controls.js', <<<'JS'
+( function ( api ) {
+    var pages = window.webkuCustomizerPages || {};
+
+    api.bind( 'ready', function () {
+        Object.keys( pages ).forEach( function ( sectionId ) {
+            api.section( sectionId, function ( section ) {
+                section.expanded.bind( function ( isExpanded ) {
+                    if ( isExpanded && api.previewer.previewUrl.get() !== pages[ sectionId ] ) {
+                        api.previewer.previewUrl.set( pages[ sectionId ] );
+                    }
+                } );
+            } );
+        } );
+    } );
+} )( wp.customize );
+
+JS);
     }
 
     private function writePages(Template $template, string $themeDir): void
@@ -252,6 +333,7 @@ class WordPressThemeExporterService
         $document->encoding = 'UTF-8';
         $xpath = new DOMXPath($document);
         $this->lastPageRole = $this->pageRole($html);
+        $this->linkBrandCopies($xpath);
         $this->convertWordPressPosts($xpath, $page);
 
         foreach ($xpath->query('//title') ?: [] as $title) {
@@ -274,6 +356,70 @@ class WordPressThemeExporterService
         }
 
         return $this->injectWordPress($document->saveHTML() ?: '');
+    }
+
+    /**
+     * Templates often repeat the logo and site name (for example in the footer) without marking the copy.
+     * Unmarked copies of a shared image or text get the same edit id, so one setting changes every copy.
+     */
+    private function linkBrandCopies(DOMXPath $xpath): void
+    {
+        $images = [];
+        $texts = [];
+
+        foreach ($xpath->query('//*[@data-edit-id]') ?: [] as $element) {
+            if (! $element instanceof DOMElement || ! $this->isSharedEditable($element)) {
+                continue;
+            }
+
+            $type = $element->getAttribute('data-edit-type');
+
+            if ($type === 'image' && $element->getAttribute('src') !== '') {
+                $images[$element->getAttribute('src')] ??= $element;
+            } elseif ($type === 'text' && ! $this->hasElementChild($element) && $this->normalizedText($element) !== '') {
+                $texts[$this->normalizedText($element)] ??= $element;
+            }
+        }
+
+        $unmarked = 'not(ancestor-or-self::*[@data-edit-id or @data-wp-post or @data-wp-single or @data-wp-field])';
+
+        foreach (iterator_to_array($xpath->query("//body//img[{$unmarked}]") ?: []) as $image) {
+            if ($image instanceof DOMElement && isset($images[$image->getAttribute('src')])) {
+                $this->copyEditAttributes($images[$image->getAttribute('src')], $image);
+            }
+        }
+
+        foreach (iterator_to_array($xpath->query("//body//*[not(*)][{$unmarked}]") ?: []) as $element) {
+            if (! $element instanceof DOMElement || in_array($element->nodeName, ['img', 'script', 'style', 'textarea', 'option'], true)) {
+                continue;
+            }
+
+            $source = $texts[$this->normalizedText($element)] ?? null;
+
+            if ($source !== null) {
+                $this->copyEditAttributes($source, $element);
+            }
+        }
+    }
+
+    private function isSharedEditable(DOMElement $element): bool
+    {
+        return $element->getAttribute('data-edit-scope') === 'global'
+            || preg_match('/logo|brand/i', $element->getAttribute('data-edit-id')) === 1;
+    }
+
+    private function normalizedText(DOMElement $element): string
+    {
+        return trim((string) preg_replace('/\s+/u', ' ', $element->textContent));
+    }
+
+    private function copyEditAttributes(DOMElement $source, DOMElement $target): void
+    {
+        foreach (['data-edit-id', 'data-edit-type', 'data-edit-scope'] as $attribute) {
+            if ($source->hasAttribute($attribute)) {
+                $target->setAttribute($attribute, $source->getAttribute($attribute));
+            }
+        }
     }
 
     /**
@@ -618,10 +764,15 @@ class WordPressThemeExporterService
         $this->sections[$section] = $isGlobal ? 'Elemen Global' : 'Halaman: '.$page['title'];
         $label = Str::headline($editId);
 
+        if (! $isGlobal) {
+            $this->sectionPages[$section] = $page['slug'] === $this->homePage()['slug'] ? '' : $page['slug'];
+        }
+
         if ($type === 'text') {
             $default = $group['texts'][$editId] ?? $this->innerHtml($element);
             $this->settings[$settingId] = ['id' => $settingId, 'label' => $label, 'type' => 'html', 'section' => $section, 'default' => $this->phpString(trim($default))];
             $this->replaceChildrenWithToken($element, "wp_kses_post( get_theme_mod( '{$settingId}', ".$this->phpString(trim($default)).' ) )');
+            $element->setAttribute('data-webku-setting', $settingId);
 
             return;
         }
@@ -632,6 +783,7 @@ class WordPressThemeExporterService
             $this->settings[$settingId] = ['id' => $settingId, 'label' => $label.' (gambar)', 'type' => 'image', 'section' => $section, 'default' => $expression];
             $element->removeAttribute('srcset');
             $element->setAttribute('src', $this->token("esc_url( get_theme_mod( '{$settingId}', {$expression} ) )"));
+            $element->setAttribute('data-webku-setting', $settingId);
 
             return;
         }
@@ -642,12 +794,14 @@ class WordPressThemeExporterService
             $urlId = $settingId.'_url';
             $this->settings[$urlId] = ['id' => $urlId, 'label' => $label.' (tujuan link)', 'type' => 'url', 'section' => $section, 'default' => $expression];
             $element->setAttribute('href', $this->token("esc_url( get_theme_mod( '{$urlId}', {$expression} ) )"));
+            $element->setAttribute('data-webku-setting', $urlId);
 
             if (! $this->hasElementChild($element)) {
                 $text = trim((string) ($group['links'][$editId]['text'] ?? $this->innerHtml($element)));
                 $textId = $settingId.'_text';
                 $this->settings[$textId] = ['id' => $textId, 'label' => $label.' (tulisan)', 'type' => 'text', 'section' => $section, 'default' => $this->phpString($text)];
                 $this->replaceChildrenWithToken($element, "wp_kses_post( get_theme_mod( '{$textId}', ".$this->phpString($text).' ) )');
+                $element->setAttribute('data-webku-setting', "{$textId} {$urlId}");
             }
         }
     }
@@ -847,13 +1001,14 @@ class WordPressThemeExporterService
         foreach ($this->colors() as $color) {
             $id = $this->colorSettingId($color['variable']);
             $this->sections['webku_colors'] = 'Warna Tema';
-            $settings[$id] = ['id' => $id, 'label' => $color['label'], 'type' => 'color', 'section' => 'webku_colors', 'default' => $this->phpString($this->effectiveColor($color))];
+            $settings[$id] = ['id' => $id, 'label' => $color['label'], 'type' => 'color', 'section' => 'webku_colors', 'default' => $this->phpString($this->effectiveColor($color)), 'variable' => $color['variable']];
         }
 
         $settingLines = [];
 
         foreach ($settings as $setting) {
-            $settingLines[] = "        array( 'id' => {$this->phpString($setting['id'])}, 'label' => {$this->phpString($setting['label'])}, 'type' => {$this->phpString($setting['type'])}, 'section' => {$this->phpString($setting['section'])}, 'default' => {$setting['default']} ),";
+            $variable = isset($setting['variable']) ? ", 'variable' => {$this->phpString($setting['variable'])}" : '';
+            $settingLines[] = "        array( 'id' => {$this->phpString($setting['id'])}, 'label' => {$this->phpString($setting['label'])}, 'type' => {$this->phpString($setting['type'])}, 'section' => {$this->phpString($setting['section'])}, 'default' => {$setting['default']}{$variable} ),";
         }
 
         $template = <<<'PHP'
@@ -874,10 +1029,65 @@ add_action( 'after_setup_theme', function () {
 } );
 
 /**
+ * Pages of this theme. Their content lives in the template files and is edited in the Customizer.
+ */
+function webku_theme_pages() {
+    return __PAGES__;
+}
+
+/**
+ * Every editable text, image, link, and color of this theme.
+ */
+function webku_theme_settings() {
+    return array(
+__SETTINGS__
+    );
+}
+
+/**
+ * Customizer link that opens the theme panel, optionally previewing a given page.
+ *
+ * @param string $url Page to show in the preview.
+ */
+function webku_customize_url( $url = '' ) {
+    $args = array( 'autofocus[panel]' => 'webku_panel' );
+
+    if ( '' !== $url ) {
+        $args['url'] = rawurlencode( $url );
+    }
+
+    return add_query_arg( $args, admin_url( 'customize.php' ) );
+}
+
+/**
+ * Preview URL for each page section, so opening a section shows that page.
+ */
+function webku_section_urls() {
+    $urls = array();
+
+    foreach ( __SECTION_PAGES__ as $section => $slug ) {
+        if ( '' === $slug ) {
+            $urls[ $section ] = home_url( '/' );
+
+            continue;
+        }
+
+        $post = get_page_by_path( $slug );
+        $post = $post ? $post : get_page_by_path( $slug, OBJECT, 'post' );
+
+        if ( $post ) {
+            $urls[ $section ] = get_permalink( $post );
+        }
+    }
+
+    return $urls;
+}
+
+/**
  * Create the pages of this theme and use the home page as the static front page.
  */
 add_action( 'after_switch_theme', function () {
-    $pages = __PAGES__;
+    $pages = webku_theme_pages();
     $home_id = 0;
 
     foreach ( $pages as $page ) {
@@ -910,13 +1120,12 @@ add_action( 'after_switch_theme', function () {
 add_action( 'customize_register', function ( $wp_customize ) {
     $sections = __SECTIONS__;
 
-    $settings = array(
-__SETTINGS__
-    );
+    $settings = webku_theme_settings();
 
     $wp_customize->add_panel( 'webku_panel', array(
-        'title'    => __( 'Pengaturan Tema', 'webku' ),
-        'priority' => 30,
+        'title'       => __( 'Pengaturan Tema', 'webku' ),
+        'description' => __( 'Klik tulisan, gambar, atau tombol di pratinjau untuk langsung membuka kolomnya.', 'webku' ),
+        'priority'    => 1,
     ) );
 
     foreach ( $sections as $section_id => $section_title ) {
@@ -938,7 +1147,7 @@ __SETTINGS__
         $wp_customize->add_setting( $setting['id'], array(
             'default'           => $setting['default'],
             'sanitize_callback' => $sanitizers[ $setting['type'] ],
-            'transport'         => 'refresh',
+            'transport'         => 'postMessage',
         ) );
 
         $args = array(
@@ -958,12 +1167,97 @@ __SETTINGS__
     }
 } );
 
+/**
+ * Live preview: changes show without reloading, and clicking an element opens its field.
+ */
+add_action( 'customize_preview_init', function () {
+    $settings = array();
+
+    foreach ( webku_theme_settings() as $setting ) {
+        $settings[ $setting['id'] ] = array(
+            'type'     => $setting['type'],
+            'variable' => isset( $setting['variable'] ) ? $setting['variable'] : '',
+        );
+    }
+
+    wp_enqueue_script( 'webku-customizer-preview', get_template_directory_uri() . '/assets/js/webku-customizer-preview.js', array( 'customize-preview' ), '1.1.0', true );
+    wp_add_inline_script( 'webku-customizer-preview', 'window.webkuCustomizer = ' . wp_json_encode( array( 'settings' => $settings ) ) . ';', 'before' );
+} );
+
+add_action( 'customize_controls_enqueue_scripts', function () {
+    wp_enqueue_script( 'webku-customizer-controls', get_template_directory_uri() . '/assets/js/webku-customizer-controls.js', array( 'customize-controls' ), '1.1.0', true );
+    wp_add_inline_script( 'webku-customizer-controls', 'window.webkuCustomizerPages = ' . wp_json_encode( webku_section_urls() ) . ';', 'before' );
+} );
+
+/**
+ * Show admins where the content of this theme is edited.
+ */
+add_action( 'admin_notices', function () {
+    $screen = get_current_screen();
+
+    if ( ! $screen || ! current_user_can( 'customize' ) || ! in_array( $screen->id, array( 'dashboard', 'themes', 'edit-page' ), true ) ) {
+        return;
+    }
+
+    printf(
+        '<div class="notice notice-info"><p>%s</p><p><a class="button button-primary" href="%s">%s</a></p></div>',
+        esc_html__( 'Tulisan, gambar, link, dan warna website ini diubah lewat Tampilan → Sesuaikan → Pengaturan Tema. Di pratinjau, klik elemen yang ingin diubah.', 'webku' ),
+        esc_url( webku_customize_url() ),
+        esc_html__( 'Edit Konten Website', 'webku' )
+    );
+} );
+
+add_action( 'admin_bar_menu', function ( $admin_bar ) {
+    if ( is_admin() || is_customize_preview() || ! current_user_can( 'customize' ) || empty( $_SERVER['HTTP_HOST'] ) || empty( $_SERVER['REQUEST_URI'] ) ) {
+        return;
+    }
+
+    $current = ( is_ssl() ? 'https://' : 'http://' ) . wp_unslash( $_SERVER['HTTP_HOST'] ) . wp_unslash( $_SERVER['REQUEST_URI'] );
+
+    $admin_bar->add_node( array(
+        'id'    => 'webku-edit-content',
+        'title' => __( 'Edit Konten', 'webku' ),
+        'href'  => webku_customize_url( esc_url_raw( $current ) ),
+    ) );
+}, 80 );
+
+add_filter( 'page_row_actions', function ( $actions, $post ) {
+    if ( current_user_can( 'customize' ) && in_array( $post->post_name, wp_list_pluck( webku_theme_pages(), 'slug' ), true ) ) {
+        $actions['webku_edit_content'] = sprintf( '<a href="%s">%s</a>', esc_url( webku_customize_url( get_permalink( $post ) ) ), esc_html__( 'Edit Konten', 'webku' ) );
+    }
+
+    return $actions;
+}, 10, 2 );
+
+/**
+ * The block editor shows these pages as empty, so point to the Customizer instead.
+ */
+add_action( 'enqueue_block_editor_assets', function () {
+    $post = get_post();
+
+    if ( ! $post || 'page' !== $post->post_type || ! in_array( $post->post_name, wp_list_pluck( webku_theme_pages(), 'slug' ), true ) ) {
+        return;
+    }
+
+    $notice = array(
+        'message' => __( 'Isi halaman ini diatur oleh tema. Ubah tulisan dan gambarnya lewat Edit Konten.', 'webku' ),
+        'label'   => __( 'Edit Konten', 'webku' ),
+        'url'     => webku_customize_url( get_permalink( $post ) ),
+    );
+
+    wp_add_inline_script(
+        'wp-edit-post',
+        'wp.domReady( function () { var notice = ' . wp_json_encode( $notice ) . '; wp.data.dispatch( "core/notices" ).createInfoNotice( notice.message, { isDismissible: false, actions: [ { label: notice.label, url: notice.url } ] } ); } );'
+    );
+} );
+
 PHP;
 
         return strtr($template, [
             '__THEME_NAME__' => str_replace(['*/', "\n", "\r"], ' ', $themeName),
             '__PAGES__' => var_export($pages, true),
             '__SECTIONS__' => var_export($this->sections, true),
+            '__SECTION_PAGES__' => var_export($this->sectionPages, true),
             '__SETTINGS__' => implode("\n", $settingLines),
         ]).$this->postHelpers();
     }
