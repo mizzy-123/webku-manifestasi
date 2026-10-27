@@ -1,0 +1,28 @@
+{
+    "name": "Drizzle - Landing Page Restoran",
+    "type": "single-page",
+    "description": "Landing page restoran bernuansa hangat: hero, cerita, menu, reservasi, galeri, lowongan, dan ulasan tamu.",
+    "pages": [{ "slug": "home", "title": "Beranda", "file": "index.html" }],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Anggur",
+            "default": "#2a0403"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Teks",
+            "default": "#2a0403"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Tombol",
+            "default": "#c23a28"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Latar",
+            "default": "#fff5df"
+        }
+    ]
+}

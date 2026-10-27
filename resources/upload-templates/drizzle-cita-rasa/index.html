@@ -1,0 +1,1086 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Drizzle — Bahasa Cita Rasa</title>
+        <meta
+            name="description"
+            content="Restoran Drizzle. Tradisi dan inovasi dalam setiap hidangan. Lihat menu, galeri, dan pesan meja."
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/css/style.css" />
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="wrap header-inner">
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="open-menu"
+                    aria-label="Buka menu"
+                    aria-expanded="false"
+                    aria-controls="site-nav"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <nav class="nav-left" id="site-nav">
+                    <a href="#beranda"
+                        ><span data-edit-id="nav-home" data-edit-type="text"
+                            >Beranda</span
+                        ></a
+                    >
+                    <a href="#menu"
+                        ><span data-edit-id="nav-menu" data-edit-type="text"
+                            >Menu Kami</span
+                        ></a
+                    >
+                    <a href="#tentang"
+                        ><span data-edit-id="nav-about" data-edit-type="text"
+                            >Tentang Kami</span
+                        ></a
+                    >
+                </nav>
+                <a href="#beranda" class="logo">
+                    <span
+                        data-edit-id="brand-name"
+                        data-edit-type="text"
+                        data-edit-scope="global"
+                        >Drizzle</span
+                    >
+                </a>
+                <nav class="nav-right">
+                    <a href="#galeri"
+                        ><span data-edit-id="nav-gallery" data-edit-type="text"
+                            >Galeri</span
+                        ></a
+                    >
+                    <a href="#pesan-meja"
+                        ><span data-edit-id="nav-reserve" data-edit-type="text"
+                            >Reservasi</span
+                        ></a
+                    >
+                    <a href="#kontak"
+                        ><span data-edit-id="nav-contact" data-edit-type="text"
+                            >Kontak</span
+                        ></a
+                    >
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero" id="beranda">
+                <div class="wrap">
+                    <p
+                        class="kicker"
+                        data-edit-id="hero-kicker"
+                        data-edit-type="text"
+                    >
+                        Santapan kasual yang istimewa
+                    </p>
+                    <h1 data-edit-id="hero-title" data-edit-type="text">
+                        Rasakan Bahasa<br />Cita Rasa
+                    </h1>
+                    <div class="hero-frame">
+                        <img
+                            data-edit-id="hero-image"
+                            data-edit-type="image"
+                            class="hero-photo"
+                            src="assets/img/hero.jpg"
+                            alt="Ruang makan Drizzle dengan meja yang sudah tertata"
+                            width="1800"
+                            height="1100"
+                        />
+                        <div class="seal">
+                            <svg
+                                viewBox="0 0 24 24"
+                                aria-hidden="true"
+                                class="seal-icon"
+                            >
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="8"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.4"
+                                />
+                                <path
+                                    d="M12 8.2V12l2.6 1.8"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.4"
+                                    stroke-linecap="round"
+                                />
+                            </svg>
+                            <p data-edit-id="hero-seal" data-edit-type="text">
+                                Buka pukul 19.00
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="story" id="tentang">
+                <div class="wrap story-grid">
+                    <div>
+                        <p class="eyebrow">
+                            <span data-edit-id="story-kicker" data-edit-type="text"
+                                >Cerita Kami</span
+                            >
+                        </p>
+                        <h2 data-edit-id="story-title" data-edit-type="text">
+                            Memadukan tradisi dan inovasi untuk menghadirkan
+                            pengalaman bersantap yang tak terlupakan
+                        </h2>
+                        <div class="story-actions">
+                            <a
+                                class="btn"
+                                data-edit-id="story-cta"
+                                data-edit-type="link"
+                                href="#galeri"
+                                >Lihat Cerita Kami</a
+                            >
+                            <div class="customers">
+                                <div class="avatars">
+                                    <img
+                                        data-edit-id="avatar-1"
+                                        data-edit-type="image"
+                                        src="assets/img/avatar-1.jpg"
+                                        alt="Tamu"
+                                        width="80"
+                                        height="80"
+                                    />
+                                    <img
+                                        data-edit-id="avatar-2"
+                                        data-edit-type="image"
+                                        src="assets/img/avatar-2.jpg"
+                                        alt="Tamu"
+                                        width="80"
+                                        height="80"
+                                    />
+                                    <img
+                                        data-edit-id="avatar-3"
+                                        data-edit-type="image"
+                                        src="assets/img/avatar-3.jpg"
+                                        alt="Tamu"
+                                        width="80"
+                                        height="80"
+                                    />
+                                    <img
+                                        data-edit-id="avatar-4"
+                                        data-edit-type="image"
+                                        src="assets/img/avatar-4.jpg"
+                                        alt="Tamu"
+                                        width="80"
+                                        height="80"
+                                    />
+                                </div>
+                                <span
+                                    data-edit-id="story-customers"
+                                    data-edit-type="text"
+                                    >Tamu yang Puas</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    <aside class="story-aside">
+                        <p
+                            class="story-note"
+                            data-edit-id="story-note"
+                            data-edit-type="text"
+                        >
+                            Rasakan harmoni yang utuh dari warisan rasa
+                        </p>
+                        <img
+                            data-edit-id="story-image"
+                            data-edit-type="image"
+                            class="story-photo"
+                            src="assets/img/story.jpg"
+                            alt="Hidangan pasta yang disajikan hangat"
+                            width="900"
+                            height="700"
+                        />
+                    </aside>
+                </div>
+            </section>
+
+            <section class="menu" id="menu">
+                <div class="wrap menu-layout">
+                    <article class="classic-card">
+                        <h3 data-edit-id="classic-title" data-edit-type="text">
+                            Menu Klasik
+                        </h3>
+                        <p
+                            class="muted"
+                            data-edit-id="classic-lead"
+                            data-edit-type="text"
+                        >
+                            Pilihan yang paling sering dipesan
+                        </p>
+                        <ul class="dish-list">
+                            <li>
+                                <span
+                                    data-edit-id="classic-1"
+                                    data-edit-type="text"
+                                    >Pasta Krim</span
+                                >
+                            </li>
+                            <li>
+                                <span
+                                    data-edit-id="classic-2"
+                                    data-edit-type="text"
+                                    >Salmon Bakar</span
+                                >
+                            </li>
+                            <li>
+                                <span
+                                    data-edit-id="classic-3"
+                                    data-edit-type="text"
+                                    >Ayam Alfredo</span
+                                >
+                            </li>
+                            <li>
+                                <span
+                                    data-edit-id="classic-4"
+                                    data-edit-type="text"
+                                    >Fettuccine Bola Daging</span
+                                >
+                            </li>
+                        </ul>
+                        <a
+                            class="btn"
+                            data-edit-id="classic-cta"
+                            data-edit-type="link"
+                            href="#pesan-meja"
+                            >Pesan Sekarang</a
+                        >
+                    </article>
+
+                    <div class="menu-main">
+                        <div class="menu-top">
+                            <div class="menu-heading">
+                                <svg
+                                    class="cutlery"
+                                    viewBox="0 0 48 48"
+                                    aria-hidden="true"
+                                >
+                                    <path
+                                        d="M16 6v14c0 3-2 5-4 5v17M12 6v10M20 6v10M32 6c4 6 4 12 0 18v18M32 6v36"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="1.6"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+                                <h2
+                                    data-edit-id="menu-title"
+                                    data-edit-type="text"
+                                >
+                                    Santapan favorit berikutnya sudah menanti
+                                </h2>
+                            </div>
+                            <a
+                                class="link-arrow"
+                                data-edit-id="menu-explore"
+                                data-edit-type="link"
+                                href="#menu"
+                                >Jelajahi Menu</a
+                            >
+                        </div>
+
+                        <div class="menu-cards">
+                            <article class="menu-card">
+                                <h3
+                                    data-edit-id="soup-title"
+                                    data-edit-type="text"
+                                >
+                                    Sup &amp; Salad
+                                </h3>
+                                <ul class="dish-list">
+                                    <li>
+                                        <span
+                                            data-edit-id="soup-1"
+                                            data-edit-type="text"
+                                            >Sup Jamur Krim</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="soup-2"
+                                            data-edit-type="text"
+                                            >Salad Kebun</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="soup-3"
+                                            data-edit-type="text"
+                                            >Sup Tomat Panggang</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="soup-4"
+                                            data-edit-type="text"
+                                            >Salad Caesar</span
+                                        >
+                                    </li>
+                                </ul>
+                                <a
+                                    class="card-link"
+                                    data-edit-id="soup-cta"
+                                    data-edit-type="link"
+                                    href="#pesan-meja"
+                                    >Pesan Sekarang</a
+                                >
+                            </article>
+                            <article class="menu-card menu-card--dark">
+                                <h3
+                                    data-edit-id="vegan-title"
+                                    data-edit-type="text"
+                                >
+                                    Vegan &amp; Nabati
+                                </h3>
+                                <ul class="dish-list">
+                                    <li>
+                                        <span
+                                            data-edit-id="vegan-1"
+                                            data-edit-type="text"
+                                            >Mangkuk Bijian</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="vegan-2"
+                                            data-edit-type="text"
+                                            >Pasta Sayuran</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="vegan-3"
+                                            data-edit-type="text"
+                                            >Tahu Panggang</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="vegan-4"
+                                            data-edit-type="text"
+                                            >Salad Alpukat</span
+                                        >
+                                    </li>
+                                </ul>
+                                <a
+                                    class="card-link"
+                                    data-edit-id="vegan-cta"
+                                    data-edit-type="link"
+                                    href="#pesan-meja"
+                                    >Pesan Sekarang</a
+                                >
+                            </article>
+                            <article class="menu-card">
+                                <h3
+                                    data-edit-id="drink-title"
+                                    data-edit-type="text"
+                                >
+                                    Minuman
+                                </h3>
+                                <ul class="dish-list">
+                                    <li>
+                                        <span
+                                            data-edit-id="drink-1"
+                                            data-edit-type="text"
+                                            >Mocktail Jeruk</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="drink-2"
+                                            data-edit-type="text"
+                                            >Teh Herbal</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="drink-3"
+                                            data-edit-type="text"
+                                            >Kopi Seduh</span
+                                        >
+                                    </li>
+                                    <li>
+                                        <span
+                                            data-edit-id="drink-4"
+                                            data-edit-type="text"
+                                            >Limonade Rumah</span
+                                        >
+                                    </li>
+                                </ul>
+                                <a
+                                    class="card-link"
+                                    data-edit-id="drink-cta"
+                                    data-edit-type="link"
+                                    href="#pesan-meja"
+                                    >Pesan Sekarang</a
+                                >
+                            </article>
+                        </div>
+
+                        <div class="menu-photos">
+                            <img
+                                data-edit-id="dish-salad"
+                                data-edit-type="image"
+                                src="assets/img/dish-salad.jpg"
+                                alt="Salad segar dengan sayuran warna-warni"
+                                width="900"
+                                height="700"
+                            />
+                            <img
+                                data-edit-id="dish-vegan"
+                                data-edit-type="image"
+                                src="assets/img/dish-vegan.jpg"
+                                alt="Mangkuk sayur dan biji-bijian"
+                                width="900"
+                                height="700"
+                            />
+                            <img
+                                data-edit-id="dish-drink"
+                                data-edit-type="image"
+                                src="assets/img/dish-drink.jpg"
+                                alt="Minuman segar di atas meja"
+                                width="900"
+                                height="700"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reserve" id="reservasi">
+                <div class="wrap reserve-grid">
+                    <div>
+                        <p class="eyebrow">
+                            <span
+                                data-edit-id="reserve-kicker"
+                                data-edit-type="text"
+                                >Reservasi</span
+                            >
+                        </p>
+                        <h2 data-edit-id="reserve-title" data-edit-type="text">
+                            Pesan tempat Anda. Kebahagiaan bersantap yang
+                            terasa tepat.
+                        </h2>
+                        <a
+                            class="btn"
+                            data-edit-id="reserve-cta"
+                            data-edit-type="link"
+                            href="#pesan-meja"
+                            >Reservasi Meja</a
+                        >
+                    </div>
+                    <div class="reserve-photos">
+                        <img
+                            data-edit-id="dine-1"
+                            data-edit-type="image"
+                            src="assets/img/dine-1.jpg"
+                            alt="Tamu bersantap bersama"
+                            width="900"
+                            height="1100"
+                        />
+                        <img
+                            data-edit-id="dine-2"
+                            data-edit-type="image"
+                            src="assets/img/dine-2.jpg"
+                            alt="Hidangan salmon di atas piring"
+                            width="900"
+                            height="1100"
+                        />
+                        <img
+                            data-edit-id="dine-3"
+                            data-edit-type="image"
+                            src="assets/img/dine-3.jpg"
+                            alt="Suasana makan malam di restoran"
+                            width="900"
+                            height="1100"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            <section class="booking" id="pesan-meja">
+                <div class="wrap booking-grid">
+                    <div>
+                        <p class="eyebrow">
+                            <span
+                                data-edit-id="booking-kicker"
+                                data-edit-type="text"
+                                >Pesan Meja</span
+                            >
+                        </p>
+                        <h2 data-edit-id="booking-title" data-edit-type="text">
+                            Hubungi tim reservasi
+                        </h2>
+                        <p
+                            class="lead"
+                            data-edit-id="booking-lead"
+                            data-edit-type="text"
+                        >
+                            Sebutkan nama, tanggal, jam, dan jumlah tamu.
+                            Meja dipesan lewat tim reservasi di samping.
+                        </p>
+                        <a
+                            class="btn"
+                            data-edit-id="booking-wa"
+                            data-edit-type="link"
+                            href="https://wa.me/6281319001900"
+                            >WhatsApp Reservasi</a
+                        >
+                    </div>
+                    <div class="info-card">
+                        <h3 data-edit-id="booking-card-title" data-edit-type="text">
+                            Kontak reservasi
+                        </h3>
+                        <dl class="info-list">
+                            <div>
+                                <dt>WhatsApp</dt>
+                                <dd>
+                                    <a
+                                        data-edit-id="booking-wa-number"
+                                        data-edit-type="link"
+                                        href="https://wa.me/6281319001900"
+                                        >0813-1900-1900</a
+                                    >
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Telepon</dt>
+                                <dd>
+                                    <a
+                                        data-edit-id="booking-phone"
+                                        data-edit-type="link"
+                                        href="tel:081319001900"
+                                        >0813-1900-1900</a
+                                    >
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Email</dt>
+                                <dd>
+                                    <a
+                                        data-edit-id="booking-email"
+                                        data-edit-type="link"
+                                        href="mailto:reservasi@drizzle.id"
+                                        >reservasi@drizzle.id</a
+                                    >
+                                </dd>
+                            </div>
+                            <div>
+                                <dt>Jam reservasi</dt>
+                                <dd>
+                                    <span
+                                        data-edit-id="booking-hours"
+                                        data-edit-type="text"
+                                        >Setiap hari, 10.00–21.00</span
+                                    >
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+
+            <section class="gallery" id="galeri">
+                <svg class="ornament ornament-a" viewBox="0 0 140 140" aria-hidden="true">
+                    <path d="M20 100c18-46 58-62 96-36" />
+                    <path d="M28 112c22-28 54-34 78-8" />
+                    <path d="M46 58c8 10 8 22-2 30 14-2 24-14 22-28-10 2-16 0-20-2z" />
+                </svg>
+                <svg class="ornament ornament-b" viewBox="0 0 140 140" aria-hidden="true">
+                    <path d="M30 30c20 10 28 36 16 58" />
+                    <path d="M48 24c28 8 40 40 22 68" />
+                    <circle cx="96" cy="96" r="14" />
+                </svg>
+                <svg class="ornament ornament-c" viewBox="0 0 140 140" aria-hidden="true">
+                    <path d="M18 70h40l10-18 12 36 10-18h32" />
+                    <path d="M24 92c16 16 40 18 62 4" />
+                </svg>
+                <div class="wrap gallery-inner">
+                    <p
+                        class="kicker"
+                        data-edit-id="gallery-kicker"
+                        data-edit-type="text"
+                    >
+                        Jelajahi Galeri
+                    </p>
+                    <h2 data-edit-id="gallery-title" data-edit-type="text">
+                        Rasakan suasananya lewat galeri kami
+                    </h2>
+                    <div class="polaroids">
+                        <figure class="polaroid">
+                            <img
+                                data-edit-id="gal-1"
+                                data-edit-type="image"
+                                src="assets/img/gal-burger.jpg"
+                                alt="Burger klasik"
+                                width="800"
+                                height="1000"
+                            />
+                            <figcaption
+                                data-edit-id="gal-cap-1"
+                                data-edit-type="text"
+                                >Burger</figcaption
+                            >
+                        </figure>
+                        <figure class="polaroid">
+                            <img
+                                data-edit-id="gal-2"
+                                data-edit-type="image"
+                                src="assets/img/gal-bar.jpg"
+                                alt="Suasana bar dan hidangan"
+                                width="800"
+                                height="1000"
+                            />
+                            <figcaption
+                                data-edit-id="gal-cap-2"
+                                data-edit-type="text"
+                                >Bar &amp; Hidangan</figcaption
+                            >
+                        </figure>
+                        <figure class="polaroid">
+                            <img
+                                data-edit-id="gal-3"
+                                data-edit-type="image"
+                                src="assets/img/gal-soup.jpg"
+                                alt="Semangkuk sup hangat"
+                                width="800"
+                                height="1000"
+                            />
+                            <figcaption
+                                data-edit-id="gal-cap-3"
+                                data-edit-type="text"
+                                >Brunch &amp; Sup</figcaption
+                            >
+                        </figure>
+                        <figure class="polaroid">
+                            <img
+                                data-edit-id="gal-4"
+                                data-edit-type="image"
+                                src="assets/img/gal-special.jpg"
+                                alt="Burger spesial dengan lapisan keju"
+                                width="800"
+                                height="1000"
+                            />
+                            <figcaption
+                                data-edit-id="gal-cap-4"
+                                data-edit-type="text"
+                                >Burger Spesial</figcaption
+                            >
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <section class="careers" id="karier">
+                <div class="wrap careers-stage">
+                    <svg class="doodle doodle-burger" viewBox="0 0 72 72" aria-hidden="true">
+                        <path d="M16 34c0-10 9-18 20-18s20 8 20 18" />
+                        <path d="M14 38h44" />
+                        <path d="M16 42c2 8 10 12 20 12s18-4 20-12" />
+                        <circle cx="28" cy="24" r="1.2" fill="currentColor" stroke="none" />
+                        <circle cx="36" cy="21" r="1.2" fill="currentColor" stroke="none" />
+                        <circle cx="46" cy="25" r="1.2" fill="currentColor" stroke="none" />
+                    </svg>
+                    <svg class="doodle doodle-drink" viewBox="0 0 72 72" aria-hidden="true">
+                        <path d="M24 16h24l-4 32a10 10 0 0 1-16 0L24 16z" />
+                        <path d="M30 16c2-8 8-10 14-6" />
+                        <path d="M22 58h28" />
+                    </svg>
+                    <svg class="doodle doodle-slice" viewBox="0 0 72 72" aria-hidden="true">
+                        <path d="M12 44l24-20 24 20v10H12z" />
+                        <path d="M36 24v30" />
+                        <path d="M20 18c6 4 10 4 16 0" />
+                    </svg>
+                    <p
+                        class="kicker"
+                        data-edit-id="career-kicker"
+                        data-edit-type="text"
+                    >
+                        Bergabunglah
+                    </p>
+                    <h2 data-edit-id="career-title" data-edit-type="text">
+                        Kami selalu mencari orang yang penuh semangat dan
+                        berdedikasi untuk bergabung dengan tim yang terus
+                        bertumbuh.
+                    </h2>
+                    <a
+                        class="btn"
+                        data-edit-id="career-cta"
+                        data-edit-type="link"
+                        href="#lamaran"
+                        >Lamar Sekarang</a
+                    >
+                </div>
+            </section>
+
+            <section class="apply" id="lamaran">
+                <div class="wrap apply-grid">
+                    <div>
+                        <p class="eyebrow">
+                            <span
+                                data-edit-id="apply-kicker"
+                                data-edit-type="text"
+                                >Lowongan</span
+                            >
+                        </p>
+                        <h2 data-edit-id="apply-title" data-edit-type="text">
+                            Kirim lamaran Anda
+                        </h2>
+                        <p
+                            class="lead"
+                            data-edit-id="apply-lead"
+                            data-edit-type="text"
+                        >
+                            Pilih posisi yang tersedia, lalu lengkapi formulir
+                            lamaran.
+                        </p>
+                        <a
+                            class="btn"
+                            data-edit-id="apply-form"
+                            data-edit-type="link"
+                            href="https://docs.google.com/forms"
+                            >Isi Formulir Lamaran</a
+                        >
+                    </div>
+                    <ul class="role-list">
+                        <li>
+                            <span data-edit-id="role-1" data-edit-type="text"
+                                >Pramusaji</span
+                            >
+                        </li>
+                        <li>
+                            <span data-edit-id="role-2" data-edit-type="text"
+                                >Koki dapur</span
+                            >
+                        </li>
+                        <li>
+                            <span data-edit-id="role-3" data-edit-type="text"
+                                >Barista</span
+                            >
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="reviews" id="ulasan">
+                <div class="wrap reviews-grid">
+                    <div>
+                        <p class="eyebrow">
+                            <span
+                                data-edit-id="review-kicker"
+                                data-edit-type="text"
+                                >Ulasan Tamu</span
+                            >
+                        </p>
+                        <h2 data-edit-id="review-title" data-edit-type="text">
+                            Setiap kunjungan menjadi kenangan indah
+                        </h2>
+                    </div>
+                    <div class="quote-grid">
+                        <article class="quote">
+                            <p data-edit-id="quote-1" data-edit-type="text">
+                                Setiap hidangan terasa dibuat dengan hati.
+                                Pelayanannya hangat, dan saya pasti kembali.
+                            </p>
+                            <footer>
+                                <img
+                                    data-edit-id="face-1"
+                                    data-edit-type="image"
+                                    src="assets/img/face-1.jpg"
+                                    alt=""
+                                    width="80"
+                                    height="80"
+                                />
+                                <div>
+                                    <strong
+                                        data-edit-id="quote-1-name"
+                                        data-edit-type="text"
+                                        >Sari Wulandari</strong
+                                    >
+                                    <span
+                                        data-edit-id="quote-1-role"
+                                        data-edit-type="text"
+                                        >Tamu tetap</span
+                                    >
+                                </div>
+                            </footer>
+                        </article>
+                        <article class="quote quote--dark">
+                            <p data-edit-id="quote-2" data-edit-type="text">
+                                Suasananya tenang dan rasanya jujur. Tempat yang
+                                pas untuk makan malam bersama keluarga.
+                            </p>
+                            <footer>
+                                <img
+                                    data-edit-id="face-2"
+                                    data-edit-type="image"
+                                    src="assets/img/face-2.jpg"
+                                    alt=""
+                                    width="80"
+                                    height="80"
+                                />
+                                <div>
+                                    <strong
+                                        data-edit-id="quote-2-name"
+                                        data-edit-type="text"
+                                        >Bima Pratama</strong
+                                    >
+                                    <span
+                                        data-edit-id="quote-2-role"
+                                        data-edit-type="text"
+                                        >Makan malam keluarga</span
+                                    >
+                                </div>
+                            </footer>
+                        </article>
+                        <article class="quote">
+                            <p data-edit-id="quote-3" data-edit-type="text">
+                                Dari pembuka sampai penutup, semuanya rapi. Meja
+                                selalu siap saat kami datang.
+                            </p>
+                            <footer>
+                                <img
+                                    data-edit-id="face-3"
+                                    data-edit-type="image"
+                                    src="assets/img/face-3.jpg"
+                                    alt=""
+                                    width="80"
+                                    height="80"
+                                />
+                                <div>
+                                    <strong
+                                        data-edit-id="quote-3-name"
+                                        data-edit-type="text"
+                                        >Nadia Putri</strong
+                                    >
+                                    <span
+                                        data-edit-id="quote-3-role"
+                                        data-edit-type="text"
+                                        >Perayaan ulang tahun</span
+                                    >
+                                </div>
+                            </footer>
+                        </article>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer" id="kontak">
+            <div class="wrap footer-grid">
+                <div class="footer-brand">
+                    <p class="footer-logo">
+                        <span
+                            data-edit-id="brand-name"
+                            data-edit-type="text"
+                            data-edit-scope="global"
+                            >Drizzle</span
+                        ><span class="dot">.</span>
+                    </p>
+                    <p
+                        class="social-label"
+                        data-edit-id="social-label"
+                        data-edit-type="text"
+                    >
+                        Media Sosial
+                    </p>
+                    <div class="socials">
+                        <a
+                            data-edit-id="social-ig"
+                            data-edit-type="link"
+                            href="https://instagram.com"
+                            aria-label="Instagram"
+                        >
+                            <span class="sr-only">Instagram</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect
+                                    x="4"
+                                    y="4"
+                                    width="16"
+                                    height="16"
+                                    rx="4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                />
+                                <circle
+                                    cx="12"
+                                    cy="12"
+                                    r="3.5"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                />
+                                <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" />
+                            </svg>
+                        </a>
+                        <a
+                            data-edit-id="social-fb"
+                            data-edit-type="link"
+                            href="https://facebook.com"
+                            aria-label="Facebook"
+                        >
+                            <span class="sr-only">Facebook</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path
+                                    d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-2c0-.6.4-1 1-1z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+                        </a>
+                        <a
+                            data-edit-id="social-yt"
+                            data-edit-type="link"
+                            href="https://youtube.com"
+                            aria-label="YouTube"
+                        >
+                            <span class="sr-only">YouTube</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <rect
+                                    x="3"
+                                    y="6"
+                                    width="18"
+                                    height="12"
+                                    rx="3"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                />
+                                <path d="M11 10.2v3.6l3.2-1.8z" fill="currentColor" />
+                            </svg>
+                        </a>
+                        <a
+                            data-edit-id="social-wa"
+                            data-edit-type="link"
+                            href="https://wa.me/6281234567890"
+                            aria-label="WhatsApp"
+                        >
+                            <span class="sr-only">WhatsApp</span>
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path
+                                    d="M12 4.5a7.5 7.5 0 0 0-6.4 11.4L5 19.5l3.7-.9A7.5 7.5 0 1 0 12 4.5z"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="1.6"
+                                />
+                                <path
+                                    d="M9.2 10.2c.2 1.4 1.6 3 3.4 3.6.4.1.8 0 1-.3l.5-.8c.1-.2 0-.4-.2-.5l-1-.4c-.2-.1-.4 0-.5.2l-.2.4c-.8-.3-1.4-.9-1.6-1.6l.4-.3c.2-.1.2-.3.1-.5l-.5-1c-.1-.2-.3-.3-.5-.2l-.7.5c-.3.2-.4.6-.2.9z"
+                                    fill="currentColor"
+                                />
+                            </svg>
+                        </a>
+                    </div>
+                    <p
+                        class="footer-address"
+                        data-edit-id="footer-address"
+                        data-edit-type="text"
+                    >
+                        Jl. Melati No. 18, Jakarta Selatan
+                    </p>
+                    <a
+                        class="footer-phone"
+                        data-edit-id="footer-phone"
+                        data-edit-type="link"
+                        href="tel:081234567890"
+                        >0812-3456-7890</a
+                    >
+                </div>
+
+                <div class="footer-news">
+                    <p data-edit-id="footer-news" data-edit-type="text">
+                        Dapatkan kabar terbaru langsung ke kotak masuk Anda.
+                    </p>
+                    <form class="news-form" id="newsletter">
+                        <label class="sr-only" for="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            name="email"
+                            required
+                            placeholder="Alamat email Anda"
+                            autocomplete="email"
+                        />
+                        <button class="btn" type="submit">
+                            <span data-edit-id="news-btn" data-edit-type="text"
+                                >Berlangganan</span
+                            >
+                        </button>
+                    </form>
+                    <p class="news-note" id="news-note" hidden>
+                        Terima kasih. Kabar terbaru akan kami kirim ke email
+                        Anda.
+                    </p>
+                </div>
+
+                <nav class="footer-links" aria-label="Tautan footer">
+                    <a href="#beranda"
+                        ><span data-edit-id="foot-home" data-edit-type="text"
+                            >Beranda</span
+                        ></a
+                    >
+                    <a href="#galeri"
+                        ><span data-edit-id="foot-gallery" data-edit-type="text"
+                            >Galeri</span
+                        ></a
+                    >
+                    <a href="#tentang"
+                        ><span data-edit-id="foot-about" data-edit-type="text"
+                            >Tentang</span
+                        ></a
+                    >
+                    <a href="#menu"
+                        ><span data-edit-id="foot-menu" data-edit-type="text"
+                            >Menu</span
+                        ></a
+                    >
+                    <a href="#lamaran"
+                        ><span data-edit-id="foot-event" data-edit-type="text"
+                            >Lowongan</span
+                        ></a
+                    >
+                    <a href="#kontak"
+                        ><span data-edit-id="foot-contact" data-edit-type="text"
+                            >Kontak</span
+                        ></a
+                    >
+                </nav>
+            </div>
+            <p
+                class="copyright wrap"
+                data-edit-id="footer-copy"
+                data-edit-type="text"
+            >
+                © 2026 Drizzle. Semua hak cipta dilindungi.
+            </p>
+        </footer>
+
+        <a
+            class="fab"
+            id="reserve-fab"
+            data-edit-id="reserve-fab"
+            data-edit-type="link"
+            href="#pesan-meja"
+            >Reservasi</a
+        >
+
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>

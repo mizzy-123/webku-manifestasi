@@ -126,6 +126,188 @@ test('client edits and colors are baked into the defaults', function () {
     unlink($zipPath);
 });
 
+test('a marked news archive becomes wordpress posts instead of extra pages', function () {
+    $template = app(TemplateArchiveService::class)->storeFromPath(makeTemplateZip(validTemplateFiles([
+        'manifest.json' => json_encode([
+            'name' => 'Blog Template',
+            'type' => 'multi-page',
+            'pages' => [
+                ['slug' => 'home', 'title' => 'Beranda', 'file' => 'index.html'],
+                ['slug' => 'kabar', 'title' => 'Kabar', 'file' => 'kabar.html'],
+                ['slug' => 'resep-steak', 'title' => 'Judul Lama', 'file' => 'berita.html'],
+            ],
+            'colors' => [['variable' => '--color-primary', 'label' => 'Warna Utama', 'default' => '#9275f7']],
+        ]),
+        'index.html' => <<<'HTML'
+<!DOCTYPE html>
+<html><head><title>Beranda</title></head><body>
+<div data-wp-loop="post" data-wp-count="2">
+<article data-wp-post="resep-steak"><h3 data-wp-field="title">Rahasia Steak</h3><a data-wp-field="permalink" href="berita.html">Baca</a></article>
+<article data-wp-post="lain"><h3 data-wp-field="title">Minuman yang Tepat</h3><a data-wp-field="permalink" href="berita.html">Baca</a></article>
+</div>
+</body></html>
+HTML,
+        'kabar.html' => <<<'HTML'
+<!DOCTYPE html>
+<html><head><title>Kabar</title></head><body>
+<form data-wp-search="post" data-blog-filter="client" action="kabar.html" method="get"><input type="search" name="q" placeholder="Cari"></form>
+<div data-wp-loop="post" data-wp-query="main">
+<article data-wp-post="resep-steak"><h3 data-wp-field="title">Rahasia Steak</h3></article>
+<article data-wp-post="lain"><h3 data-wp-field="title">Minuman yang Tepat</h3></article>
+</div>
+<div data-wp-pagination></div>
+</body></html>
+HTML,
+        'berita.html' => <<<'HTML'
+<!DOCTYPE html>
+<html><head><title>Berita</title></head><body>
+<article data-wp-single="post">
+<h1 data-wp-field="title" data-edit-id="article-title">Judul Lama</h1>
+<span data-wp-field="date" data-wp-date="2026-10-12">12 Okt 2026</span>
+<span data-wp-field="category" data-edit-id="article-category">Resep</span>
+<img data-wp-field="thumbnail" data-edit-id="article-image" src="assets/img/logo.svg" alt="">
+<div data-wp-field="content" data-edit-id="article-body"><p>Isi asli</p></div>
+</article>
+</body></html>
+HTML,
+    ])), Category::factory()->create());
+
+    $preview = CustomizedPreview::factory()->for($template)->create([
+        'custom_data' => [
+            'pages' => [
+                'resep-steak' => [
+                    'texts' => [
+                        'article-title' => "Chef's cut",
+                        'article-body' => 'Isi <b>baru</b> <?php echo "x"; ?>',
+                    ],
+                    'images' => ['article-image' => '/storage/custom-uploads/abcdefghij/logo.webp'],
+                    'links' => [],
+                ],
+            ],
+        ],
+    ]);
+
+    $zipPath = app(WordPressThemeExporterService::class)->export($template, $preview, 'Blog Tema');
+    $zip = ($this->open)($zipPath);
+    $names = collect(range(0, $zip->numFiles - 1))->map(fn ($i) => $zip->getNameIndex($i));
+    $front = $zip->getFromName('blog-tema/front-page.php');
+    $archive = $zip->getFromName('blog-tema/home.php');
+    $single = $zip->getFromName('blog-tema/single.php');
+    $functions = $zip->getFromName('blog-tema/functions.php');
+
+    expect($names)->toContain('blog-tema/front-page.php', 'blog-tema/home.php', 'blog-tema/archive.php', 'blog-tema/single.php')
+        ->and($names)->not->toContain('blog-tema/page-kabar.php', 'blog-tema/page-resep-steak.php');
+
+    expect($front)
+        ->toContain('new WP_Query')
+        ->toContain("'posts_per_page' => 2")
+        ->toContain('esc_html( get_the_title() )')
+        ->toContain('esc_url( get_permalink() )')
+        ->not->toContain('Minuman yang Tepat')
+        ->not->toContain('data-wp-');
+
+    expect($archive)
+        ->toContain('have_posts()')
+        ->toContain('the_posts_pagination')
+        ->toContain('name="q"')
+        ->toContain("get_option( 'page_for_posts' )")
+        ->toContain('webku_news_query()')
+        ->not->toContain('data-wp-')
+        ->not->toContain('data-blog-filter')
+        ->not->toContain('new WP_Query')
+        ->not->toContain('Minuman yang Tepat');
+
+    expect($zip->getFromName('blog-tema/index.php'))->toBe($archive)
+        ->and($single)
+        ->toContain('esc_html( get_the_title() )')
+        ->toContain("apply_filters( 'the_content', get_the_content() )")
+        ->not->toContain('Judul Lama')
+        ->not->toContain('data-wp-')
+        ->not->toContain('data-edit');
+
+    expect($functions)
+        ->toContain("update_option( 'page_for_posts'")
+        ->toContain("'slug' => 'kabar'")
+        ->toContain("'is_posts' => true")
+        ->not->toContain("'title' => 'Judul Lama'")
+        ->toContain("Chef\\'s cut")
+        ->toContain('Isi <b>baru</b> <?php echo "x"; ?>')
+        ->toContain('assets/custom-uploads/logo.webp')
+        ->toContain('get_page_by_path')
+        ->toContain('webku_news_search')
+        ->toContain('posts_search')
+        ->not->toContain('Isi asli');
+
+    $directory = sys_get_temp_dir().'/wpexport-'.uniqid();
+    $zip->extractTo($directory);
+
+    foreach (['front-page.php', 'home.php', 'single.php', 'functions.php'] as $file) {
+        $output = [];
+        $code = 0;
+        exec(escapeshellarg(PHP_BINARY).' -l '.escapeshellarg("{$directory}/blog-tema/{$file}").' 2>&1', $output, $code);
+
+        expect($code)->toBe(0, implode("\n", $output));
+    }
+
+    $zip->close();
+    unlink($zipPath);
+});
+
+test('the selera steakhouse news pages export as a wordpress loop', function () {
+    $source = resource_path('upload-templates/selera-steakhouse');
+    $zipPath = tempnam(sys_get_temp_dir(), 'selera-');
+    $zip = new ZipArchive;
+    $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS));
+
+    foreach ($files as $file) {
+        if (! $file->isFile()) {
+            continue;
+        }
+
+        $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($source))), '/');
+        $zip->addFile($file->getPathname(), $relative);
+    }
+
+    $zip->addFile($source.'/assets/img/hero-steak.jpg', 'thumbnail.jpg');
+    $zip->close();
+
+    $template = app(TemplateArchiveService::class)->storeFromPath($zipPath, Category::factory()->create());
+    $export = app(WordPressThemeExporterService::class)->export($template, null, 'Selera Steak');
+    $theme = ($this->open)($export);
+    $single = $theme->getFromName('selera-steak/single.php');
+    $archive = $theme->getFromName('selera-steak/home.php');
+    $functions = $theme->getFromName('selera-steak/functions.php');
+
+    expect($theme->getFromName('selera-steak/front-page.php'))
+        ->toContain('new WP_Query')
+        ->toContain('get_permalink()')
+        ->not->toContain('Memadukan Steak dengan Minuman yang Tepat');
+
+    expect($archive)->toContain('the_posts_pagination')
+        ->toContain('name="q"')
+        ->and($single)->toContain("apply_filters( 'the_content', get_the_content() )")
+        ->and($functions)->toContain('rahasia-steak-juicy')
+        ->toContain('Hidangan Penutup Baru Musim Ini')
+        ->not->toContain('page-rahasia-steak-juicy');
+
+    $directory = sys_get_temp_dir().'/selera-theme-'.uniqid();
+    $theme->extractTo($directory);
+    $theme->close();
+
+    foreach (['front-page.php', 'home.php', 'single.php', 'functions.php'] as $file) {
+        $output = [];
+        $code = 0;
+        exec(escapeshellarg(PHP_BINARY).' -l '.escapeshellarg("{$directory}/selera-steak/{$file}").' 2>&1', $output, $code);
+
+        expect($code)->toBe(0, implode("\n", $output));
+    }
+
+    unlink($zipPath);
+    unlink($export);
+});
+
 test('exported php files are syntactically valid', function () {
     $zipPath = app(WordPressThemeExporterService::class)->export($this->template);
     $zip = ($this->open)($zipPath);

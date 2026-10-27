@@ -42,6 +42,24 @@ class WordPressThemeExporterService
     /** @var array<int, array{slug: string, title: string, file: string}> */
     private array $pages = [];
 
+    /** @var array<int, string> */
+    private array $postPageSlugs = [];
+
+    /**
+     * Sample stories copied into WordPress posts when the theme is activated.
+     *
+     * @var array<int, array{slug: string, title: string, content: string, date: string, category: string, image: string}>
+     */
+    private array $seedPosts = [];
+
+    private string $postsPageSlug = '';
+
+    private string $lastPageRole = 'page';
+
+    private bool $usesPostLoop = false;
+
+    private int $postLoopIndex = 0;
+
     /** @var array<string, mixed> */
     private array $customData = [];
 
@@ -94,6 +112,12 @@ class WordPressThemeExporterService
             $template->manifest_data['pages'] ?? [],
             fn (mixed $page): bool => is_array($page) && isset($page['slug'], $page['file']),
         ));
+        $this->postPageSlugs = [];
+        $this->seedPosts = [];
+        $this->postsPageSlug = '';
+        $this->lastPageRole = 'page';
+        $this->usesPostLoop = false;
+        $this->postLoopIndex = 0;
 
         if ($this->pages === []) {
             throw new RuntimeException('Template tidak memiliki halaman yang terdaftar di manifest.');
@@ -142,6 +166,9 @@ class WordPressThemeExporterService
     {
         $disk = Storage::disk('public');
         $homeSlug = $this->homePage()['slug'];
+        $front = null;
+        $archive = null;
+        $single = null;
 
         foreach ($this->pages as $page) {
             $path = "{$template->storage_path}/{$page['file']}";
@@ -152,12 +179,40 @@ class WordPressThemeExporterService
 
             $php = $this->convertPage($disk->get($path), $page);
 
+            if ($this->lastPageRole === 'single') {
+                $this->postPageSlugs[] = $page['slug'];
+                $single ??= $php;
+
+                continue;
+            }
+
+            if ($this->lastPageRole === 'archive') {
+                $this->postsPageSlug = $page['slug'];
+                $archive = $php;
+
+                continue;
+            }
+
             if ($page['slug'] === $homeSlug) {
                 File::put($themeDir.'/front-page.php', $php);
-                File::put($themeDir.'/index.php', $php);
-            } else {
-                File::put($themeDir."/page-{$page['slug']}.php", $php);
+                $front = $php;
+
+                continue;
             }
+
+            File::put($themeDir."/page-{$page['slug']}.php", $php);
+        }
+
+        if ($archive !== null) {
+            File::put($themeDir.'/home.php', $archive);
+            File::put($themeDir.'/archive.php', $archive);
+            File::put($themeDir.'/index.php', $archive);
+        } elseif ($front !== null) {
+            File::put($themeDir.'/index.php', $front);
+        }
+
+        if ($single !== null) {
+            File::put($themeDir.'/single.php', $single);
         }
     }
 
@@ -196,6 +251,8 @@ class WordPressThemeExporterService
 
         $document->encoding = 'UTF-8';
         $xpath = new DOMXPath($document);
+        $this->lastPageRole = $this->pageRole($html);
+        $this->convertWordPressPosts($xpath, $page);
 
         foreach ($xpath->query('//title') ?: [] as $title) {
             $title->parentNode?->removeChild($title);
@@ -210,13 +267,340 @@ class WordPressThemeExporterService
         $this->convertUrls($xpath);
         $this->convertInlineStyles($xpath);
 
-        foreach ($xpath->query('//*[@data-edit-id or @data-edit-type or @data-edit-scope or @contenteditable]') ?: [] as $element) {
-            foreach (['data-edit-id', 'data-edit-type', 'data-edit-scope', 'contenteditable', 'spellcheck'] as $attribute) {
+        foreach ($xpath->query('//*[@data-edit-id or @data-edit-type or @data-edit-scope or @contenteditable or @data-wp-loop or @data-wp-query or @data-wp-count or @data-wp-post or @data-wp-single or @data-wp-field or @data-wp-date or @data-wp-pagination or @data-wp-search or @data-blog-filter]') ?: [] as $element) {
+            foreach (['data-edit-id', 'data-edit-type', 'data-edit-scope', 'contenteditable', 'spellcheck', 'data-wp-loop', 'data-wp-query', 'data-wp-count', 'data-wp-post', 'data-wp-single', 'data-wp-field', 'data-wp-date', 'data-wp-pagination', 'data-wp-search', 'data-blog-filter'] as $attribute) {
                 $element->removeAttribute($attribute);
             }
         }
 
         return $this->injectWordPress($document->saveHTML() ?: '');
+    }
+
+    /**
+     * A page that carries data-wp-single is one story. data-wp-query="main" is the posts archive.
+     */
+    private function pageRole(string $html): string
+    {
+        if (str_contains($html, 'data-wp-single="post"')) {
+            return 'single';
+        }
+
+        if (str_contains($html, 'data-wp-query="main"')) {
+            return 'archive';
+        }
+
+        return 'page';
+    }
+
+    /**
+     * Turn marked story cards into a WordPress loop and keep the sample stories for the first activation.
+     *
+     * @param  array{slug: string, title: string, file: string}  $page
+     */
+    private function convertWordPressPosts(DOMXPath $xpath, array $page): void
+    {
+        if ($this->lastPageRole === 'single') {
+            $articles = $xpath->query('//*[@data-wp-single="post"]');
+            $article = $articles === false ? null : $articles->item(0);
+
+            if ($article instanceof DOMElement) {
+                $this->seedPosts[] = $this->extractPost($article, $page);
+                $this->usesPostLoop = true;
+                $this->fillPostFields($article);
+                $article->removeAttribute('data-wp-single');
+            }
+        }
+
+        foreach (iterator_to_array($xpath->query('//*[@data-wp-loop="post"]') ?: []) as $loop) {
+            if ($loop instanceof DOMElement) {
+                $this->convertPostLoop($loop);
+            }
+        }
+
+        $this->convertNewsSearch($xpath, $page);
+
+        foreach (iterator_to_array($xpath->query('//*[@data-wp-pagination]') ?: []) as $pager) {
+            if (! $pager instanceof DOMElement) {
+                continue;
+            }
+
+            while ($pager->firstChild !== null) {
+                $pager->removeChild($pager->firstChild);
+            }
+
+            $pager->appendChild($pager->ownerDocument->createTextNode($this->rawToken(
+                "<?php the_posts_pagination( array( 'mid_size' => 1, 'prev_text' => 'Sebelumnya', 'next_text' => 'Berikutnya' ) ); ?>"
+            )));
+            $pager->removeAttribute('data-wp-pagination');
+        }
+    }
+
+    /**
+     * @param  array{slug: string, title: string, file: string}  $page
+     */
+    private function convertNewsSearch(DOMXPath $xpath, array $page): void
+    {
+        foreach (iterator_to_array($xpath->query('//form[@data-wp-search="post"]') ?: []) as $form) {
+            if (! $form instanceof DOMElement) {
+                continue;
+            }
+
+            $this->usesPostLoop = true;
+            $path = '/'.trim($page['slug'], '/').'/';
+            $form->setAttribute('action', $this->token("esc_url( get_permalink( get_option( 'page_for_posts' ) ) ?: home_url( '{$path}' ) )"));
+            $form->setAttribute('method', 'get');
+            $form->removeAttribute('data-wp-search');
+            $form->removeAttribute('data-blog-filter');
+
+            $inputs = (new DOMXPath($form->ownerDocument))->query('.//input[@name="q"]', $form);
+            $field = $inputs === false ? null : $inputs->item(0);
+
+            if ($field instanceof DOMElement) {
+                $field->setAttribute('value', $this->token('esc_attr( webku_news_query() )'));
+            }
+        }
+    }
+
+    private function convertPostLoop(DOMElement $loop): void
+    {
+        $items = [];
+
+        foreach ($loop->childNodes as $child) {
+            if ($child instanceof DOMElement && $child->hasAttribute('data-wp-post')) {
+                $items[] = $child;
+            }
+        }
+
+        if ($items === []) {
+            return;
+        }
+
+        $count = (int) $loop->getAttribute('data-wp-count');
+
+        if ($count < 1) {
+            $count = count($items);
+        }
+
+        $count = max(1, min($count, 24));
+        $template = $items[0];
+
+        for ($index = 1, $total = count($items); $index < $total; $index++) {
+            $items[$index]->parentNode?->removeChild($items[$index]);
+        }
+
+        $this->usesPostLoop = true;
+        $this->fillPostFields($template);
+        $template->removeAttribute('data-wp-post');
+
+        $isMain = $loop->getAttribute('data-wp-query') === 'main';
+        $document = $loop->ownerDocument;
+        $empty = '<p class="blog-empty">Belum ada kabar.</p>';
+
+        if ($isMain) {
+            $before = 'if ( have_posts() ) : while ( have_posts() ) : the_post();';
+            $after = "endwhile; else : if ( webku_news_query() !== '' ) : ?><p class=\"blog-empty\">Tidak ada kabar yang cocok.</p><?php else : ?>".$empty.'<?php endif; endif;';
+        } else {
+            $variable = '$webku_posts_'.$this->postLoopIndex;
+            $this->postLoopIndex++;
+            $before = "{$variable} = new WP_Query( array( 'post_type' => 'post', 'posts_per_page' => {$count} ) ); if ( {$variable}->have_posts() ) : while ( {$variable}->have_posts() ) : {$variable}->the_post();";
+            $after = 'endwhile; else : ?>'.$empty.'<?php endif; wp_reset_postdata();';
+        }
+
+        $loop->insertBefore($document->createTextNode($this->rawToken('<?php '.$after.' ?>')), $template->nextSibling);
+        $loop->insertBefore($document->createTextNode($this->rawToken('<?php '.$before.' ?>')), $template);
+
+        foreach (['data-wp-loop', 'data-wp-query', 'data-wp-count'] as $attribute) {
+            $loop->removeAttribute($attribute);
+        }
+    }
+
+    private function fillPostFields(DOMElement $root): void
+    {
+        $xpath = new DOMXPath($root->ownerDocument);
+
+        foreach (iterator_to_array($xpath->query('.//*[@data-wp-field]', $root) ?: []) as $field) {
+            if (! $field instanceof DOMElement) {
+                continue;
+            }
+
+            $name = $field->getAttribute('data-wp-field');
+            $this->stripEditorAttributes($field);
+
+            if ($name === 'permalink') {
+                $field->setAttribute('href', $this->token('esc_url( get_permalink() )'));
+            } elseif ($name === 'thumbnail') {
+                $fallback = $this->urlExpression($field->getAttribute('src'));
+                $field->removeAttribute('srcset');
+                $field->setAttribute('src', $this->token("esc_url( get_the_post_thumbnail_url( null, 'large' ) ?: {$fallback} )"));
+                $field->setAttribute('alt', $this->token('esc_attr( get_the_title() )'));
+            } elseif ($name === 'content') {
+                $this->replaceChildrenWithToken($field, "apply_filters( 'the_content', get_the_content() )");
+            } elseif ($name === 'date') {
+                $this->replaceChildrenWithToken($field, 'esc_html( get_the_date() )');
+            } elseif ($name === 'category') {
+                $this->replaceChildrenWithToken($field, 'esc_html( webku_post_category() )');
+            } elseif ($name === 'excerpt') {
+                $this->replaceChildrenWithToken($field, 'wp_kses_post( get_the_excerpt() )');
+            } elseif ($name === 'title') {
+                $this->replaceChildrenWithToken($field, 'esc_html( get_the_title() )');
+            }
+
+            $field->removeAttribute('data-wp-field');
+            $field->removeAttribute('data-wp-date');
+        }
+    }
+
+    /**
+     * @param  array{slug: string, title: string, file: string}  $page
+     * @return array{slug: string, title: string, content: string, date: string, category: string, image: string}
+     */
+    private function extractPost(DOMElement $article, array $page): array
+    {
+        $group = $this->customData['pages'][$page['slug']] ?? [];
+        $texts = is_array($group['texts'] ?? null) ? $group['texts'] : [];
+        $images = is_array($group['images'] ?? null) ? $group['images'] : [];
+        $title = $this->plainField($article, 'title', $texts);
+        $date = '';
+        $dateField = $this->fieldElement($article, 'date');
+
+        if ($dateField instanceof DOMElement && preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateField->getAttribute('data-wp-date')) === 1) {
+            $date = $dateField->getAttribute('data-wp-date').' 09:00:00';
+        }
+
+        $content = $this->fieldHtml($article, 'content', $texts, $images);
+
+        return [
+            'slug' => $page['slug'],
+            'title' => $title !== '' ? $title : $page['title'],
+            'content' => $content !== '' ? $content : '<p></p>',
+            'date' => $date,
+            'category' => $this->plainField($article, 'category', $texts),
+            'image' => $this->themeAsset($this->imageField($article, 'thumbnail', $images)),
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $texts
+     */
+    private function plainField(DOMElement $root, string $name, array $texts): string
+    {
+        $field = $this->fieldElement($root, $name);
+
+        if (! $field instanceof DOMElement) {
+            return '';
+        }
+
+        $editId = $field->getAttribute('data-edit-id');
+        $raw = $editId !== '' && array_key_exists($editId, $texts) ? (string) $texts[$editId] : $field->textContent;
+        $text = trim(html_entity_decode(strip_tags($raw), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+        return Str::limit($text, $name === 'category' ? 80 : 200, '');
+    }
+
+    /**
+     * @param  array<string, mixed>  $texts
+     * @param  array<string, mixed>  $images
+     */
+    private function fieldHtml(DOMElement $root, string $name, array $texts, array $images): string
+    {
+        $field = $this->fieldElement($root, $name);
+
+        if (! $field instanceof DOMElement) {
+            return '';
+        }
+
+        $editId = $field->getAttribute('data-edit-id');
+
+        if ($editId !== '' && array_key_exists($editId, $texts)) {
+            return $this->rewriteContentAssets((string) $texts[$editId]);
+        }
+
+        $xpath = new DOMXPath($field->ownerDocument);
+
+        foreach (iterator_to_array($xpath->query('.//*[@data-edit-type="image"]', $field) ?: []) as $image) {
+            if (! $image instanceof DOMElement) {
+                continue;
+            }
+
+            $id = $image->getAttribute('data-edit-id');
+
+            if ($id !== '' && isset($images[$id]) && is_string($images[$id]) && $images[$id] !== '') {
+                $image->setAttribute('src', $images[$id]);
+            }
+        }
+
+        return $this->rewriteContentAssets($this->innerHtml($field));
+    }
+
+    /**
+     * @param  array<string, mixed>  $images
+     */
+    private function imageField(DOMElement $root, string $name, array $images): string
+    {
+        $field = $this->fieldElement($root, $name);
+
+        if (! $field instanceof DOMElement) {
+            return '';
+        }
+
+        $editId = $field->getAttribute('data-edit-id');
+
+        if ($editId !== '' && isset($images[$editId]) && is_string($images[$editId]) && $images[$editId] !== '') {
+            return $images[$editId];
+        }
+
+        return $field->getAttribute('src');
+    }
+
+    private function fieldElement(DOMElement $root, string $name): ?DOMElement
+    {
+        $nodes = (new DOMXPath($root->ownerDocument))->query('.//*[@data-wp-field="'.$name.'"]', $root);
+        $node = $nodes === false ? null : $nodes->item(0);
+
+        return $node instanceof DOMElement ? $node : null;
+    }
+
+    private function themeAsset(string $url): string
+    {
+        $url = (string) preg_replace('#^\./#', '', trim($url));
+
+        if (preg_match('#^(?:https?:)?(?://[^/]+)?/storage/custom-uploads/[A-Za-z0-9]{10}/([^?\#]+)#', $url, $match) === 1) {
+            $url = 'assets/custom-uploads/'.$match[1];
+        }
+
+        if (! str_starts_with($url, 'assets/') || str_contains($url, '..')) {
+            return '';
+        }
+
+        return $url;
+    }
+
+    private function rewriteContentAssets(string $html): string
+    {
+        $html = (string) preg_replace(
+            '#([\'"])(?:https?:)?(?://[^\'"]+)?/storage/custom-uploads/[A-Za-z0-9]{10}/([^\'"]+)\1#',
+            '$1__THEME_URI__/assets/custom-uploads/$2$1',
+            $html,
+        );
+
+        return (string) preg_replace_callback(
+            '#\b(src|href)\s*=\s*([\'"])(?:\./)?(assets/[^\'"]+)\2#i',
+            function (array $match): string {
+                if (str_contains($match[3], '..')) {
+                    return $match[0];
+                }
+
+                return $match[1].'='.$match[2].'__THEME_URI__/'.$match[3].$match[2];
+            },
+            $html,
+        );
+    }
+
+    private function stripEditorAttributes(DOMElement $element): void
+    {
+        foreach (['data-edit-id', 'data-edit-type', 'data-edit-scope', 'contenteditable', 'spellcheck'] as $attribute) {
+            $element->removeAttribute($attribute);
+        }
     }
 
     /**
@@ -446,7 +830,16 @@ class WordPressThemeExporterService
         $pages = [];
 
         foreach ($this->pages as $page) {
-            $pages[] = ['slug' => $page['slug'], 'title' => $page['title'], 'is_home' => $page['slug'] === $this->homePage()['slug']];
+            if (in_array($page['slug'], $this->postPageSlugs, true)) {
+                continue;
+            }
+
+            $pages[] = [
+                'slug' => $page['slug'],
+                'title' => $page['title'],
+                'is_home' => $page['slug'] === $this->homePage()['slug'],
+                'is_posts' => $page['slug'] === $this->postsPageSlug,
+            ];
         }
 
         $settings = $this->settings;
@@ -498,6 +891,10 @@ add_action( 'after_switch_theme', function () {
 
         if ( $page['is_home'] && $page_id && ! is_wp_error( $page_id ) ) {
             $home_id = (int) $page_id;
+        }
+
+        if ( ! empty( $page['is_posts'] ) && $page_id && ! is_wp_error( $page_id ) ) {
+            update_option( 'page_for_posts', (int) $page_id );
         }
     }
 
@@ -568,7 +965,182 @@ PHP;
             '__PAGES__' => var_export($pages, true),
             '__SECTIONS__' => var_export($this->sections, true),
             '__SETTINGS__' => implode("\n", $settingLines),
-        ]);
+        ]).$this->postHelpers();
+    }
+
+    private function postHelpers(): string
+    {
+        if (! $this->usesPostLoop) {
+            return '';
+        }
+
+        $helpers = <<<'PHP'
+
+/**
+ * Search term from the news list, or an empty string.
+ */
+function webku_news_query() {
+    if ( ! isset( $_GET['q'] ) ) {
+        return '';
+    }
+
+    return sanitize_text_field( wp_unslash( $_GET['q'] ) );
+}
+
+/**
+ * Keep a news-list search on the posts page instead of switching to the search template.
+ */
+add_action( 'pre_get_posts', function ( $query ) {
+    if ( is_admin() || ! $query->is_main_query() || ! $query->is_home() ) {
+        return;
+    }
+
+    $term = webku_news_query();
+
+    if ( $term !== '' ) {
+        $query->set( 'webku_news_search', $term );
+    }
+} );
+
+/**
+ * Match the news search against the title, excerpt, and content.
+ *
+ * @param string   $search Search SQL.
+ * @param WP_Query $query  Current query.
+ */
+add_filter( 'posts_search', function ( $search, $query ) {
+    $term = $query->get( 'webku_news_search' );
+
+    if ( ! is_string( $term ) || $term === '' ) {
+        return $search;
+    }
+
+    global $wpdb;
+    $like = '%' . $wpdb->esc_like( $term ) . '%';
+
+    return $wpdb->prepare(
+        " AND ({$wpdb->posts}.post_title LIKE %s OR {$wpdb->posts}.post_excerpt LIKE %s OR {$wpdb->posts}.post_content LIKE %s) ",
+        $like,
+        $like,
+        $like
+    );
+}, 10, 2 );
+
+/**
+ * First category name for the current post.
+ */
+function webku_post_category() {
+    $categories = get_the_category();
+
+    if ( empty( $categories ) || is_wp_error( $categories ) ) {
+        return '';
+    }
+
+    return $categories[0]->name;
+}
+
+PHP;
+
+        if ($this->seedPosts === []) {
+            return $helpers;
+        }
+
+        $seed = str_replace('__SEED_POSTS__', var_export($this->seedPosts, true), <<<'PHP'
+
+/**
+ * Publish the sample stories once. A story that already exists is left unchanged.
+ */
+function webku_seed_posts() {
+    $posts = __SEED_POSTS__;
+
+    foreach ( $posts as $item ) {
+        if ( get_page_by_path( $item['slug'], OBJECT, 'post' ) ) {
+            continue;
+        }
+
+        $post_id = wp_insert_post( array(
+            'post_type'    => 'post',
+            'post_status'  => 'publish',
+            'post_title'   => $item['title'],
+            'post_name'    => $item['slug'],
+            'post_content' => str_replace( '__THEME_URI__', get_template_directory_uri(), $item['content'] ),
+            'post_date'    => $item['date'] !== '' ? $item['date'] : current_time( 'mysql' ),
+        ) );
+
+        if ( ! $post_id || is_wp_error( $post_id ) ) {
+            continue;
+        }
+
+        if ( $item['category'] !== '' ) {
+            $term = term_exists( $item['category'], 'category' );
+
+            if ( ! $term ) {
+                $term = wp_insert_term( $item['category'], 'category' );
+            }
+
+            if ( ! is_wp_error( $term ) ) {
+                $term_id = is_array( $term ) ? (int) $term['term_id'] : (int) $term;
+                wp_set_post_categories( $post_id, array( $term_id ) );
+            }
+        }
+
+        webku_attach_theme_image( $post_id, $item['image'] );
+    }
+}
+add_action( 'after_switch_theme', 'webku_seed_posts', 20 );
+
+/**
+ * Copy a theme image into the media library and use it as the featured image.
+ *
+ * @param int    $post_id  Post ID.
+ * @param string $relative Path inside the theme, starting with assets/.
+ */
+function webku_attach_theme_image( $post_id, $relative ) {
+    if ( ! is_string( $relative ) || ! preg_match( '#^assets/[A-Za-z0-9_./-]+$#', $relative ) || false !== strpos( $relative, '..' ) ) {
+        return;
+    }
+
+    $path = get_template_directory() . '/' . $relative;
+
+    if ( ! is_readable( $path ) ) {
+        return;
+    }
+
+    $filename = basename( $path );
+    $contents = file_get_contents( $path );
+
+    if ( false === $contents ) {
+        return;
+    }
+
+    $upload = wp_upload_bits( $filename, null, $contents );
+
+    if ( ! empty( $upload['error'] ) ) {
+        return;
+    }
+
+    $filetype = wp_check_filetype( $filename );
+    $attachment_id = wp_insert_attachment( array(
+        'post_mime_type' => $filetype['type'],
+        'post_title'     => sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ),
+        'post_status'    => 'inherit',
+    ), $upload['file'], $post_id );
+
+    if ( ! $attachment_id || is_wp_error( $attachment_id ) ) {
+        return;
+    }
+
+    if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+    }
+
+    wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
+    set_post_thumbnail( $post_id, $attachment_id );
+}
+
+PHP);
+
+        return $helpers.$seed;
     }
 
     private function zip(string $workRoot, string $themeSlug, string $zipPath): void
@@ -588,8 +1160,13 @@ PHP;
 
     private function token(string $phpExpression): string
     {
+        return $this->rawToken("<?php echo {$phpExpression}; ?>");
+    }
+
+    private function rawToken(string $php): string
+    {
         $token = sprintf(self::TOKEN, count($this->tokens));
-        $this->tokens[$token] = "<?php echo {$phpExpression}; ?>";
+        $this->tokens[$token] = $php;
 
         return $token;
     }

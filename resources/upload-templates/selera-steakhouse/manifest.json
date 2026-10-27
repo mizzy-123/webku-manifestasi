@@ -1,0 +1,34 @@
+{
+    "name": "Selera - Landing Page Steakhouse",
+    "type": "multi-page",
+    "description": "Situs steakhouse bernuansa gelap dan elegan. Beranda memuat menu, cerita chef, galeri, ulasan, acara, dan cuplikan kabar. Halaman Kabar beserta tiap tulisan menjadi pos WordPress yang bisa ditambah dari menu Pos.",
+    "pages": [
+        { "slug": "home", "title": "Beranda", "file": "index.html" },
+        { "slug": "kabar", "title": "Kabar", "file": "kabar.html" },
+        { "slug": "rahasia-steak-juicy", "title": "Rahasia Steak Juicy ala Chef Budi", "file": "berita-rahasia-steak.html" },
+        { "slug": "padukan-steak-minuman", "title": "Memadukan Steak dengan Minuman yang Tepat", "file": "berita-padukan-minuman.html" },
+        { "slug": "hidangan-penutup-baru", "title": "Hidangan Penutup Baru Musim Ini", "file": "berita-hidangan-penutup.html" }
+    ],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Utama",
+            "default": "#e03a3c"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Latar Gelap",
+            "default": "#151313"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Teks Terang",
+            "default": "#f5efe6"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Latar Terang",
+            "default": "#eeeae4"
+        }
+    ]
+}

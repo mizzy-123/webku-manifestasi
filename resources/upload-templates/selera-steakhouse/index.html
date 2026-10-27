@@ -1,0 +1,723 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Selera — Steak &amp; Grill</title>
+        <meta
+            name="description"
+            content="Selera Steak &amp; Grill. Steak pilihan yang dibakar di atas bara api, suasana hangat, dan layanan istimewa. Lihat menu dan pesan meja Anda."
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Caveat:wght@600&amp;family=DM+Sans:wght@400;500;600;700&amp;display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/css/style.css" />
+    </head>
+    <body>
+        <header class="site-header" id="site-header">
+            <div class="wrap header-inner">
+                <a href="#beranda" class="logo" aria-label="Selera, kembali ke beranda">
+                    <span class="logo-mark" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12.6 2.2c.5 2.6-.8 4.2-2 5.6-1.3 1.5-2.6 3-2.6 5.4a4 4 0 0 0 8 0c0-1.3-.4-2.3-1-3.2 1.9.9 3.2 3 3.2 5.2A6.2 6.2 0 0 1 12 21.4a6.2 6.2 0 0 1-6.2-6.2c0-3.4 2-5.4 3.6-7.2 1.4-1.6 2.6-3 3.2-5.8z"
+                            />
+                        </svg>
+                    </span>
+                    <span class="logo-text">
+                        <span
+                            class="logo-name"
+                            data-edit-id="brand-name"
+                            data-edit-type="text"
+                            data-edit-scope="global"
+                            >Selera</span
+                        >
+                        <span
+                            class="logo-tag"
+                            data-edit-id="brand-tag"
+                            data-edit-type="text"
+                            data-edit-scope="global"
+                            >Steak &amp; Grill</span
+                        >
+                    </span>
+                </a>
+
+                <nav class="site-nav" id="site-nav" aria-label="Navigasi utama">
+                    <a href="#menu"><span data-edit-id="nav-menu" data-edit-type="text">Menu</span></a>
+                    <a href="#tentang"><span data-edit-id="nav-about" data-edit-type="text">Tentang</span></a>
+                    <a href="#galeri"><span data-edit-id="nav-gallery" data-edit-type="text">Galeri</span></a>
+                    <a href="#ulasan"><span data-edit-id="nav-reviews" data-edit-type="text">Ulasan</span></a>
+                    <a href="#acara"><span data-edit-id="nav-event" data-edit-type="text">Acara</span></a>
+                    <a href="kabar.html"><span data-edit-id="nav-blog" data-edit-type="text">Kabar</span></a>
+                    <a href="#kontak"><span data-edit-id="nav-contact" data-edit-type="text">Kontak</span></a>
+                </nav>
+
+                <a
+                    class="btn btn-sm header-cta"
+                    data-edit-id="header-cta"
+                    data-edit-type="link"
+                    href="#kontak"
+                    >Reservasi</a
+                >
+
+                <button
+                    type="button"
+                    class="menu-toggle"
+                    id="menu-toggle"
+                    aria-label="Buka menu"
+                    aria-expanded="false"
+                    aria-controls="site-nav"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero" id="beranda">
+                <div class="wrap hero-inner">
+                    <p class="hero-kicker">
+                        <span data-edit-id="hero-kicker" data-edit-type="text">Steakhouse sejak 2009</span>
+                    </p>
+                    <h1 class="hero-title">
+                        <span class="line" data-edit-id="hero-line-1" data-edit-type="text">Cita Rasa Terbaik</span>
+                        <span class="line line-mix">
+                            <span data-edit-id="hero-line-2" data-edit-type="text">Dari</span>
+                            <img
+                                class="pill-img"
+                                data-edit-id="hero-pill"
+                                data-edit-type="image"
+                                src="assets/img/grill.jpg"
+                                alt="Steak tomahawk di atas bara api"
+                                width="900"
+                                height="900"
+                            />
+                            <span data-edit-id="hero-line-3" data-edit-type="text">Bara Api</span>
+                        </span>
+                    </h1>
+                    <p class="hero-lead" data-edit-id="hero-lead" data-edit-type="text">
+                        Daging pilihan, bumbu racikan sendiri, dan api yang dijaga sepanjang malam. Nikmati steak
+                        terbaik di kota dalam suasana yang hangat.
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn" data-edit-id="hero-cta" data-edit-type="link" href="#kontak">Reservasi Meja</a>
+                        <a class="btn btn-ghost" data-edit-id="hero-cta-2" data-edit-type="link" href="#menu"
+                            >Lihat Menu</a
+                        >
+                    </div>
+
+                    <div class="hero-stage">
+                        <img
+                            class="float float-left"
+                            data-edit-id="hero-side-1"
+                            data-edit-type="image"
+                            src="assets/img/salmon.jpg"
+                            alt="Salmon panggang dengan asparagus"
+                            width="1000"
+                            height="747"
+                        />
+                        <div class="plate">
+                            <img
+                                data-edit-id="hero-plate"
+                                data-edit-type="image"
+                                src="assets/img/hero-steak.jpg"
+                                alt="Steak ribeye panggang dengan tomat ceri dan rosemary"
+                                width="1000"
+                                height="1000"
+                            />
+                        </div>
+                        <img
+                            class="float float-right"
+                            data-edit-id="hero-side-2"
+                            data-edit-type="image"
+                            src="assets/img/ribs.jpg"
+                            alt="Iga sapi bakar dengan jagung"
+                            width="900"
+                            height="900"
+                        />
+                        <a class="spin-badge" href="#kontak" aria-label="Reservasi meja sekarang">
+                            <svg class="spin-ring" viewBox="0 0 120 120" aria-hidden="true">
+                                <defs>
+                                    <path id="badge-ring" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0" />
+                                </defs>
+                                <text>
+                                    <textPath href="#badge-ring" textLength="286" lengthAdjust="spacing">
+                                        Reservasi Meja • Selera Steak &amp; Grill •
+                                    </textPath>
+                                </text>
+                            </svg>
+                            <span class="spin-core" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M7 17L17 7M9 7h8v8" />
+                                </svg>
+                            </span>
+                        </a>
+                        <div class="rating-card">
+                            <span class="rating-score" data-edit-id="hero-rating" data-edit-type="text">4.9</span>
+                            <div>
+                                <div class="stars" aria-hidden="true">★★★★★</div>
+                                <p data-edit-id="hero-rating-text" data-edit-type="text">Dari 2.000+ ulasan tamu</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="marquee" aria-label="Keunggulan kami">
+                <div class="marquee-track" id="marquee-track">
+                    <div class="marquee-group" id="marquee-group">
+                        <span data-edit-id="marquee-1" data-edit-type="text">Daging Pilihan</span>
+                        <span data-edit-id="marquee-2" data-edit-type="text">Dibakar di Atas Bara</span>
+                        <span data-edit-id="marquee-3" data-edit-type="text">Anggur Terbaik</span>
+                        <span data-edit-id="marquee-4" data-edit-type="text">Suasana Hangat</span>
+                        <span data-edit-id="marquee-5" data-edit-type="text">Chef Berpengalaman</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="intro">
+                <div class="wrap reveal">
+                    <svg class="icon-cutlery" viewBox="0 0 64 64" aria-hidden="true">
+                        <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                            <g transform="rotate(-35 32 32)">
+                                <path d="M26 6v10M32 6v10M38 6v10M26 16a6 6 0 0 0 12 0M32 22v36" />
+                            </g>
+                            <g transform="rotate(35 32 32)">
+                                <path d="M35 6c-6 4-8 12-8 20h8zM35 26v32" />
+                            </g>
+                        </g>
+                    </svg>
+                    <h2 class="intro-text" data-edit-id="intro-text" data-edit-type="text">
+                        Restoran dengan menu tradisional yang lezat. Kami menyajikan
+                        <span class="accent">steak terbaik</span>, cita rasa autentik, dan suasana yang
+                        <span class="accent">hangat</span> untuk Anda.
+                    </h2>
+                </div>
+            </section>
+
+            <section class="menu-section" id="menu">
+                <div class="wrap">
+                    <div class="menu-list" id="menu-list">
+                        <article class="menu-row reveal">
+                            <div class="menu-name">
+                                <h3 data-edit-id="menu-1-title" data-edit-type="text">Makan Malam</h3>
+                                <img
+                                    class="menu-thumb"
+                                    data-edit-id="menu-1-image"
+                                    data-edit-type="image"
+                                    src="assets/img/grill.jpg"
+                                    alt="Steak tomahawk"
+                                    width="900"
+                                    height="900"
+                                />
+                            </div>
+                            <p class="menu-desc" data-edit-id="menu-1-desc" data-edit-type="text">
+                                Tomahawk, ribeye, dan wagyu yang dibakar di atas arang kayu, disajikan dengan saus
+                                racikan chef.
+                            </p>
+                            <p class="menu-time" data-edit-id="menu-1-time" data-edit-type="text">17.00 – 23.00</p>
+                            <a class="btn btn-sm" data-edit-id="menu-1-link" data-edit-type="link" href="#kontak"
+                                >Lihat Menu</a
+                            >
+                        </article>
+                        <article class="menu-row reveal is-active">
+                            <div class="menu-name">
+                                <h3 data-edit-id="menu-2-title" data-edit-type="text">Makan Siang</h3>
+                                <img
+                                    class="menu-thumb"
+                                    data-edit-id="menu-2-image"
+                                    data-edit-type="image"
+                                    src="assets/img/salmon.jpg"
+                                    alt="Salmon panggang"
+                                    width="1000"
+                                    height="747"
+                                />
+                            </div>
+                            <p class="menu-desc" data-edit-id="menu-2-desc" data-edit-type="text">
+                                Paket makan siang praktis: steak sirloin, salmon panggang, dan sup harian untuk
+                                rehat kerja Anda.
+                            </p>
+                            <p class="menu-time" data-edit-id="menu-2-time" data-edit-type="text">11.00 – 15.00</p>
+                            <a class="btn btn-sm" data-edit-id="menu-2-link" data-edit-type="link" href="#kontak"
+                                >Lihat Menu</a
+                            >
+                        </article>
+                        <article class="menu-row reveal">
+                            <div class="menu-name">
+                                <h3 data-edit-id="menu-3-title" data-edit-type="text">Brunch</h3>
+                                <img
+                                    class="menu-thumb"
+                                    data-edit-id="menu-3-image"
+                                    data-edit-type="image"
+                                    src="assets/img/seafood.jpg"
+                                    alt="Nasi seafood dalam wajan besi"
+                                    width="1000"
+                                    height="747"
+                                />
+                            </div>
+                            <p class="menu-desc" data-edit-id="menu-3-desc" data-edit-type="text">
+                                Steak &amp; telur, nasi seafood, dan pastry hangat. Cocok untuk akhir pekan bersama
+                                keluarga.
+                            </p>
+                            <p class="menu-time" data-edit-id="menu-3-time" data-edit-type="text">Sab – Min, 09.00</p>
+                            <a class="btn btn-sm" data-edit-id="menu-3-link" data-edit-type="link" href="#kontak"
+                                >Lihat Menu</a
+                            >
+                        </article>
+                        <article class="menu-row reveal">
+                            <div class="menu-name">
+                                <h3 data-edit-id="menu-4-title" data-edit-type="text">Minuman</h3>
+                                <img
+                                    class="menu-thumb"
+                                    data-edit-id="menu-4-image"
+                                    data-edit-type="image"
+                                    src="assets/img/wine-bar.jpg"
+                                    alt="Bartender menuang minuman"
+                                    width="896"
+                                    height="1200"
+                                />
+                            </div>
+                            <p class="menu-desc" data-edit-id="menu-4-desc" data-edit-type="text">
+                                Koleksi anggur, mocktail, dan kopi spesial yang dipilih untuk menemani setiap
+                                potongan steak.
+                            </p>
+                            <p class="menu-time" data-edit-id="menu-4-time" data-edit-type="text">Setiap Hari</p>
+                            <a class="btn btn-sm" data-edit-id="menu-4-link" data-edit-type="link" href="#kontak"
+                                >Lihat Menu</a
+                            >
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <section class="feature">
+                <div class="wrap">
+                    <div class="feature-frame zoom reveal">
+                        <img
+                            data-edit-id="feature-image"
+                            data-edit-type="image"
+                            src="assets/img/dining.jpg"
+                            alt="Meja makan dengan lilin dan gelas anggur"
+                            width="1376"
+                            height="768"
+                        />
+                        <div class="feature-card">
+                            <h2 data-edit-id="feature-title" data-edit-type="text">Suasana Hangat di Setiap Meja</h2>
+                            <p data-edit-id="feature-text" data-edit-type="text">
+                                Cahaya lilin, musik lembut, dan pelayanan yang ramah untuk makan malam yang berkesan.
+                            </p>
+                        </div>
+                        <div class="feature-hours">
+                            <span data-edit-id="feature-hours-label" data-edit-type="text">Buka Hari Ini</span>
+                            <strong data-edit-id="feature-hours-time" data-edit-type="text">11.00 – 23.00</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="story light" id="tentang">
+                <div class="wrap">
+                    <div class="section-head reveal">
+                        <svg class="icon-cutlery" viewBox="0 0 64 64" aria-hidden="true">
+                            <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                                <g transform="rotate(-35 32 32)">
+                                    <path d="M26 6v10M32 6v10M38 6v10M26 16a6 6 0 0 0 12 0M32 22v36" />
+                                </g>
+                                <g transform="rotate(35 32 32)">
+                                    <path d="M35 6c-6 4-8 12-8 20h8zM35 26v32" />
+                                </g>
+                            </g>
+                        </svg>
+                        <p class="eyebrow"><span data-edit-id="story-kicker" data-edit-type="text">Tentang Kami</span></p>
+                        <h2 data-edit-id="story-title" data-edit-type="text">
+                            Restoran klasik dengan sentuhan modern yang tak boleh Anda lewatkan
+                        </h2>
+                    </div>
+
+                    <div class="story-grid">
+                        <figure class="arch reveal">
+                            <img
+                                data-edit-id="story-image"
+                                data-edit-type="image"
+                                src="assets/img/interior.jpg"
+                                alt="Interior restoran dengan sofa kulit merah dan dinding bata"
+                                width="896"
+                                height="1200"
+                            />
+                        </figure>
+
+                        <div class="story-chef reveal">
+                            <img
+                                class="chef-photo"
+                                data-edit-id="chef-photo"
+                                data-edit-type="image"
+                                src="assets/img/chef.jpg"
+                                alt="Kepala koki tersenyum sambil membawa steak"
+                                width="900"
+                                height="900"
+                            />
+                            <p class="chef-sign" data-edit-id="chef-name" data-edit-type="text">Chef Budi Santoso</p>
+                            <p class="chef-role" data-edit-id="chef-role" data-edit-type="text">Kepala Koki &amp; Pendiri</p>
+                        </div>
+
+                        <div class="story-body reveal">
+                            <p data-edit-id="story-text-1" data-edit-type="text">
+                                Berawal dari dapur kecil di Jakarta Selatan, Selera tumbuh menjadi tempat berkumpul
+                                para pencinta steak. Kami memilih sendiri setiap potongan daging dari peternak lokal
+                                dan impor terbaik.
+                            </p>
+                            <p data-edit-id="story-text-2" data-edit-type="text">
+                                Setiap hidangan dibakar perlahan di atas arang kayu, lalu disajikan dengan saus dan
+                                pendamping buatan dapur kami sendiri.
+                            </p>
+                            <ul class="stats">
+                                <li>
+                                    <strong data-edit-id="stat-1-value" data-edit-type="text">15+</strong>
+                                    <span data-edit-id="stat-1-label" data-edit-type="text">Tahun pengalaman</span>
+                                </li>
+                                <li>
+                                    <strong data-edit-id="stat-2-value" data-edit-type="text">40+</strong>
+                                    <span data-edit-id="stat-2-label" data-edit-type="text">Pilihan menu</span>
+                                </li>
+                                <li>
+                                    <strong data-edit-id="stat-3-value" data-edit-type="text">12rb</strong>
+                                    <span data-edit-id="stat-3-label" data-edit-type="text">Tamu per bulan</span>
+                                </li>
+                            </ul>
+                            <a class="btn" data-edit-id="story-cta" data-edit-type="link" href="#kontak">Pesan Meja</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="gallery light" id="galeri">
+                <div class="wrap">
+                    <div class="section-head reveal">
+                        <p class="eyebrow"><span data-edit-id="gallery-kicker" data-edit-type="text">Galeri</span></p>
+                        <h2 data-edit-id="gallery-title" data-edit-type="text">Momen &amp; Hidangan Favorit</h2>
+                    </div>
+
+                    <div class="gallery-grid">
+                        <figure class="gallery-item zoom reveal">
+                            <img data-edit-id="gallery-1" data-edit-type="image" src="assets/img/seafood.jpg" alt="Nasi seafood dengan udang dan kerang" width="1000" height="747" />
+                            <figcaption data-edit-id="gallery-1-caption" data-edit-type="text">Nasi Seafood Bara</figcaption>
+                        </figure>
+                        <figure class="gallery-item tall arch-top zoom reveal">
+                            <img data-edit-id="gallery-2" data-edit-type="image" src="assets/img/friends.jpg" alt="Sekelompok teman bersulang saat makan malam" width="896" height="1200" />
+                            <figcaption data-edit-id="gallery-2-caption" data-edit-type="text">Kumpul Bersama Teman</figcaption>
+                        </figure>
+                        <figure class="gallery-item zoom reveal">
+                            <img data-edit-id="gallery-3" data-edit-type="image" src="assets/img/ribs.jpg" alt="Iga sapi bakar dan jagung" width="900" height="900" />
+                            <figcaption data-edit-id="gallery-3-caption" data-edit-type="text">Iga Bakar Madu</figcaption>
+                        </figure>
+                        <figure class="gallery-item tall zoom reveal">
+                            <img data-edit-id="gallery-4" data-edit-type="image" src="assets/img/wine-bar.jpg" alt="Bartender menuang anggur merah" width="896" height="1200" />
+                            <figcaption data-edit-id="gallery-4-caption" data-edit-type="text">Bar &amp; Anggur</figcaption>
+                        </figure>
+                        <figure class="gallery-item zoom reveal">
+                            <img data-edit-id="gallery-5" data-edit-type="image" src="assets/img/grill.jpg" alt="Steak tomahawk di atas panggangan" width="900" height="900" />
+                            <figcaption data-edit-id="gallery-5-caption" data-edit-type="text">Tomahawk di Atas Bara</figcaption>
+                        </figure>
+                        <figure class="gallery-item round zoom reveal">
+                            <img data-edit-id="gallery-6" data-edit-type="image" src="assets/img/dessert.jpg" alt="Kue cokelat lumer dengan es krim vanila" width="900" height="900" />
+                            <figcaption data-edit-id="gallery-6-caption" data-edit-type="text">Lava Cake</figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+
+            <section class="reviews" id="ulasan">
+                <div class="wrap reviews-stage">
+                    <h2 class="giant reveal" data-edit-id="reviews-title" data-edit-type="text">Ulasan</h2>
+                    <p class="reviews-sub" data-edit-id="reviews-sub" data-edit-type="text">
+                        Lebih dari 2.000 tamu telah berbagi pengalaman bersantap mereka bersama kami.
+                    </p>
+
+                    <article class="review review-1">
+                        <div class="review-top">
+                            <img data-edit-id="review-1-photo" data-edit-type="image" src="assets/img/guest-1.jpg" alt="Foto Rina Wulandari" width="240" height="240" />
+                            <div>
+                                <p class="review-name" data-edit-id="review-1-name" data-edit-type="text">Rina Wulandari</p>
+                                <p class="review-role" data-edit-id="review-1-role" data-edit-type="text">Pengusaha, Jakarta</p>
+                            </div>
+                        </div>
+                        <div class="stars" aria-label="Bintang 5">★★★★★</div>
+                        <p class="review-text" data-edit-id="review-1-text" data-edit-type="text">
+                            Ribeye-nya juicy dan matangnya pas sekali. Pelayanannya ramah, cocok untuk makan malam
+                            bersama klien.
+                        </p>
+                    </article>
+
+                    <article class="review review-2">
+                        <div class="review-top">
+                            <img data-edit-id="review-2-photo" data-edit-type="image" src="assets/img/guest-2.jpg" alt="Foto Sari Anggraini" width="300" height="300" />
+                            <div>
+                                <p class="review-name" data-edit-id="review-2-name" data-edit-type="text">Sari Anggraini</p>
+                                <p class="review-role" data-edit-id="review-2-role" data-edit-type="text">Food Blogger</p>
+                            </div>
+                        </div>
+                        <div class="stars" aria-label="Bintang 5">★★★★★</div>
+                        <p class="review-text" data-edit-id="review-2-text" data-edit-type="text">
+                            Suasananya hangat dan romantis. Lava cake-nya wajib dicoba sebagai penutup!
+                        </p>
+                    </article>
+
+                    <article class="review review-3">
+                        <div class="review-top">
+                            <img data-edit-id="review-3-photo" data-edit-type="image" src="assets/img/guest-3.jpg" alt="Foto Dimas Pratama" width="300" height="300" />
+                            <div>
+                                <p class="review-name" data-edit-id="review-3-name" data-edit-type="text">Dimas Pratama</p>
+                                <p class="review-role" data-edit-id="review-3-role" data-edit-type="text">Pelanggan Setia</p>
+                            </div>
+                        </div>
+                        <div class="stars" aria-label="Bintang 5">★★★★★</div>
+                        <p class="review-text" data-edit-id="review-3-text" data-edit-type="text">
+                            Sudah tiga tahun langganan di sini. Tomahawk-nya selalu konsisten dan porsinya mantap.
+                        </p>
+                    </article>
+
+                    <img
+                        class="review-food"
+                        data-edit-id="review-food"
+                        data-edit-type="image"
+                        src="assets/img/hero-steak.jpg"
+                        alt="Steak ribeye di atas piring"
+                        width="1000"
+                        height="1000"
+                    />
+                </div>
+            </section>
+
+            <section class="event light" id="acara">
+                <div class="wrap event-grid">
+                    <div class="event-copy reveal">
+                        <p class="eyebrow"><span data-edit-id="event-kicker" data-edit-type="text">Acara Privat</span></p>
+                        <h2 data-edit-id="event-title" data-edit-type="text">
+                            Rayakan momen spesial dengan layanan istimewa &amp; hidangan terbaik
+                        </h2>
+                        <p data-edit-id="event-text" data-edit-type="text">
+                            Ruang privat kami siap untuk perayaan keluarga hingga jamuan perusahaan. Tim kami
+                            membantu menyusun menu, dekorasi, dan alur acara sesuai kebutuhan Anda.
+                        </p>
+                        <ul class="event-list">
+                            <li data-edit-id="event-item-1" data-edit-type="text">Ulang tahun &amp; anniversary</li>
+                            <li data-edit-id="event-item-2" data-edit-type="text">Jamuan perusahaan</li>
+                            <li data-edit-id="event-item-3" data-edit-type="text">Lamaran &amp; pernikahan intim</li>
+                            <li data-edit-id="event-item-4" data-edit-type="text">Arisan &amp; reuni</li>
+                        </ul>
+                        <figure class="event-photo zoom">
+                            <img
+                                data-edit-id="event-image"
+                                data-edit-type="image"
+                                src="assets/img/event.jpg"
+                                alt="Tamu bersulang di meja panjang saat acara privat"
+                                width="1200"
+                                height="896"
+                            />
+                        </figure>
+                    </div>
+
+                    <div class="event-side reveal">
+                        <figure class="arch">
+                            <img
+                                data-edit-id="event-image-2"
+                                data-edit-type="image"
+                                src="assets/img/friends.jpg"
+                                alt="Teman-teman tertawa saat makan bersama"
+                                width="896"
+                                height="1200"
+                            />
+                        </figure>
+                        <div class="event-badge">
+                            <div>
+                                <strong data-edit-id="event-badge-value" data-edit-type="text">80</strong>
+                                <span data-edit-id="event-badge-label" data-edit-type="text">Kapasitas tamu</span>
+                            </div>
+                        </div>
+                        <div class="event-side-note">
+                            <p data-edit-id="event-note" data-edit-type="text">
+                                Konsultasikan rencana acara Anda, kami balas dalam 1×24 jam.
+                            </p>
+                            <a
+                                class="btn"
+                                data-edit-id="event-cta"
+                                data-edit-type="link"
+                                href="https://wa.me/6281234567890"
+                                >Rencanakan Acara</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="blog" id="kabar">
+                <div class="wrap">
+                    <div class="section-head reveal">
+                        <p class="eyebrow"><span data-edit-id="blog-kicker" data-edit-type="text">Dari Dapur Kami</span></p>
+                        <h2 data-edit-id="blog-title" data-edit-type="text">Kabar Terbaru</h2>
+                    </div>
+
+                    <div class="blog-grid" data-wp-loop="post" data-wp-count="3">
+                        <article class="post reveal" data-wp-post="rahasia-steak-juicy">
+                            <figure class="arch">
+                                <img data-wp-field="thumbnail" data-edit-id="post-1-image" data-edit-type="image" src="assets/img/chef.jpg" alt="Chef menyajikan steak" width="900" height="900" />
+                            </figure>
+                            <p class="post-meta">
+                                <span data-wp-field="date" data-wp-date="2026-10-12" data-edit-id="post-1-date" data-edit-type="text">12 Okt 2026</span>
+                                <span data-wp-field="category" data-edit-id="post-1-tag" data-edit-type="text">Resep</span>
+                            </p>
+                            <h3 data-wp-field="title" data-edit-id="post-1-title" data-edit-type="text">Rahasia Steak Juicy ala Chef Budi</h3>
+                            <a class="post-link" data-wp-field="permalink" data-edit-id="post-1-link" data-edit-type="link" href="berita-rahasia-steak.html">Baca Selengkapnya</a>
+                        </article>
+                        <article class="post reveal" data-wp-post="padukan-steak-minuman">
+                            <figure class="arch">
+                                <img data-wp-field="thumbnail" data-edit-id="post-2-image" data-edit-type="image" src="assets/img/wine-bar.jpg" alt="Bartender menuang anggur" width="896" height="1200" />
+                            </figure>
+                            <p class="post-meta">
+                                <span data-wp-field="date" data-wp-date="2026-09-28" data-edit-id="post-2-date" data-edit-type="text">28 Sep 2026</span>
+                                <span data-wp-field="category" data-edit-id="post-2-tag" data-edit-type="text">Panduan</span>
+                            </p>
+                            <h3 data-wp-field="title" data-edit-id="post-2-title" data-edit-type="text">Memadukan Steak dengan Minuman yang Tepat</h3>
+                            <a class="post-link" data-wp-field="permalink" data-edit-id="post-2-link" data-edit-type="link" href="berita-padukan-minuman.html">Baca Selengkapnya</a>
+                        </article>
+                        <article class="post reveal" data-wp-post="hidangan-penutup-baru">
+                            <figure class="arch">
+                                <img data-wp-field="thumbnail" data-edit-id="post-3-image" data-edit-type="image" src="assets/img/dessert.jpg" alt="Kue cokelat lumer" width="900" height="900" />
+                            </figure>
+                            <p class="post-meta">
+                                <span data-wp-field="date" data-wp-date="2026-09-14" data-edit-id="post-3-date" data-edit-type="text">14 Sep 2026</span>
+                                <span data-wp-field="category" data-edit-id="post-3-tag" data-edit-type="text">Menu Baru</span>
+                            </p>
+                            <h3 data-wp-field="title" data-edit-id="post-3-title" data-edit-type="text">Hidangan Penutup Baru Musim Ini</h3>
+                            <a class="post-link" data-wp-field="permalink" data-edit-id="post-3-link" data-edit-type="link" href="berita-hidangan-penutup.html">Baca Selengkapnya</a>
+                        </article>
+                    </div>
+                    <p class="blog-more reveal">
+                        <a class="btn btn-ghost" href="kabar.html"><span data-edit-id="blog-all" data-edit-type="text">Semua Kabar</span></a>
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer" id="kontak">
+            <div class="wrap footer-top">
+                <div class="footer-brand reveal">
+                    <p class="eyebrow"><span data-edit-id="contact-kicker" data-edit-type="text">Reservasi</span></p>
+                    <h2 data-edit-id="footer-name" data-edit-type="text" data-edit-scope="global">Selera Steak &amp; Grill</h2>
+                    <p class="footer-address" data-edit-id="footer-address" data-edit-type="text" data-edit-scope="global">
+                        Jl. Senopati No. 27, Kebayoran Baru, Jakarta Selatan 12190
+                    </p>
+                    <a
+                        class="footer-phone"
+                        data-edit-id="footer-phone"
+                        data-edit-type="link"
+                        data-edit-scope="global"
+                        href="tel:081234567890"
+                        >0812-3456-7890</a
+                    >
+                    <div>
+                        <a class="btn" data-edit-id="footer-wa" data-edit-type="link" href="https://wa.me/6281234567890"
+                            >Reservasi via WhatsApp</a
+                        >
+                    </div>
+                </div>
+
+                <div class="footer-hours reveal">
+                    <h3 data-edit-id="hours-title" data-edit-type="text">Jam Buka</h3>
+                    <ul>
+                        <li>
+                            <span data-edit-id="hours-1-day" data-edit-type="text">Senin – Kamis</span>
+                            <span data-edit-id="hours-1-time" data-edit-type="text">11.00 – 22.00</span>
+                        </li>
+                        <li>
+                            <span data-edit-id="hours-2-day" data-edit-type="text">Jumat</span>
+                            <span data-edit-id="hours-2-time" data-edit-type="text">11.00 – 23.00</span>
+                        </li>
+                        <li>
+                            <span data-edit-id="hours-3-day" data-edit-type="text">Sabtu – Minggu</span>
+                            <span data-edit-id="hours-3-time" data-edit-type="text">09.00 – 23.30</span>
+                        </li>
+                        <li>
+                            <span data-edit-id="hours-4-day" data-edit-type="text">Hari Libur Nasional</span>
+                            <span data-edit-id="hours-4-time" data-edit-type="text">10.00 – 23.00</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="wrap footer-news">
+                <div class="footer-news-copy">
+                    <h3 data-edit-id="news-title" data-edit-type="text">Dapatkan Penawaran Spesial</h3>
+                    <p data-edit-id="news-text" data-edit-type="text">Promo, menu baru, dan undangan acara langsung ke email Anda.</p>
+                </div>
+                <form class="news-form" id="newsletter">
+                    <label class="sr-only" for="news-email">Email</label>
+                    <input id="news-email" type="email" name="email" required placeholder="Alamat email Anda" autocomplete="email" />
+                    <button class="btn" type="submit">
+                        <span data-edit-id="news-btn" data-edit-type="text">Berlangganan</span>
+                    </button>
+                </form>
+                <p class="news-note" id="news-note" hidden>Terima kasih! Penawaran terbaru akan kami kirim ke email Anda.</p>
+            </div>
+
+            <div class="wrap footer-bottom">
+                <nav class="footer-links" aria-label="Tautan footer">
+                    <a href="#beranda"><span data-edit-id="foot-home" data-edit-type="text">Beranda</span></a>
+                    <a href="#menu"><span data-edit-id="foot-menu" data-edit-type="text">Menu</span></a>
+                    <a href="#tentang"><span data-edit-id="foot-about" data-edit-type="text">Tentang</span></a>
+                    <a href="#galeri"><span data-edit-id="foot-gallery" data-edit-type="text">Galeri</span></a>
+                    <a href="#acara"><span data-edit-id="foot-event" data-edit-type="text">Acara</span></a>
+                    <a href="kabar.html"><span data-edit-id="foot-blog" data-edit-type="text">Kabar</span></a>
+                    <a href="#kontak"><span data-edit-id="foot-contact" data-edit-type="text">Kontak</span></a>
+                </nav>
+
+                <div class="socials">
+                    <a data-edit-id="social-ig" data-edit-type="link" href="https://instagram.com" aria-label="Instagram">
+                        <span class="sr-only">Instagram</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="1.6" />
+                            <circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.6" />
+                            <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" />
+                        </svg>
+                    </a>
+                    <a data-edit-id="social-fb" data-edit-type="link" href="https://facebook.com" aria-label="Facebook">
+                        <span class="sr-only">Facebook</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-2c0-.6.4-1 1-1z" fill="currentColor" />
+                        </svg>
+                    </a>
+                    <a data-edit-id="social-tt" data-edit-type="link" href="https://tiktok.com" aria-label="TikTok">
+                        <span class="sr-only">TikTok</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M14.5 4c.4 2.2 1.8 3.6 4 3.9v2.7c-1.5 0-2.8-.4-4-1.2v5.8a5 5 0 1 1-5-5h.6v2.8a2.3 2.3 0 1 0 1.7 2.2V4z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </a>
+                    <a data-edit-id="social-wa" data-edit-type="link" href="https://wa.me/6281234567890" aria-label="WhatsApp">
+                        <span class="sr-only">WhatsApp</span>
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 4.5a7.5 7.5 0 0 0-6.4 11.4L5 19.5l3.7-.9A7.5 7.5 0 1 0 12 4.5z" fill="none" stroke="currentColor" stroke-width="1.6" />
+                            <path
+                                d="M9.2 10.2c.2 1.4 1.6 3 3.4 3.6.4.1.8 0 1-.3l.5-.8c.1-.2 0-.4-.2-.5l-1-.4c-.2-.1-.4 0-.5.2l-.2.4c-.8-.3-1.4-.9-1.6-1.6l.4-.3c.2-.1.2-.3.1-.5l-.5-1c-.1-.2-.3-.3-.5-.2l-.7.5c-.3.2-.4.6-.2.9z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                    </a>
+                </div>
+
+                <p class="copyright" data-edit-id="footer-copy" data-edit-type="text" data-edit-scope="global">
+                    © 2026 Selera Steak &amp; Grill. Semua hak cipta dilindungi.
+                </p>
+            </div>
+        </footer>
+
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>
