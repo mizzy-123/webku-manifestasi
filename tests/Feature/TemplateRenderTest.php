@@ -21,6 +21,7 @@ test('index page gets the base tag after head and scripts before closing body', 
 
     expect($html)->toContain('<head><base href="/storage/templates/demo-template/"><title>Hai</title>')
         ->and($html)->toContain('<script src="/js/editor-bridge.js"></script>')
+        ->and($html)->toContain("classList.contains('__ed-edit')")
         ->and(strpos($html, 'editor-bridge.js'))->toBeLessThan(strpos($html, '</body>'))
         ->and($html)->toContain('© Rp 10.000 😀')
         ->and($response->headers->get('Content-Type'))->toBe('text/html; charset=UTF-8');

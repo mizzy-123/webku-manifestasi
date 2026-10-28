@@ -12,7 +12,7 @@ class TemplateRenderController extends Controller
      * Inline script so in-page anchors keep working despite the injected <base> tag.
      */
     private const ANCHOR_FIX_SCRIPT = <<<'HTML'
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a){return}var id=a.getAttribute('href').slice(1);e.preventDefault();var t=id?document.getElementById(id):document.body;if(t){t.scrollIntoView({behavior:'smooth'})}});</script>
+<script>document.addEventListener('click',function(e){if(document.documentElement.classList.contains('__ed-edit')){return}var a=e.target.closest&&e.target.closest('a[href^="#"]');if(!a){return}var id=a.getAttribute('href').slice(1);e.preventDefault();var t=id?document.getElementById(id):document.body;if(t){t.scrollIntoView({behavior:'smooth'})}});</script>
 HTML;
 
     /**

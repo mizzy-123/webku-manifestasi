@@ -904,11 +904,18 @@ JS);
     private function convertSvgText(string $svg, array $page): string
     {
         return (string) preg_replace_callback(
-            '/<(textPath|tspan|text)\b([^>]*\bdata-edit-id="([^"]+)"[^>]*)>(.*?)<\/\1>/is',
+            '/<(textPath|tspan|text)\b([^>]*\b(?:data-link-label|data-edit-id)="[^"]+"[^>]*)>(.*?)<\/\1>/is',
             function (array $match) use ($page): string {
                 $isGlobal = preg_match('/\bdata-edit-scope="global"/', $match[2]) === 1;
-                $setting = $this->rememberTextSetting($match[3], $isGlobal, $page, $match[4]);
-                $attributes = (string) preg_replace('/\sdata-edit-(?:id|type|scope)="[^"]*"/', '', $match[2]);
+                $attributes = (string) preg_replace('/\s(?:data-edit-(?:id|type|scope)|data-link-label)="[^"]*"/', '', $match[2]);
+
+                if (preg_match('/\bdata-link-label="([^"]+)"/', $match[2], $link) === 1) {
+                    $setting = $this->rememberLinkLabel($link[1], $isGlobal, $page, $match[3]);
+                } elseif (preg_match('/\bdata-edit-id="([^"]+)"/', $match[2], $text) === 1) {
+                    $setting = $this->rememberTextSetting($text[1], $isGlobal, $page, $match[3]);
+                } else {
+                    return $match[0];
+                }
 
                 return '<'.$match[1].$attributes.' data-webku-setting="'.$setting['id'].'">'.$this->token($setting['expression']).'</'.$match[1].'>';
             },
@@ -935,6 +942,41 @@ JS);
         }
 
         $this->settings[$settingId] = ['id' => $settingId, 'label' => Str::headline($editId), 'type' => 'html', 'section' => $section, 'default' => $this->phpString($default)];
+
+        return [
+            'id' => $settingId,
+            'expression' => "wp_kses_post( get_theme_mod( '{$settingId}', ".$this->phpString($default).' ) )',
+        ];
+    }
+
+    /**
+     * Text drawn on an SVG path for a link button, edited from the same popup as its destination.
+     *
+     * @param  array{slug: string, title: string, file: string}  $page
+     * @return array{id: string, expression: string}
+     */
+    private function rememberLinkLabel(string $editId, bool $isGlobal, array $page, string $fallback): array
+    {
+        $group = $isGlobal ? ($this->customData['global'] ?? []) : ($this->customData['pages'][$page['slug']] ?? []);
+        $links = is_array($group['links'] ?? null) ? $group['links'] : [];
+        $stored = is_array($links[$editId] ?? null) ? ($links[$editId]['text'] ?? null) : null;
+        $default = trim((string) ($stored ?? $fallback));
+        $scope = $isGlobal ? 'global' : $page['slug'];
+        $settingId = $this->settingId($scope, $editId).'_text';
+        $section = $isGlobal ? 'webku_global' : 'webku_page_'.$this->slugKey($page['slug']);
+        $this->sections[$section] = $isGlobal ? 'Elemen Global' : 'Halaman: '.$page['title'];
+
+        if (! $isGlobal) {
+            $this->sectionPages[$section] = $page['slug'] === $this->homePage()['slug'] ? '' : $page['slug'];
+        }
+
+        $this->settings[$settingId] = [
+            'id' => $settingId,
+            'label' => Str::headline($editId).' (tulisan)',
+            'type' => 'text',
+            'section' => $section,
+            'default' => $this->phpString($default),
+        ];
 
         return [
             'id' => $settingId,

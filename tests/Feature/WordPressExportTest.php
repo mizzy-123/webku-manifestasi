@@ -156,7 +156,7 @@ test('content can be edited from wordpress by clicking elements in the customize
     unlink($zipPath);
 });
 
-test('text on a circular svg badge stays editable', function () {
+test('a circular badge is a link button whose label and destination stay editable', function () {
     $template = app(TemplateArchiveService::class)->storeFromPath(makeTemplateZip(validTemplateFiles([
         'manifest.json' => json_encode([
             'name' => 'Badge Template',
@@ -167,9 +167,9 @@ test('text on a circular svg badge stays editable', function () {
         'index.html' => <<<'HTML'
 <!DOCTYPE html>
 <html><head></head><body>
-<a class="spin-badge" href="#kontak">
-<svg class="spin-ring" viewBox="0 0 120 120"><text><textPath href="#badge-ring" textLength="286" data-edit-id="spin-badge-text">Reservasi Meja • Selera •</textPath></text></svg>
-<span class="spin-label" data-edit-id="spin-badge-text" data-edit-type="text">Reservasi Meja • Selera •</span>
+<a class="spin-badge" href="#kontak" data-edit-id="spin-badge" data-edit-type="link">
+<svg class="spin-ring" viewBox="0 0 120 120"><text><textPath href="#badge-ring" textLength="286" data-link-label="spin-badge">Reservasi Meja • Selera •</textPath></text></svg>
+<span class="spin-core"></span>
 </a>
 <svg viewBox="0 0 10 10"><path d="M0 0"/></svg>
 </body></html>
@@ -177,20 +177,29 @@ HTML,
     ])), Category::factory()->create());
 
     $preview = CustomizedPreview::factory()->for($template)->create([
-        'custom_data' => ['pages' => ['home' => ['texts' => ['spin-badge-text' => 'Meja Baru • Toko •'], 'images' => [], 'links' => []]]],
+        'custom_data' => ['pages' => ['home' => [
+            'texts' => [],
+            'images' => [],
+            'links' => ['spin-badge' => ['text' => 'Meja Baru • Toko •', 'href' => 'https://wa.me/6281']],
+        ]]],
     ]);
 
     $zipPath = app(WordPressThemeExporterService::class)->export($template, $preview);
     $zip = ($this->open)($zipPath);
     $front = $zip->getFromName('badge-template/front-page.php');
 
-    expect(substr_count($front, "get_theme_mod( 'webku_home_spin_badge_text', 'Meja Baru • Toko •' )"))->toBe(2)
-        ->and(substr_count($front, 'data-webku-setting="webku_home_spin_badge_text"'))->toBe(2)
-        ->and($front)->toContain('viewBox="0 0 120 120"')
+    expect($front)
+        ->toContain("get_theme_mod( 'webku_home_spin_badge_text', 'Meja Baru • Toko •' )")
+        ->toContain("get_theme_mod( 'webku_home_spin_badge_url', 'https://wa.me/6281' )")
+        ->toContain('data-webku-setting="webku_home_spin_badge_text"')
+        ->toContain('data-webku-setting="webku_home_spin_badge_url"')
+        ->toContain('viewBox="0 0 120 120"')
         ->toContain('viewBox="0 0 10 10"')
         ->not->toContain('data-edit-id')
+        ->not->toContain('data-link-label')
         ->not->toContain('__WPMOD_')
-        ->not->toContain('Reservasi Meja');
+        ->not->toContain('Reservasi Meja')
+        ->not->toContain('href="#kontak"');
 
     $zip->close();
     unlink($zipPath);
