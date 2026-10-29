@@ -1,0 +1,36 @@
+{
+    "name": "Sushi Kita - Restoran Sushi & Jepang",
+    "type": "multi-page",
+    "description": "Situs restoran sushi bernuansa gelap dengan aksen hijau zaitun dan oranye. Memuat karosel hidangan, daftar gerai, menu bertab, peta lokasi, nilai dapur, peluang waralaba, FAQ, serta halaman Berita yang menjadi pos WordPress.",
+    "pages": [
+        { "slug": "home", "title": "Beranda", "file": "index.html" },
+        { "slug": "berita", "title": "Berita", "file": "berita.html" },
+        { "slug": "aburi-mentai-hadir", "title": "Aburi Mentai Roll Kini Hadir di Semua Gerai", "file": "berita-aburi-mentai.html" },
+        { "slug": "gerai-baru-bandung", "title": "Gerai Baru Resmi Dibuka di Bandung", "file": "berita-gerai-bandung.html" },
+        { "slug": "cara-menikmati-sushi", "title": "5 Cara Menikmati Sushi seperti Orang Jepang", "file": "berita-cara-menikmati-sushi.html" },
+        { "slug": "jam-hemat-hari-kerja", "title": "Jam Hemat: Diskon 30% Setiap Hari Kerja", "file": "berita-jam-hemat.html" },
+        { "slug": "pagi-di-dapur-kami", "title": "Pagi Hari di Dapur Sushi Kita", "file": "berita-dapur-kami.html" }
+    ],
+    "colors": [
+        {
+            "variable": "--color-primary",
+            "label": "Warna Hijau Utama",
+            "default": "#5f8b3c"
+        },
+        {
+            "variable": "--color-secondary",
+            "label": "Warna Latar Gelap",
+            "default": "#141414"
+        },
+        {
+            "variable": "--color-accent",
+            "label": "Warna Aksen Oranye",
+            "default": "#f28c28"
+        },
+        {
+            "variable": "--color-bg",
+            "label": "Warna Bagian Abu",
+            "default": "#2b2b2b"
+        }
+    ]
+}

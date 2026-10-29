@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760">
+    <rect width="1200" height="760" fill="#ece9e2" />
+
+    <g fill="#dfe8cf">
+        <path d="M60 70h230v150H60z" />
+        <path d="M860 470h250v190H860z" />
+        <path d="M420 560c60-30 150-20 190 30v120H420z" />
+        <circle cx="760" cy="150" r="70" />
+    </g>
+
+    <g fill="#e2ded5">
+        <path d="M330 70h160v130H330zM530 70h160v130H530zM330 250h160v120H330zM530 250h100v120H530zM60 270h220v100H60zM60 420h220v120H60zM330 420h160v100H330zM700 260h130v110H700zM870 70h240v140H870zM870 260h240v150H870zM60 590h300v100H60zM680 430h130v120H680z" />
+    </g>
+
+    <path d="M-20 520C160 470 260 600 420 520S700 380 860 430s250 30 380-30" fill="none" stroke="#b9d4e6" stroke-width="46" stroke-linecap="round" />
+
+    <g fill="none" stroke="#ffffff" stroke-linecap="round">
+        <path d="M0 230h1200M0 395h1200M310 0v760M510 0v760M850 0v760" stroke-width="22" />
+        <path d="M0 560h1200M690 0v420M120 230v540M1000 0v760" stroke-width="12" />
+        <path d="M310 395L850 40M510 760l340-365" stroke-width="16" />
+    </g>
+
+    <g fill="none" stroke="#f3c98b" stroke-linecap="round">
+        <path d="M0 395h1200" stroke-width="10" />
+        <path d="M510 0v760" stroke-width="10" />
+    </g>
+
+    <g font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#8c877d" letter-spacing="1">
+        <text x="560" y="388">JL. SENOPATI</text>
+        <text x="522" y="140" transform="rotate(90 522 140)">JL. SUDIRMAN</text>
+        <text x="80" y="223">JL. GUNAWARMAN</text>
+        <text x="880" y="553">JL. WOLTER MONGINSIDI</text>
+    </g>
+
+    <g>
+        <ellipse cx="510" cy="402" rx="34" ry="10" fill="rgba(0,0,0,0.18)" />
+        <path d="M510 400c-30-44-46-70-46-92a46 46 0 0 1 92 0c0 22-16 48-46 92z" fill="#f28c28" />
+        <circle cx="510" cy="306" r="18" fill="#ffffff" />
+    </g>
+
+    <g>
+        <ellipse cx="850" cy="238" rx="24" ry="8" fill="rgba(0,0,0,0.16)" />
+        <path d="M850 236c-22-32-34-50-34-66a34 34 0 0 1 68 0c0 16-12 34-34 66z" fill="#5f8b3c" />
+        <circle cx="850" cy="168" r="13" fill="#ffffff" />
+    </g>
+
+    <g>
+        <ellipse cx="310" cy="566" rx="24" ry="8" fill="rgba(0,0,0,0.16)" />
+        <path d="M310 564c-22-32-34-50-34-66a34 34 0 0 1 68 0c0 16-12 34-34 66z" fill="#5f8b3c" />
+        <circle cx="310" cy="496" r="13" fill="#ffffff" />
+    </g>
+</svg>

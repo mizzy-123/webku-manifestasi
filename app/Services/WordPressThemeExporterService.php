@@ -63,6 +63,27 @@ class WordPressThemeExporterService
 
     private int $postLoopIndex = 0;
 
+    /**
+     * Custom post type collections (e.g. restaurant branches, menu dishes) extracted from `data-wp-collection`.
+     *
+     * @var array<string, array{
+     *     key: string,
+     *     post_type: string,
+     *     label: string,
+     *     singular: string,
+     *     icon: string,
+     *     taxonomy: string,
+     *     taxonomy_label: string,
+     *     has_price: bool,
+     *     has_excerpt: bool,
+     *     terms: array<string, string>,
+     *     items: array<int, array{slug: string, title: string, excerpt: string, price: string, category: string, image: string, order: int}>
+     * }>
+     */
+    private array $collections = [];
+
+    private int $collectionLoopIndex = 0;
+
     /** @var array<string, mixed> */
     private array $customData = [];
 
@@ -123,6 +144,8 @@ class WordPressThemeExporterService
         $this->lastPageRole = 'page';
         $this->usesPostLoop = false;
         $this->postLoopIndex = 0;
+        $this->collections = [];
+        $this->collectionLoopIndex = 0;
 
         if ($this->pages === []) {
             throw new RuntimeException('Template tidak memiliki halaman yang terdaftar di manifest.');
@@ -334,6 +357,7 @@ JS);
         $xpath = new DOMXPath($document);
         $this->lastPageRole = $this->pageRole($html);
         $this->linkBrandCopies($xpath);
+        $this->convertWordPressCollections($xpath, $page);
         $this->convertWordPressPosts($xpath, $page);
 
         foreach ($xpath->query('//title') ?: [] as $title) {
@@ -349,8 +373,8 @@ JS);
         $this->convertUrls($xpath);
         $this->convertInlineStyles($xpath);
 
-        foreach ($xpath->query('//*[@data-edit-id or @data-edit-type or @data-edit-scope or @contenteditable or @data-wp-loop or @data-wp-query or @data-wp-count or @data-wp-post or @data-wp-single or @data-wp-field or @data-wp-date or @data-wp-pagination or @data-wp-search or @data-blog-filter]') ?: [] as $element) {
-            foreach (['data-edit-id', 'data-edit-type', 'data-edit-scope', 'contenteditable', 'spellcheck', 'data-wp-loop', 'data-wp-query', 'data-wp-count', 'data-wp-post', 'data-wp-single', 'data-wp-field', 'data-wp-date', 'data-wp-pagination', 'data-wp-search', 'data-blog-filter'] as $attribute) {
+        foreach ($xpath->query('//*[@data-edit-id or @data-edit-type or @data-edit-scope or @contenteditable or @data-wp-loop or @data-wp-query or @data-wp-count or @data-wp-post or @data-wp-single or @data-wp-field or @data-wp-date or @data-wp-pagination or @data-wp-search or @data-blog-filter or @data-wp-collection or @data-wp-item or @data-wp-label or @data-wp-singular or @data-wp-taxonomy-label or @data-wp-icon or @data-wp-terms]') ?: [] as $element) {
+            foreach (['data-edit-id', 'data-edit-type', 'data-edit-scope', 'contenteditable', 'spellcheck', 'data-wp-loop', 'data-wp-query', 'data-wp-count', 'data-wp-post', 'data-wp-single', 'data-wp-field', 'data-wp-date', 'data-wp-pagination', 'data-wp-search', 'data-blog-filter', 'data-wp-collection', 'data-wp-item', 'data-wp-label', 'data-wp-singular', 'data-wp-taxonomy-label', 'data-wp-icon', 'data-wp-terms'] as $attribute) {
                 $element->removeAttribute($attribute);
             }
         }
@@ -381,7 +405,7 @@ JS);
             }
         }
 
-        $unmarked = 'not(ancestor-or-self::*[@data-edit-id or @data-wp-post or @data-wp-single or @data-wp-field])';
+        $unmarked = 'not(ancestor-or-self::*[@data-edit-id or @data-wp-post or @data-wp-single or @data-wp-field or @data-wp-collection or @data-wp-item or @data-wp-terms])';
 
         foreach (iterator_to_array($xpath->query("//body//img[{$unmarked}]") ?: []) as $image) {
             if ($image instanceof DOMElement && isset($images[$image->getAttribute('src')])) {
@@ -436,6 +460,254 @@ JS);
         }
 
         return 'page';
+    }
+
+    /**
+     * Turn marked dynamic collections (`data-wp-collection`) into custom post type loops and seed their sample items.
+     *
+     * @param  array{slug: string, title: string, file: string}  $page
+     */
+    private function convertWordPressCollections(DOMXPath $xpath, array $page): void
+    {
+        $group = $this->customData['pages'][$page['slug']] ?? [];
+        $texts = is_array($group['texts'] ?? null) ? $group['texts'] : [];
+        $images = is_array($group['images'] ?? null) ? $group['images'] : [];
+
+        $termLabelsByCollection = [];
+
+        foreach (iterator_to_array($xpath->query('//*[@data-wp-terms]') ?: []) as $tabsNode) {
+            if (! $tabsNode instanceof DOMElement) {
+                continue;
+            }
+
+            $key = $this->slugKey($tabsNode->getAttribute('data-wp-terms'));
+
+            if ($key === '') {
+                continue;
+            }
+
+            foreach (iterator_to_array($xpath->query('.//*[@data-filter]', $tabsNode) ?: []) as $btn) {
+                if (! $btn instanceof DOMElement) {
+                    continue;
+                }
+
+                $filter = trim($btn->getAttribute('data-filter'));
+
+                if ($filter === '' || $filter === 'semua' || $filter === 'all') {
+                    continue;
+                }
+
+                $editEl = $xpath->query('.//*[@data-edit-id]', $btn)->item(0);
+                $editId = $editEl instanceof DOMElement ? $editEl->getAttribute('data-edit-id') : $btn->getAttribute('data-edit-id');
+                $raw = $editId !== '' && array_key_exists($editId, $texts) ? (string) $texts[$editId] : $btn->textContent;
+                $label = trim(html_entity_decode(strip_tags($raw), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+
+                if ($label !== '') {
+                    $termLabelsByCollection[$key][$filter] = $label;
+                }
+            }
+        }
+
+        foreach (iterator_to_array($xpath->query('//*[@data-wp-collection]') ?: []) as $container) {
+            if ($container instanceof DOMElement) {
+                $this->convertCollectionLoop($container, $texts, $images, $termLabelsByCollection);
+            }
+        }
+
+        foreach (iterator_to_array($xpath->query('//*[@data-wp-terms]') ?: []) as $tabsNode) {
+            if ($tabsNode instanceof DOMElement) {
+                $this->convertCollectionTermsTabs($tabsNode, $xpath);
+            }
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $texts
+     * @param  array<string, mixed>  $images
+     * @param  array<string, array<string, string>>  $termLabelsByCollection
+     */
+    private function convertCollectionLoop(DOMElement $container, array $texts, array $images, array $termLabelsByCollection): void
+    {
+        $key = $this->slugKey($container->getAttribute('data-wp-collection'));
+
+        if ($key === '') {
+            return;
+        }
+
+        $items = [];
+
+        foreach ($container->childNodes as $child) {
+            if ($child instanceof DOMElement && $child->hasAttribute('data-wp-item')) {
+                $items[] = $child;
+            }
+        }
+
+        if ($items === []) {
+            return;
+        }
+
+        $postType = substr('webku_'.$key, 0, 20);
+        $label = trim($container->getAttribute('data-wp-label')) ?: Str::headline($key);
+        $singular = trim($container->getAttribute('data-wp-singular')) ?: $label;
+        $icon = trim($container->getAttribute('data-wp-icon')) ?: 'dashicons-Index-card';
+        $taxonomyLabel = trim($container->getAttribute('data-wp-taxonomy-label'));
+        $hasCategoryAttr = false;
+        $hasPriceField = false;
+        $hasExcerptField = false;
+        $extractedItems = [];
+        $terms = $termLabelsByCollection[$key] ?? [];
+
+        foreach ($items as $index => $itemEl) {
+            $categorySlug = trim($itemEl->getAttribute('data-category'));
+
+            if ($categorySlug !== '') {
+                $hasCategoryAttr = true;
+                $terms[$categorySlug] ??= Str::headline($categorySlug);
+            }
+
+            if ($this->fieldElement($itemEl, 'price') instanceof DOMElement) {
+                $hasPriceField = true;
+            }
+
+            if ($this->fieldElement($itemEl, 'excerpt') instanceof DOMElement) {
+                $hasExcerptField = true;
+            }
+
+            $title = $this->plainField($itemEl, 'title', $texts);
+            $slug = Str::slug($itemEl->getAttribute('data-wp-item') ?: $title) ?: ($key.'-'.($index + 1));
+
+            $extractedItems[] = [
+                'slug' => $slug,
+                'title' => $title !== '' ? $title : ($singular.' '.($index + 1)),
+                'excerpt' => $this->plainField($itemEl, 'excerpt', $texts),
+                'price' => $this->plainField($itemEl, 'price', $texts),
+                'category' => $categorySlug,
+                'image' => $this->themeAsset($this->imageField($itemEl, 'thumbnail', $images)),
+                'order' => $index + 1,
+            ];
+        }
+
+        $taxonomy = ($hasCategoryAttr || $taxonomyLabel !== '' || $terms !== []) ? substr('webku_'.$key.'_cat', 0, 32) : '';
+
+        if ($taxonomy !== '' && $taxonomyLabel === '') {
+            $taxonomyLabel = 'Kategori '.$label;
+        }
+
+        $this->collections[$key] = [
+            'key' => $key,
+            'post_type' => $postType,
+            'label' => $label,
+            'singular' => $singular,
+            'icon' => $icon,
+            'taxonomy' => $taxonomy,
+            'taxonomy_label' => $taxonomyLabel,
+            'has_price' => $hasPriceField,
+            'has_excerpt' => $hasExcerptField,
+            'terms' => $terms,
+            'items' => $extractedItems,
+        ];
+
+        $template = $items[0];
+
+        for ($index = 1, $total = count($items); $index < $total; $index++) {
+            $items[$index]->parentNode?->removeChild($items[$index]);
+        }
+
+        $this->fillCollectionFields($template, $postType, $taxonomy);
+        $template->removeAttribute('data-wp-item');
+
+        $variable = '$webku_col_'.$this->collectionLoopIndex;
+        $this->collectionLoopIndex++;
+        $before = "{$variable} = new WP_Query( array( 'post_type' => '{$postType}', 'posts_per_page' => -1, 'orderby' => array( 'menu_order' => 'ASC', 'ID' => 'ASC' ) ) ); if ( {$variable}->have_posts() ) : while ( {$variable}->have_posts() ) : {$variable}->the_post();";
+        $after = 'endwhile; wp_reset_postdata(); endif;';
+
+        $document = $container->ownerDocument;
+        $container->insertBefore($document->createTextNode($this->rawToken('<?php '.$after.' ?>')), $template->nextSibling);
+        $container->insertBefore($document->createTextNode($this->rawToken('<?php '.$before.' ?>')), $template);
+
+        foreach (['data-wp-collection', 'data-wp-label', 'data-wp-singular', 'data-wp-taxonomy-label', 'data-wp-icon'] as $attribute) {
+            $container->removeAttribute($attribute);
+        }
+    }
+
+    private function fillCollectionFields(DOMElement $root, string $postType, string $taxonomy): void
+    {
+        if ($taxonomy !== '' && $root->hasAttribute('data-category')) {
+            $root->setAttribute('data-category', $this->token("esc_attr( webku_collection_term_slug( get_the_ID(), '{$taxonomy}' ) )"));
+        }
+
+        $xpath = new DOMXPath($root->ownerDocument);
+
+        foreach (iterator_to_array($xpath->query('.//*[@data-wp-field]', $root) ?: []) as $field) {
+            if (! $field instanceof DOMElement) {
+                continue;
+            }
+
+            $name = $field->getAttribute('data-wp-field');
+            $this->stripEditorAttributes($field);
+
+            if ($name === 'thumbnail') {
+                $fallback = $this->urlExpression($field->getAttribute('src'));
+                $field->removeAttribute('srcset');
+                $field->setAttribute('src', $this->token("esc_url( get_the_post_thumbnail_url( null, 'large' ) ?: {$fallback} )"));
+                $field->setAttribute('alt', $this->token('esc_attr( get_the_title() )'));
+            } elseif ($name === 'title') {
+                $this->replaceChildrenWithToken($field, 'esc_html( get_the_title() )');
+            } elseif ($name === 'price') {
+                $this->replaceChildrenWithToken($field, "esc_html( get_post_meta( get_the_ID(), '_webku_price', true ) )");
+            } elseif ($name === 'excerpt') {
+                $this->replaceChildrenWithToken($field, 'wp_kses_post( get_the_excerpt() )');
+            }
+
+            $field->removeAttribute('data-wp-field');
+        }
+    }
+
+    private function convertCollectionTermsTabs(DOMElement $tabsNode, DOMXPath $xpath): void
+    {
+        $key = $this->slugKey($tabsNode->getAttribute('data-wp-terms'));
+        $collection = $this->collections[$key] ?? null;
+
+        if ($collection === null || $collection['taxonomy'] === '') {
+            return;
+        }
+
+        $buttons = [];
+
+        foreach (iterator_to_array($xpath->query('./*[@data-filter]', $tabsNode) ?: []) as $btn) {
+            if ($btn instanceof DOMElement) {
+                $buttons[] = $btn;
+            }
+        }
+
+        if (count($buttons) < 2) {
+            return;
+        }
+
+        $termBtn = $buttons[1];
+
+        for ($index = 2, $total = count($buttons); $index < $total; $index++) {
+            $buttons[$index]->parentNode?->removeChild($buttons[$index]);
+        }
+
+        foreach (iterator_to_array($xpath->query('.//*[@data-edit-id]', $termBtn) ?: []) as $editable) {
+            if ($editable instanceof DOMElement) {
+                $this->stripEditorAttributes($editable);
+            }
+        }
+
+        $this->stripEditorAttributes($termBtn);
+        $termBtn->setAttribute('data-filter', $this->token('esc_attr( $webku_term->slug )'));
+        $this->replaceChildrenWithToken($termBtn, 'esc_html( $webku_term->name )');
+
+        $taxonomy = $collection['taxonomy'];
+        $before = "foreach ( get_terms( array( 'taxonomy' => '{$taxonomy}', 'hide_empty' => false, 'orderby' => 'term_id', 'order' => 'ASC' ) ) as \$webku_term ) : if ( is_wp_error( \$webku_term ) ) { continue; }";
+        $after = 'endforeach;';
+
+        $document = $tabsNode->ownerDocument;
+        $tabsNode->insertBefore($document->createTextNode($this->rawToken('<?php '.$after.' ?>')), $termBtn->nextSibling);
+        $tabsNode->insertBefore($document->createTextNode($this->rawToken('<?php '.$before.' ?>')), $termBtn);
+        $tabsNode->removeAttribute('data-wp-terms');
     }
 
     /**
@@ -1347,7 +1619,7 @@ PHP;
             '__SECTIONS__' => var_export($this->sections, true),
             '__SECTION_PAGES__' => var_export($this->sectionPages, true),
             '__SETTINGS__' => implode("\n", $settingLines),
-        ]).$this->postHelpers();
+        ]).$this->postHelpers().$this->collectionHelpers();
     }
 
     private function postHelpers(): string
@@ -1471,58 +1743,260 @@ function webku_seed_posts() {
 }
 add_action( 'after_switch_theme', 'webku_seed_posts', 20 );
 
+PHP);
+
+        return $helpers.$seed.$this->attachThemeImageHelper();
+    }
+
+    private function collectionHelpers(): string
+    {
+        if ($this->collections === []) {
+            return '';
+        }
+
+        $code = str_replace('__COLLECTIONS__', var_export(array_values($this->collections), true), <<<'PHP'
+
 /**
- * Copy a theme image into the media library and use it as the featured image.
+ * Dynamic collections (such as restaurant branches and menu items) editable from the WordPress admin sidebar.
+ */
+function webku_theme_collections() {
+    return __COLLECTIONS__;
+}
+
+/**
+ * Register custom post types and taxonomies for every dynamic collection of this theme.
+ */
+add_action( 'init', function () {
+    foreach ( webku_theme_collections() as $collection ) {
+        $supports = array( 'title', 'thumbnail', 'page-attributes' );
+
+        if ( ! empty( $collection['has_excerpt'] ) ) {
+            $supports[] = 'excerpt';
+        }
+
+        register_post_type( $collection['post_type'], array(
+            'labels' => array(
+                'name'               => $collection['label'],
+                'singular_name'      => $collection['singular'],
+                'add_new'            => 'Tambah ' . $collection['singular'],
+                'add_new_item'       => 'Tambah ' . $collection['singular'] . ' Baru',
+                'edit_item'          => 'Edit ' . $collection['singular'],
+                'new_item'           => $collection['singular'] . ' Baru',
+                'view_item'          => 'Lihat ' . $collection['singular'],
+                'search_items'       => 'Cari ' . $collection['label'],
+                'not_found'          => 'Belum ada data.',
+                'not_found_in_trash' => 'Tidak ada data di tempat sampah.',
+                'menu_name'          => $collection['label'],
+            ),
+            'public'       => false,
+            'show_ui'      => true,
+            'show_in_menu' => true,
+            'menu_icon'    => $collection['icon'],
+            'supports'     => $supports,
+        ) );
+
+        if ( ! empty( $collection['taxonomy'] ) ) {
+            register_taxonomy( $collection['taxonomy'], array( $collection['post_type'] ), array(
+                'labels' => array(
+                    'name'          => $collection['taxonomy_label'],
+                    'singular_name' => $collection['taxonomy_label'],
+                    'add_new_item'  => 'Tambah ' . $collection['taxonomy_label'],
+                    'edit_item'     => 'Edit ' . $collection['taxonomy_label'],
+                    'menu_name'     => $collection['taxonomy_label'],
+                ),
+                'public'            => false,
+                'show_ui'           => true,
+                'show_admin_column' => true,
+                'hierarchical'      => true,
+            ) );
+        }
+    }
+} );
+
+/**
+ * Price meta box for collections that display a price badge.
+ */
+add_action( 'add_meta_boxes', function () {
+    foreach ( webku_theme_collections() as $collection ) {
+        if ( empty( $collection['has_price'] ) ) {
+            continue;
+        }
+
+        add_meta_box(
+            'webku_price_box',
+            __( 'Harga Hidangan', 'webku' ),
+            function ( $post ) {
+                wp_nonce_field( 'webku_save_price', 'webku_price_nonce' );
+                $value = get_post_meta( $post->ID, '_webku_price', true );
+                printf(
+                    '<p><label for="webku_price_field">%s</label></p><input type="text" id="webku_price_field" name="webku_price" value="%s" class="regular-text" placeholder="Contoh: Rp 72.000" />',
+                    esc_html__( 'Teks harga yang tampil pada kartu menu:', 'webku' ),
+                    esc_attr( (string) $value )
+                );
+            },
+            $collection['post_type'],
+            'normal',
+            'high'
+        );
+    }
+} );
+
+add_action( 'save_post', function ( $post_id ) {
+    if ( ! isset( $_POST['webku_price_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['webku_price_nonce'] ) ), 'webku_save_price' ) ) {
+        return;
+    }
+
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
+
+    if ( isset( $_POST['webku_price'] ) ) {
+        update_post_meta( $post_id, '_webku_price', sanitize_text_field( wp_unslash( $_POST['webku_price'] ) ) );
+    }
+} );
+
+/**
+ * First term slug assigned to a collection item, used by the front-end category filter tabs.
  *
  * @param int    $post_id  Post ID.
- * @param string $relative Path inside the theme, starting with assets/.
+ * @param string $taxonomy Taxonomy name.
  */
-function webku_attach_theme_image( $post_id, $relative ) {
-    if ( ! is_string( $relative ) || ! preg_match( '#^assets/[A-Za-z0-9_./-]+$#', $relative ) || false !== strpos( $relative, '..' ) ) {
-        return;
+function webku_collection_term_slug( $post_id, $taxonomy ) {
+    $terms = get_the_terms( $post_id, $taxonomy );
+
+    if ( empty( $terms ) || is_wp_error( $terms ) ) {
+        return '';
     }
 
-    $path = get_template_directory() . '/' . $relative;
+    $first = reset( $terms );
 
-    if ( ! is_readable( $path ) ) {
-        return;
-    }
-
-    $filename = basename( $path );
-    $contents = file_get_contents( $path );
-
-    if ( false === $contents ) {
-        return;
-    }
-
-    $upload = wp_upload_bits( $filename, null, $contents );
-
-    if ( ! empty( $upload['error'] ) ) {
-        return;
-    }
-
-    $filetype = wp_check_filetype( $filename );
-    $attachment_id = wp_insert_attachment( array(
-        'post_mime_type' => $filetype['type'],
-        'post_title'     => sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ),
-        'post_status'    => 'inherit',
-    ), $upload['file'], $post_id );
-
-    if ( ! $attachment_id || is_wp_error( $attachment_id ) ) {
-        return;
-    }
-
-    if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
-        require_once ABSPATH . 'wp-admin/includes/image.php';
-    }
-
-    wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
-    set_post_thumbnail( $post_id, $attachment_id );
+    return $first ? $first->slug : '';
 }
+
+/**
+ * Seed initial items and categories when a collection is still empty.
+ */
+function webku_seed_collections() {
+    foreach ( webku_theme_collections() as $collection ) {
+        $taxonomy = $collection['taxonomy'];
+
+        if ( '' !== $taxonomy && ! empty( $collection['terms'] ) ) {
+            foreach ( $collection['terms'] as $slug => $name ) {
+                if ( ! term_exists( $slug, $taxonomy ) ) {
+                    wp_insert_term( $name, $taxonomy, array( 'slug' => $slug ) );
+                }
+            }
+        }
+
+        $existing = get_posts( array(
+            'post_type'      => $collection['post_type'],
+            'posts_per_page' => 1,
+            'post_status'    => 'any',
+            'fields'         => 'ids',
+        ) );
+
+        if ( ! empty( $existing ) ) {
+            continue;
+        }
+
+        foreach ( $collection['items'] as $item ) {
+            $post_id = wp_insert_post( array(
+                'post_type'    => $collection['post_type'],
+                'post_status'  => 'publish',
+                'post_title'   => $item['title'],
+                'post_name'    => $item['slug'],
+                'post_excerpt' => $item['excerpt'],
+                'menu_order'   => (int) $item['order'],
+            ) );
+
+            if ( ! $post_id || is_wp_error( $post_id ) ) {
+                continue;
+            }
+
+            if ( '' !== $item['price'] ) {
+                update_post_meta( $post_id, '_webku_price', $item['price'] );
+            }
+
+            if ( '' !== $taxonomy && '' !== $item['category'] ) {
+                $term = get_term_by( 'slug', $item['category'], $taxonomy );
+
+                if ( $term && ! is_wp_error( $term ) ) {
+                    wp_set_object_terms( $post_id, array( (int) $term->term_id ), $taxonomy );
+                }
+            }
+
+            if ( '' !== $item['image'] ) {
+                webku_attach_theme_image( $post_id, $item['image'] );
+            }
+        }
+    }
+}
+add_action( 'after_switch_theme', 'webku_seed_collections', 25 );
+add_action( 'admin_init', 'webku_seed_collections' );
 
 PHP);
 
-        return $helpers.$seed;
+        $needsImageHelper = ! $this->usesPostLoop || $this->seedPosts === [];
+
+        return $code.($needsImageHelper ? $this->attachThemeImageHelper() : '');
+    }
+
+    private function attachThemeImageHelper(): string
+    {
+        return <<<'PHP'
+
+if ( ! function_exists( 'webku_attach_theme_image' ) ) {
+    /**
+     * Copy a theme image into the media library and use it as the featured image.
+     *
+     * @param int    $post_id  Post ID.
+     * @param string $relative Path inside the theme, starting with assets/.
+     */
+    function webku_attach_theme_image( $post_id, $relative ) {
+        if ( ! is_string( $relative ) || ! preg_match( '#^assets/[A-Za-z0-9_./-]+$#', $relative ) || false !== strpos( $relative, '..' ) ) {
+            return;
+        }
+
+        $path = get_template_directory() . '/' . $relative;
+
+        if ( ! is_readable( $path ) ) {
+            return;
+        }
+
+        $filename = basename( $path );
+        $contents = file_get_contents( $path );
+
+        if ( false === $contents ) {
+            return;
+        }
+
+        $upload = wp_upload_bits( $filename, null, $contents );
+
+        if ( ! empty( $upload['error'] ) ) {
+            return;
+        }
+
+        $filetype = wp_check_filetype( $filename );
+        $attachment_id = wp_insert_attachment( array(
+            'post_mime_type' => $filetype['type'],
+            'post_title'     => sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ),
+            'post_status'    => 'inherit',
+        ), $upload['file'], $post_id );
+
+        if ( ! $attachment_id || is_wp_error( $attachment_id ) ) {
+            return;
+        }
+
+        if ( ! function_exists( 'wp_generate_attachment_metadata' ) ) {
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+        }
+
+        wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
+        set_post_thumbnail( $post_id, $attachment_id );
+    }
+}
+
+PHP;
     }
 
     private function zip(string $workRoot, string $themeSlug, string $zipPath): void

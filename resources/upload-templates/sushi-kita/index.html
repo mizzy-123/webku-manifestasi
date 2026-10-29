@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Sushi Kita — Restoran Sushi &amp; Jepang</title>
+        <meta
+            name="description"
+            content="Sushi Kita menyajikan sushi, sashimi, dan donburi segar yang dibuat setiap hari. Lihat menu, temukan gerai terdekat, dan pesan meja Anda."
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&amp;family=Poppins:wght@300;400;500;600&amp;display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="assets/css/style.css" />
+    </head>
+    <body>
+        <header class="site-header" id="site-header">
+            <div class="wrap header-inner">
+                <a href="#beranda" class="logo" aria-label="Sushi Kita, kembali ke beranda">
+                    <img
+                        class="logo-mark"
+                        data-edit-id="site-logo"
+                        data-edit-type="image"
+                        data-edit-scope="global"
+                        src="assets/img/logo.svg"
+                        alt=""
+                        width="40"
+                        height="40"
+                    />
+                    <span class="logo-text">
+                        <span class="logo-name" data-edit-id="brand-name" data-edit-type="text" data-edit-scope="global">Sushi</span>
+                        <span class="logo-tag" data-edit-id="brand-tag" data-edit-type="text" data-edit-scope="global">Kita</span>
+                    </span>
+                </a>
+
+                <nav class="site-nav" id="site-nav" aria-label="Navigasi utama">
+                    <a href="#beranda" class="is-current"><span data-edit-id="nav-home" data-edit-type="text">Beranda</span></a>
+                    <a href="#menu"><span data-edit-id="nav-menu" data-edit-type="text">Menu Kami</span></a>
+                    <a href="#restoran"><span data-edit-id="nav-resto" data-edit-type="text">Restoran</span></a>
+                    <a href="#lokasi"><span data-edit-id="nav-find" data-edit-type="text">Lokasi</span></a>
+                    <a href="berita.html"><span data-edit-id="nav-news" data-edit-type="text">Berita</span></a>
+                    <a href="#nilai"><span data-edit-id="nav-values" data-edit-type="text">Nilai Kami</span></a>
+                    <a href="#kontak"><span data-edit-id="nav-contact" data-edit-type="text">Hubungi Kami</span></a>
+                </nav>
+
+                <span class="lang-flag" title="Bahasa Indonesia">
+                    <svg viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" fill="#e5252a" /><rect y="10" width="30" height="10" fill="#ffffff" /></svg>
+                    <span>ID</span>
+                </span>
+
+                <button type="button" class="menu-toggle" id="menu-toggle" aria-label="Buka menu" aria-expanded="false" aria-controls="site-nav">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </header>
+
+        <main>
+            <section class="hero" id="beranda">
+                <svg class="hero-arc" viewBox="0 0 1440 420" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M-40 400C300 110 560 70 720 70s420 40 760 330" />
+                </svg>
+
+                <div class="hero-stage" id="hero-stage">
+                    <button type="button" class="round-btn hero-nav hero-prev" id="hero-prev" aria-label="Hidangan sebelumnya">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+                    </button>
+
+                    <ul class="hero-track" id="hero-track">
+                        <li class="hero-item" data-pos="left">
+                            <img
+                                class="hero-dish"
+                                data-edit-id="hero-1-image"
+                                data-edit-type="image"
+                                src="assets/img/hero-nigiri.jpg"
+                                alt="Dua potong nigiri salmon segar"
+                                width="900"
+                                height="900"
+                            />
+                            <p class="hero-dish-title" data-edit-id="hero-1-title" data-edit-type="text">Si Sederhana</p>
+                            <p class="hero-dish-desc" data-edit-id="hero-1-desc" data-edit-type="text">Nigiri salmon segar dengan nasi cuka racikan kami</p>
+                        </li>
+                        <li class="hero-item" data-pos="center">
+                            <img
+                                class="hero-dish"
+                                data-edit-id="hero-2-image"
+                                data-edit-type="image"
+                                src="assets/img/hero-signature.jpg"
+                                alt="Roll salmon aburi dengan saus mentai dan tobiko"
+                                width="900"
+                                height="900"
+                            />
+                            <p class="hero-dish-title" data-edit-id="hero-2-title" data-edit-type="text">Sang Andalan</p>
+                            <p class="hero-dish-desc" data-edit-id="hero-2-desc" data-edit-type="text">Salmon aburi dengan saus mentai racikan dapur kami</p>
+                        </li>
+                        <li class="hero-item" data-pos="right">
+                            <img
+                                class="hero-dish"
+                                data-edit-id="hero-3-image"
+                                data-edit-type="image"
+                                src="assets/img/hero-family.jpg"
+                                alt="Paket maki dan uramaki aneka isi"
+                                width="900"
+                                height="900"
+                            />
+                            <p class="hero-dish-title" data-edit-id="hero-3-title" data-edit-type="text">Paket Keluarga</p>
+                            <p class="hero-dish-desc" data-edit-id="hero-3-desc" data-edit-type="text">24 potong maki pelangi untuk dinikmati bersama</p>
+                        </li>
+                    </ul>
+
+                    <button type="button" class="round-btn hero-nav hero-next" id="hero-next" aria-label="Hidangan berikutnya">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+                    </button>
+                </div>
+
+                <div class="wrap hero-copy">
+                    <div>
+                        <h1 class="hero-heading" data-edit-id="hero-heading" data-edit-type="text">Sushi segar, dibuat tangan setiap hari</h1>
+                        <p class="hero-lead" data-edit-id="hero-lead" data-edit-type="text">
+                            Ikan pilihan yang datang setiap pagi, nasi yang ditanak dan dibumbui sendiri, serta tangan
+                            chef yang sudah belasan tahun membentuk sushi. Semua untuk satu suapan yang pas.
+                        </p>
+                    </div>
+                    <a class="btn btn-outline" href="#menu">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h10" /></svg>
+                        <span data-edit-id="hero-cta" data-edit-type="text">Lihat Menu</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="restaurants" id="restoran">
+                <div class="resto-intro reveal">
+                    <h2 class="section-title" data-edit-id="resto-title" data-edit-type="text">Restoran Kami</h2>
+                    <p data-edit-id="resto-text" data-edit-type="text">
+                        Lima gerai di lima kota, satu standar rasa. Mampir ke gerai terdekat dan rasakan suasananya.
+                    </p>
+                    <a class="btn btn-light" data-edit-id="resto-cta" data-edit-type="link" href="#lokasi">Cari Gerai</a>
+                </div>
+
+                <div class="resto-rail-wrap">
+                    <button type="button" class="round-btn rail-btn rail-prev" id="resto-prev" aria-label="Gerai sebelumnya">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+                    </button>
+                    <div
+                        class="resto-rail"
+                        id="resto-rail"
+                        data-wp-collection="restaurant"
+                        data-wp-label="Restoran Kami"
+                        data-wp-singular="Gerai"
+                        data-wp-icon="dashicons-store"
+                    >
+                        <article class="resto-card" data-wp-item="jakarta-selatan">
+                            <img data-wp-field="thumbnail" data-edit-id="resto-1-image" data-edit-type="image" src="assets/img/resto-jakarta.jpg" alt="Interior gerai Jakarta dengan lampion merah" width="717" height="960" />
+                            <h3 data-wp-field="title" data-edit-id="resto-1-name" data-edit-type="text">Jakarta Selatan</h3>
+                        </article>
+                        <article class="resto-card" data-wp-item="bandung">
+                            <img data-wp-field="thumbnail" data-edit-id="resto-2-image" data-edit-type="image" src="assets/img/resto-bandung.jpg" alt="Gerai Bandung dengan meja sushi berjalan" width="717" height="960" />
+                            <h3 data-wp-field="title" data-edit-id="resto-2-name" data-edit-type="text">Bandung</h3>
+                        </article>
+                        <article class="resto-card" data-wp-item="surabaya">
+                            <img data-wp-field="thumbnail" data-edit-id="resto-3-image" data-edit-type="image" src="assets/img/resto-surabaya.jpg" alt="Tamu menikmati sushi di meja kayu" width="520" height="696" />
+                            <h3 data-wp-field="title" data-edit-id="resto-3-name" data-edit-type="text">Surabaya</h3>
+                        </article>
+                        <article class="resto-card" data-wp-item="denpasar-bali">
+                            <img data-wp-field="thumbnail" data-edit-id="resto-4-image" data-edit-type="image" src="assets/img/resto-bali.jpg" alt="Piring sushi di atas meja berjalan" width="476" height="636" />
+                            <h3 data-wp-field="title" data-edit-id="resto-4-name" data-edit-type="text">Denpasar, Bali</h3>
+                        </article>
+                        <article class="resto-card" data-wp-item="yogyakarta">
+                            <img data-wp-field="thumbnail" data-edit-id="resto-5-image" data-edit-type="image" src="assets/img/resto-jogja.jpg" alt="Lampion dan rak sake di gerai Yogyakarta" width="566" height="758" />
+                            <h3 data-wp-field="title" data-edit-id="resto-5-name" data-edit-type="text">Yogyakarta</h3>
+                        </article>
+                    </div>
+                    <button type="button" class="round-btn rail-btn rail-next" id="resto-next" aria-label="Gerai berikutnya">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+                    </button>
+                </div>
+            </section>
+
+            <section class="menu-section" id="menu">
+                <div class="wrap">
+                    <h2 class="section-title center reveal" data-edit-id="menu-title" data-edit-type="text">Menu Kami</h2>
+
+                    <div class="menu-tabs reveal" id="menu-tabs" role="tablist" aria-label="Kategori menu" data-wp-terms="menu_item">
+                        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-filter="semua"><span data-edit-id="tab-all" data-edit-type="text">Semua</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="andalan"><span data-edit-id="tab-signature" data-edit-type="text">Andalan</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="sushi"><span data-edit-id="tab-sushi" data-edit-type="text">Sushi</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="bowl"><span data-edit-id="tab-bowl" data-edit-type="text">Bowl</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="jam-hemat"><span data-edit-id="tab-happy" data-edit-type="text">Jam Hemat</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="penutup"><span data-edit-id="tab-dessert" data-edit-type="text">Hidangan Penutup</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="minuman"><span data-edit-id="tab-drinks" data-edit-type="text">Minuman</span></button>
+                        <button type="button" class="tab" role="tab" aria-selected="false" data-filter="tambahan"><span data-edit-id="tab-extras" data-edit-type="text">Tambahan</span></button>
+                    </div>
+
+                    <div
+                        class="menu-grid"
+                        id="menu-grid"
+                        data-wp-collection="menu_item"
+                        data-wp-label="Menu Kami"
+                        data-wp-singular="Hidangan"
+                        data-wp-taxonomy-label="Kategori Menu"
+                        data-wp-icon="dashicons-food"
+                    >
+                        <article class="dish" data-wp-item="sashimi-salmon" data-category="andalan">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-1-image" data-edit-type="image" src="assets/img/menu-sashimi.jpg" alt="Sashimi salmon dalam mangkuk putih" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-1-price" data-edit-type="text">Rp 72.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-1-name" data-edit-type="text">Sashimi Salmon</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-1-desc" data-edit-type="text">Irisan salmon segar dengan daun shiso, wasabi, dan jahe acar.</p>
+                        </article>
+                        <article class="dish" data-wp-item="salad-wakame" data-category="tambahan">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-2-image" data-edit-type="image" src="assets/img/menu-wakame.jpg" alt="Salad rumput laut wakame dengan wijen" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-2-price" data-edit-type="text">Rp 28.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-2-name" data-edit-type="text">Salad Wakame</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-2-desc" data-edit-type="text">Rumput laut segar dengan minyak wijen dan sedikit cabai.</p>
+                        </article>
+                        <article class="dish" data-wp-item="gyoza-ayam" data-category="jam-hemat">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-3-image" data-edit-type="image" src="assets/img/menu-gyoza.jpg" alt="Gyoza ayam panggang dengan minyak cabai" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-3-price" data-edit-type="text">Rp 32.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-3-name" data-edit-type="text">Gyoza Ayam</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-3-desc" data-edit-type="text">Pangsit ayam panggang renyah dengan minyak cabai dan daun bawang.</p>
+                        </article>
+                        <article class="dish" data-wp-item="edamame-garam-laut" data-category="tambahan">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-4-image" data-edit-type="image" src="assets/img/menu-edamame.jpg" alt="Edamame rebus dengan garam laut" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-4-price" data-edit-type="text">Rp 22.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-4-name" data-edit-type="text">Edamame Garam Laut</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-4-desc" data-edit-type="text">Kedelai Jepang rebus dengan taburan garam laut kasar.</p>
+                        </article>
+                        <article class="dish" data-wp-item="nigiri-salmon" data-category="sushi">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-5-image" data-edit-type="image" src="assets/img/hero-nigiri.jpg" alt="Nigiri salmon" width="900" height="900" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-5-price" data-edit-type="text">Rp 38.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-5-name" data-edit-type="text">Nigiri Salmon</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-5-desc" data-edit-type="text">Dua potong salmon di atas nasi cuka yang dibentuk dengan tangan.</p>
+                        </article>
+                        <article class="dish" data-wp-item="poke-bowl-tuna" data-category="bowl">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-6-image" data-edit-type="image" src="assets/img/menu-poke.jpg" alt="Poke bowl tuna dengan alpukat dan jagung" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-6-price" data-edit-type="text">Rp 65.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-6-name" data-edit-type="text">Poke Bowl Tuna</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-6-desc" data-edit-type="text">Tuna, alpukat, edamame, jagung, dan kol ungu di atas nasi hangat.</p>
+                        </article>
+                        <article class="dish" data-wp-item="karaage-ayam" data-category="jam-hemat">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-7-image" data-edit-type="image" src="assets/img/menu-karaage.jpg" alt="Karaage ayam dengan lemon dan mayones" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-7-price" data-edit-type="text">Rp 39.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-7-name" data-edit-type="text">Karaage Ayam</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-7-desc" data-edit-type="text">Ayam goreng ala Jepang, renyah di luar, juicy di dalam.</p>
+                        </article>
+                        <article class="dish" data-wp-item="chirashi-don" data-category="bowl">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-8-image" data-edit-type="image" src="assets/img/menu-chirashi.jpg" alt="Chirashi don dengan salmon, tuna, dan ikura" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-8-price" data-edit-type="text">Rp 89.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-8-name" data-edit-type="text">Chirashi Don</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-8-desc" data-edit-type="text">Nasi sushi bertabur salmon, tuna, ikura, dan tamagoyaki.</p>
+                        </article>
+                        <article class="dish" data-wp-item="aburi-mentai-roll" data-category="andalan">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-9-image" data-edit-type="image" src="assets/img/hero-signature.jpg" alt="Roll salmon aburi saus mentai" width="900" height="900" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-9-price" data-edit-type="text">Rp 68.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-9-name" data-edit-type="text">Aburi Mentai Roll</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-9-desc" data-edit-type="text">Roll salmon yang dibakar sekilas, saus mentai, dan tobiko.</p>
+                        </article>
+                        <article class="dish" data-wp-item="paket-maki-pelangi" data-category="sushi">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-10-image" data-edit-type="image" src="assets/img/hero-family.jpg" alt="Paket maki pelangi" width="900" height="900" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-10-price" data-edit-type="text">Rp 145.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-10-name" data-edit-type="text">Paket Maki Pelangi</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-10-desc" data-edit-type="text">24 potong maki dan uramaki aneka isi untuk berbagi.</p>
+                        </article>
+                        <article class="dish" data-wp-item="mochi-es-krim" data-category="penutup">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-11-image" data-edit-type="image" src="assets/img/menu-mochi.jpg" alt="Tiga mochi es krim warna pastel" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-11-price" data-edit-type="text">Rp 30.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-11-name" data-edit-type="text">Mochi Es Krim</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-11-desc" data-edit-type="text">Tiga rasa dalam satu mangkuk: matcha, stroberi, dan vanila.</p>
+                        </article>
+                        <article class="dish" data-wp-item="matcha-latte-dingin" data-category="minuman">
+                            <div class="dish-photo"><img data-wp-field="thumbnail" data-edit-id="dish-12-image" data-edit-type="image" src="assets/img/menu-matcha.jpg" alt="Matcha latte dingin" width="640" height="640" loading="lazy" /></div>
+                            <span class="dish-price" data-wp-field="price" data-edit-id="dish-12-price" data-edit-type="text">Rp 28.000</span>
+                            <h3 data-wp-field="title" data-edit-id="dish-12-name" data-edit-type="text">Matcha Latte Dingin</h3>
+                            <p data-wp-field="excerpt" data-edit-id="dish-12-desc" data-edit-type="text">Matcha asli Uji dengan susu segar dan es batu.</p>
+                        </article>
+                    </div>
+
+                    <div class="menu-pager" id="menu-pager">
+                        <button type="button" class="round-btn small" id="menu-prev" aria-label="Halaman menu sebelumnya">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+                        </button>
+                        <span class="menu-page" id="menu-page" aria-live="polite">1 / 2</span>
+                        <button type="button" class="round-btn small" id="menu-next" aria-label="Halaman menu berikutnya">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="find" id="lokasi">
+                <div class="wrap find-grid">
+                    <div class="find-copy reveal">
+                        <h2 class="section-title" data-edit-id="find-title" data-edit-type="text">Lokasi Kami</h2>
+                        <div class="find-item">
+                            <h3 data-edit-id="find-1-name" data-edit-type="text">Sushi Kita Senopati</h3>
+                            <p data-edit-id="find-1-address" data-edit-type="text">Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan</p>
+                            <p class="find-hours" data-edit-id="find-1-hours" data-edit-type="text">Setiap hari, 11.00 – 22.00</p>
+                            <a class="arrow-link" data-edit-id="find-1-link" data-edit-type="link" href="https://maps.google.com/?q=Jl.+Senopati+No.+45+Jakarta">Petunjuk Arah</a>
+                        </div>
+                        <div class="find-item">
+                            <h3 data-edit-id="find-2-name" data-edit-type="text">Sushi Kita Braga</h3>
+                            <p data-edit-id="find-2-address" data-edit-type="text">Jl. Braga No. 12, Sumur Bandung, Kota Bandung</p>
+                            <p class="find-hours" data-edit-id="find-2-hours" data-edit-type="text">Senin – Jumat 11.00 – 21.00, akhir pekan sampai 22.00</p>
+                            <a class="arrow-link" data-edit-id="find-2-link" data-edit-type="link" href="https://maps.google.com/?q=Jl.+Braga+No.+12+Bandung">Petunjuk Arah</a>
+                        </div>
+                    </div>
+                    <figure class="find-map reveal">
+                        <img data-edit-id="find-map" data-edit-type="image" src="assets/img/peta.svg" alt="Peta lokasi gerai Sushi Kita di Jakarta Selatan" width="1200" height="760" loading="lazy" />
+                    </figure>
+                </div>
+            </section>
+
+            <section class="news" id="berita">
+                <div class="wrap">
+                    <h2 class="section-title center reveal" data-edit-id="news-title" data-edit-type="text">Berita</h2>
+
+                    <div class="news-grid" data-wp-loop="post" data-wp-count="5">
+                        <article class="news-card reveal" data-wp-post="aburi-mentai-hadir">
+                            <figure class="news-photo">
+                                <img data-wp-field="thumbnail" data-edit-id="post-1-image" data-edit-type="image" src="assets/img/hero-signature.jpg" alt="Aburi mentai roll" width="900" height="900" loading="lazy" />
+                            </figure>
+                            <div class="news-body">
+                                <p class="post-meta">
+                                    <span data-wp-field="date" data-wp-date="2026-10-20" data-edit-id="post-1-date" data-edit-type="text">20 Okt 2026</span>
+                                    <span data-wp-field="category" data-edit-id="post-1-tag" data-edit-type="text">Menu Baru</span>
+                                </p>
+                                <h3 data-wp-field="title" data-edit-id="post-1-title" data-edit-type="text">Aburi Mentai Roll Kini Hadir di Semua Gerai</h3>
+                                <a class="post-link" data-wp-field="permalink" data-edit-id="post-1-link" data-edit-type="link" href="berita-aburi-mentai.html">Baca Selengkapnya</a>
+                            </div>
+                        </article>
+                        <article class="news-card reveal" data-wp-post="gerai-baru-bandung">
+                            <figure class="news-photo">
+                                <img data-wp-field="thumbnail" data-edit-id="post-2-image" data-edit-type="image" src="assets/img/resto-bandung.jpg" alt="Gerai Sushi Kita Bandung" width="717" height="960" loading="lazy" />
+                            </figure>
+                            <div class="news-body">
+                                <p class="post-meta">
+                                    <span data-wp-field="date" data-wp-date="2026-10-08" data-edit-id="post-2-date" data-edit-type="text">8 Okt 2026</span>
+                                    <span data-wp-field="category" data-edit-id="post-2-tag" data-edit-type="text">Gerai</span>
+                                </p>
+                                <h3 data-wp-field="title" data-edit-id="post-2-title" data-edit-type="text">Gerai Baru Resmi Dibuka di Bandung</h3>
+                                <a class="post-link" data-wp-field="permalink" data-edit-id="post-2-link" data-edit-type="link" href="berita-gerai-bandung.html">Baca Selengkapnya</a>
+                            </div>
+                        </article>
+                        <article class="news-card reveal" data-wp-post="cara-menikmati-sushi">
+                            <figure class="news-photo">
+                                <img data-wp-field="thumbnail" data-edit-id="post-3-image" data-edit-type="image" src="assets/img/hero-nigiri.jpg" alt="Nigiri salmon" width="900" height="900" loading="lazy" />
+                            </figure>
+                            <div class="news-body">
+                                <p class="post-meta">
+                                    <span data-wp-field="date" data-wp-date="2026-09-25" data-edit-id="post-3-date" data-edit-type="text">25 Sep 2026</span>
+                                    <span data-wp-field="category" data-edit-id="post-3-tag" data-edit-type="text">Tips</span>
+                                </p>
+                                <h3 data-wp-field="title" data-edit-id="post-3-title" data-edit-type="text">5 Cara Menikmati Sushi seperti Orang Jepang</h3>
+                                <a class="post-link" data-wp-field="permalink" data-edit-id="post-3-link" data-edit-type="link" href="berita-cara-menikmati-sushi.html">Baca Selengkapnya</a>
+                            </div>
+                        </article>
+                        <article class="news-card reveal" data-wp-post="jam-hemat-hari-kerja">
+                            <figure class="news-photo">
+                                <img data-wp-field="thumbnail" data-edit-id="post-4-image" data-edit-type="image" src="assets/img/menu-gyoza.jpg" alt="Gyoza ayam" width="640" height="640" loading="lazy" />
+                            </figure>
+                            <div class="news-body">
+                                <p class="post-meta">
+                                    <span data-wp-field="date" data-wp-date="2026-09-12" data-edit-id="post-4-date" data-edit-type="text">12 Sep 2026</span>
+                                    <span data-wp-field="category" data-edit-id="post-4-tag" data-edit-type="text">Promo</span>
+                                </p>
+                                <h3 data-wp-field="title" data-edit-id="post-4-title" data-edit-type="text">Jam Hemat: Diskon 30% Setiap Hari Kerja</h3>
+                                <a class="post-link" data-wp-field="permalink" data-edit-id="post-4-link" data-edit-type="link" href="berita-jam-hemat.html">Baca Selengkapnya</a>
+                            </div>
+                        </article>
+                        <article class="news-card reveal" data-wp-post="pagi-di-dapur-kami">
+                            <figure class="news-photo">
+                                <img data-wp-field="thumbnail" data-edit-id="post-5-image" data-edit-type="image" src="assets/img/chef.jpg" alt="Chef menyiapkan sushi di balik meja" width="420" height="420" loading="lazy" />
+                            </figure>
+                            <div class="news-body">
+                                <p class="post-meta">
+                                    <span data-wp-field="date" data-wp-date="2026-08-30" data-edit-id="post-5-date" data-edit-type="text">30 Agu 2026</span>
+                                    <span data-wp-field="category" data-edit-id="post-5-tag" data-edit-type="text">Cerita</span>
+                                </p>
+                                <h3 data-wp-field="title" data-edit-id="post-5-title" data-edit-type="text">Pagi Hari di Dapur Sushi Kita</h3>
+                                <a class="post-link" data-wp-field="permalink" data-edit-id="post-5-link" data-edit-type="link" href="berita-dapur-kami.html">Baca Selengkapnya</a>
+                            </div>
+                        </article>
+                    </div>
+
+                    <p class="news-more reveal">
+                        <a class="btn btn-outline" href="berita.html"><span data-edit-id="news-all" data-edit-type="text">Semua Berita</span></a>
+                    </p>
+                </div>
+            </section>
+
+            <section class="values" id="nilai">
+                <div class="wrap">
+                    <h2 class="section-title center reveal" data-edit-id="values-title" data-edit-type="text">Nilai Kami</h2>
+
+                    <div class="values-stage">
+                        <ul class="values-col values-left">
+                            <li class="value reveal">
+                                <span class="value-num" aria-hidden="true">1</span>
+                                <div>
+                                    <h3 data-edit-id="value-1-title" data-edit-type="text">Bahan Segar</h3>
+                                    <p data-edit-id="value-1-text" data-edit-type="text">Ikan datang setiap pagi dan habis di hari yang sama.</p>
+                                </div>
+                            </li>
+                            <li class="value reveal">
+                                <span class="value-num" aria-hidden="true">2</span>
+                                <div>
+                                    <h3 data-edit-id="value-2-title" data-edit-type="text">Dibuat dengan Tangan</h3>
+                                    <p data-edit-id="value-2-text" data-edit-type="text">Setiap potong dibentuk chef, bukan mesin.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <figure class="values-photo reveal">
+                            <img data-edit-id="values-image" data-edit-type="image" src="assets/img/chef.jpg" alt="Chef Sushi Kita sedang menyiapkan nigiri" width="420" height="420" loading="lazy" />
+                        </figure>
+
+                        <ul class="values-col values-right">
+                            <li class="value reveal">
+                                <span class="value-num" aria-hidden="true">3</span>
+                                <div>
+                                    <h3 data-edit-id="value-3-title" data-edit-type="text">Ramah Keluarga</h3>
+                                    <p data-edit-id="value-3-text" data-edit-type="text">Menu anak, kursi bayi, dan pilihan tanpa ikan mentah.</p>
+                                </div>
+                            </li>
+                            <li class="value reveal">
+                                <span class="value-num" aria-hidden="true">4</span>
+                                <div>
+                                    <h3 data-edit-id="value-4-title" data-edit-type="text">Harga Jujur</h3>
+                                    <p data-edit-id="value-4-text" data-edit-type="text">Porsi sesuai foto, harga sudah termasuk pajak.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="franchise" id="waralaba">
+                <div class="wrap franchise-grid">
+                    <figure class="franchise-photo reveal">
+                        <img data-edit-id="franchise-image" data-edit-type="image" src="assets/img/dapur.jpg" alt="Suasana gerai dengan meja sushi berjalan" width="716" height="660" loading="lazy" />
+                    </figure>
+
+                    <div class="franchise-copy reveal">
+                        <h2 class="section-title" data-edit-id="franchise-title" data-edit-type="text">Miliki Waralaba</h2>
+                        <p data-edit-id="franchise-text" data-edit-type="text">
+                            Bawa Sushi Kita ke kota Anda. Kami menyiapkan pelatihan chef, pasokan bahan, desain gerai,
+                            sampai sistem kasir. Anda cukup fokus melayani tamu dan mengembangkan bisnis bersama kami.
+                        </p>
+                        <ul class="franchise-stats">
+                            <li>
+                                <strong data-edit-id="franchise-stat-1" data-edit-type="text">34</strong>
+                                <span data-edit-id="franchise-stat-1-label" data-edit-type="text">Gerai mitra di 12 kota</span>
+                            </li>
+                            <li>
+                                <strong data-edit-id="franchise-stat-2" data-edit-type="text">2.986</strong>
+                                <span data-edit-id="franchise-stat-2-label" data-edit-type="text">Tamu dilayani setiap hari</span>
+                            </li>
+                        </ul>
+                        <a class="btn btn-light" data-edit-id="franchise-cta" data-edit-type="link" href="https://wa.me/6281234567890">Ajukan Kemitraan</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="faq" id="faq">
+                <div class="wrap faq-grid">
+                    <div class="faq-head reveal">
+                        <h2 class="faq-big" data-edit-id="faq-title" data-edit-type="text">FAQ</h2>
+                        <p data-edit-id="faq-sub" data-edit-type="text">Pertanyaan yang sering diajukan</p>
+                    </div>
+
+                    <div class="faq-list" id="faq-list">
+                        <div class="faq-item reveal">
+                            <div class="faq-q">
+                                <h3 data-edit-id="faq-1-q" data-edit-type="text">Apakah ikan di Sushi Kita benar-benar segar?</h3>
+                                <button type="button" class="faq-toggle" aria-expanded="false" aria-label="Tampilkan jawaban"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></button>
+                            </div>
+                            <div class="faq-a"><p data-edit-id="faq-1-a" data-edit-type="text">Ya. Salmon dan tuna kami datang setiap pagi dalam rantai dingin dan diolah di hari yang sama. Stok yang tersisa tidak dijual keesokan harinya.</p></div>
+                        </div>
+                        <div class="faq-item reveal">
+                            <div class="faq-q">
+                                <h3 data-edit-id="faq-2-q" data-edit-type="text">Apakah semua menu halal?</h3>
+                                <button type="button" class="faq-toggle" aria-expanded="false" aria-label="Tampilkan jawaban"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></button>
+                            </div>
+                            <div class="faq-a"><p data-edit-id="faq-2-a" data-edit-type="text">Kami tidak menggunakan babi, dan mirin kami bebas alkohol. Sertifikasi halal sedang dalam proses untuk seluruh gerai.</p></div>
+                        </div>
+                        <div class="faq-item reveal">
+                            <div class="faq-q">
+                                <h3 data-edit-id="faq-3-q" data-edit-type="text">Bisakah saya memesan meja lebih dulu?</h3>
+                                <button type="button" class="faq-toggle" aria-expanded="false" aria-label="Tampilkan jawaban"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></button>
+                            </div>
+                            <div class="faq-a"><p data-edit-id="faq-3-a" data-edit-type="text">Bisa. Kirim pesan WhatsApp berisi nama, jumlah tamu, gerai, dan jam kedatangan. Kami tahan meja hingga 15 menit.</p></div>
+                        </div>
+                        <div class="faq-item reveal">
+                            <div class="faq-q">
+                                <h3 data-edit-id="faq-4-q" data-edit-type="text">Apakah tersedia layanan pesan antar?</h3>
+                                <button type="button" class="faq-toggle" aria-expanded="false" aria-label="Tampilkan jawaban"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></button>
+                            </div>
+                            <div class="faq-a"><p data-edit-id="faq-4-a" data-edit-type="text">Tersedia lewat GoFood, GrabFood, dan ShopeeFood. Untuk pesanan besar di atas 50 potong, hubungi gerai langsung.</p></div>
+                        </div>
+                        <div class="faq-item reveal">
+                            <div class="faq-q">
+                                <h3 data-edit-id="faq-5-q" data-edit-type="text">Ada pilihan untuk yang tidak makan ikan mentah?</h3>
+                                <button type="button" class="faq-toggle" aria-expanded="false" aria-label="Tampilkan jawaban"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" /></svg></button>
+                            </div>
+                            <div class="faq-a"><p data-edit-id="faq-5-a" data-edit-type="text">Ada. Aburi, karaage, gyoza, dan roll tempura semuanya matang. Tanyakan juga roll sayur kami untuk pilihan vegetarian.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer" id="kontak">
+            <div class="wrap footer-grid">
+                <div class="footer-brand">
+                    <a href="#beranda" class="logo" aria-label="Sushi Kita, kembali ke beranda">
+                        <img class="logo-mark" src="assets/img/logo.svg" alt="" width="40" height="40" />
+                        <span class="logo-text">
+                            <span class="logo-name">Sushi</span>
+                            <span class="logo-tag">Kita</span>
+                        </span>
+                    </a>
+                    <p data-edit-id="footer-about" data-edit-type="text" data-edit-scope="global">Sushi segar yang dibuat tangan setiap hari, sejak 2014.</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3 data-edit-id="footer-contact-title" data-edit-type="text" data-edit-scope="global">Hubungi Kami</h3>
+                    <a class="footer-line" data-edit-id="footer-phone" data-edit-type="link" data-edit-scope="global" href="https://wa.me/6281234567890">0812-3456-7890</a>
+                    <a class="footer-line" data-edit-id="footer-email" data-edit-type="link" data-edit-scope="global" href="mailto:halo@sushikita.id">halo@sushikita.id</a>
+                    <p class="footer-line" data-edit-id="footer-address" data-edit-type="text" data-edit-scope="global">Jl. Senopati No. 45, Jakarta Selatan</p>
+                </div>
+
+                <div class="footer-col">
+                    <h3 data-edit-id="footer-follow-title" data-edit-type="text" data-edit-scope="global">Ikuti Kami</h3>
+                    <div class="socials">
+                        <a data-edit-id="social-ig" data-edit-type="link" data-edit-scope="global" href="https://instagram.com" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="4" fill="none" stroke="currentColor" stroke-width="1.7" /><circle cx="12" cy="12" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7" /><circle cx="17.2" cy="6.8" r="0.9" fill="currentColor" /></svg>
+                            <span class="sr-only" data-link-label>Instagram</span>
+                        </a>
+                        <a data-edit-id="social-fb" data-edit-type="link" data-edit-scope="global" href="https://facebook.com" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-2c0-.6.4-1 1-1z" fill="currentColor" /></svg>
+                            <span class="sr-only" data-link-label>Facebook</span>
+                        </a>
+                        <a data-edit-id="social-tt" data-edit-type="link" data-edit-scope="global" href="https://tiktok.com" aria-label="TikTok">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4c.4 2.2 1.8 3.6 4 3.9v2.7c-1.5 0-2.8-.4-4-1.2v5.8a5 5 0 1 1-5-5h.6v2.8a2.3 2.3 0 1 0 1.7 2.2V4z" fill="currentColor" /></svg>
+                            <span class="sr-only" data-link-label>TikTok</span>
+                        </a>
+                        <a data-edit-id="social-yt" data-edit-type="link" data-edit-scope="global" href="https://youtube.com" aria-label="YouTube">
+                            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="3.5" fill="none" stroke="currentColor" stroke-width="1.7" /><path d="M10.5 9.5v5l4.2-2.5z" fill="currentColor" /></svg>
+                            <span class="sr-only" data-link-label>YouTube</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h3 data-edit-id="footer-career-title" data-edit-type="text" data-edit-scope="global">Karier</h3>
+                    <a class="footer-line" data-edit-id="footer-career-link" data-edit-type="link" data-edit-scope="global" href="mailto:karier@sushikita.id">Bergabung Bersama Kami</a>
+                    <a class="footer-line" data-edit-id="footer-franchise-link" data-edit-type="link" data-edit-scope="global" href="index.html#waralaba">Peluang Waralaba</a>
+                </div>
+
+                <div class="footer-col">
+                    <h3 data-edit-id="footer-info-title" data-edit-type="text" data-edit-scope="global">Informasi</h3>
+                    <a class="footer-line" data-edit-id="footer-menu-link" data-edit-type="link" data-edit-scope="global" href="index.html#menu">Daftar Menu</a>
+                    <a class="footer-line" data-edit-id="footer-faq-link" data-edit-type="link" data-edit-scope="global" href="index.html#faq">Info Alergen &amp; FAQ</a>
+                </div>
+            </div>
+
+            <div class="wrap footer-bottom">
+                <p data-edit-id="footer-copy" data-edit-type="text" data-edit-scope="global">© 2026 Sushi Kita. Semua hak cipta dilindungi.</p>
+                <a class="to-top" href="#beranda"><span data-edit-id="footer-top" data-edit-type="text">Kembali ke atas</span></a>
+            </div>
+        </footer>
+
+        <script src="assets/js/main.js"></script>
+    </body>
+</html>

@@ -422,6 +422,71 @@ test('the selera steakhouse news pages export as a wordpress loop', function () 
     unlink($export);
 });
 
+test('the sushi kita news pages export as a wordpress loop', function () {
+    $source = resource_path('upload-templates/sushi-kita');
+    $zipPath = tempnam(sys_get_temp_dir(), 'sushi-');
+    $zip = new ZipArchive;
+    $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS));
+
+    foreach ($files as $file) {
+        if (! $file->isFile()) {
+            continue;
+        }
+
+        $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($source))), '/');
+        $zip->addFile($file->getPathname(), $relative);
+    }
+
+    $zip->close();
+
+    $template = app(TemplateArchiveService::class)->storeFromPath($zipPath, Category::factory()->create());
+    $export = app(WordPressThemeExporterService::class)->export($template, null, 'Sushi Kita');
+    $theme = ($this->open)($export);
+    $single = $theme->getFromName('sushi-kita/single.php');
+    $archive = $theme->getFromName('sushi-kita/home.php');
+    $functions = $theme->getFromName('sushi-kita/functions.php');
+
+    expect($theme->getFromName('sushi-kita/front-page.php'))
+        ->toContain('new WP_Query')
+        ->toContain('get_permalink()')
+        ->toContain("'post_type' => 'webku_restaurant'")
+        ->toContain("'post_type' => 'webku_menu_item'")
+        ->toContain("get_terms( array( 'taxonomy' => 'webku_menu_item_cat'")
+        ->toContain("get_post_meta( get_the_ID(), '_webku_price', true )")
+        ->not->toContain('Gerai Baru Resmi Dibuka di Bandung')
+        ->not->toContain('Denpasar, Bali')
+        ->not->toContain('Chirashi Don');
+
+    expect($archive)->toContain('the_posts_pagination')
+        ->toContain('name="q"')
+        ->and($single)->toContain("apply_filters( 'the_content', get_the_content() )")
+        ->and($functions)->toContain('aburi-mentai-hadir')
+        ->toContain('Pagi Hari di Dapur Sushi Kita')
+        ->toContain('register_post_type')
+        ->toContain('register_taxonomy')
+        ->toContain('webku_seed_collections')
+        ->toContain('Jakarta Selatan')
+        ->toContain('Sashimi Salmon')
+        ->not->toContain('page-aburi-mentai-hadir');
+
+    $directory = sys_get_temp_dir().'/sushi-theme-'.uniqid();
+    $theme->extractTo($directory);
+    $theme->close();
+
+    foreach (['front-page.php', 'home.php', 'single.php', 'functions.php'] as $file) {
+        $output = [];
+        $code = 0;
+        exec(escapeshellarg(PHP_BINARY).' -l '.escapeshellarg("{$directory}/sushi-kita/{$file}").' 2>&1', $output, $code);
+
+        expect($code)->toBe(0, implode("\n", $output));
+    }
+
+    unlink($zipPath);
+    unlink($export);
+});
+
 test('exported php files are syntactically valid', function () {
     $zipPath = app(WordPressThemeExporterService::class)->export($this->template);
     $zip = ($this->open)($zipPath);
